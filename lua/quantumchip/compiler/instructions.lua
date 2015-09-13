@@ -20,7 +20,7 @@ function META:Compile_BOOL(trace, value)
 end
 
 function META:Compile_VOID(trace)
-	return { Trace = trace, Inline = "nil", Return = "void" }
+	return { Trace = trace, Inline = "nil", Return = "" }
 end
 
 function META:Compile_NUM(trace, value)
@@ -57,11 +57,15 @@ function META:Compile_SEQ(trace, seq)
 end
 
 function META:Compile_IF(trace, cond, seq)
-	return { Trace = trace, Prepared = table.concat({"if", self:Compile_IS(trace, cond).Inline, "then\n", seq.Prepared, "\nend"}, " "), Return = "" }
+	return { Trace = trace, Prepared = "if " .. self:Compile_IS(trace, cond).Inline .. " then\n" .. seq.Prepared .. "\nend", Return = "" }
+end
+
+function META:Compile_WHL(trace, cond, seq)
+	return { Trace = trace, Prepared = "while " .. self:Compile_IS(trace, cond).Inline .. " do\n" .. seq.Prepared .. "\ncoroutine.yield()\nend", Return = "" }
 end
 
 function META:Compile_CLSV(trace, cond, seq)
-	return { Trace = trace, Prepared = table.concat({"if", cond, "then\n", seq.Prepared, "\nend"}, " "), Return = "" }
+	return { Trace = trace, Prepared = "if " .. cond .. " then\n" .. seq.Prepared .. "\nend", Return = "" }
 end
 
 /*--------------------------------
@@ -70,6 +74,47 @@ end
 
 function META:Compile_ASS(trace, class, name, exp)
 	if exp.Return != class then self:Error(trace, "Can not assign " .. QC.NiceClass(exp.Return) .. " to " .. QC.NiceClass(class) .. ".") end
+	if self:GetScopeVariable(name) then self:Error(trace, "Variable '" .. name .. "' already exists.") end
 
-	return { Trace = trace, Prepared = "local var_" .. name .. " = " .. exp.Inline, Return = "" }
+	local id = self:AddScopeVariable(name, class)
+
+	return { Trace = trace, Prepared = "Vars[" .. id .. "] = " .. exp.Inline, Return = "" }
+end
+
+function META:Compile_DEFAULT(trace, class, name)
+	if !QC.ShortClasses[class].Default then self:Error(trace, QC.NiceClass(class) .. " doesn't have a default value.") end
+	if self:GetScopeVariable(name) then self:Error(trace, "Variable '" .. name .. "' already exists.") end
+
+	local id = self:AddScopeVariable(name, class)
+
+	return { Trace = trace, Prepared = "Vars[" .. id .. "] = " .. QC.ShortClasses[class].Default, Return = "" }
+end
+
+function META:Compile_EASS(trace, var, exp)
+	if exp.Return != var[1] then self:Error(trace, "Can not assign " .. QC.NiceClass(exp.Return) .. " to " .. QC.NiceClass(var[1]) .. ".") end
+
+	return { Trace = trace, Prepared = "Vars[" .. var[2] .. "] = " .. exp.Inline, Return = "" }
+end
+
+
+function META:Compile_VAR(trace, var)
+	return { Trace = trace, Inline = "Vars[" .. var[2] .. "]", Return = var[1] }
+end
+
+/*--------------------------------
+	Operators
+----------------------------------*/
+
+function META:Compile_ADD(trace, exp1, exp2)
+	local operator =  QC.Operators["+,"..exp1.Return..","..exp2.Return]
+
+	if !operator then self:Error(trace, "No " .. QC.NiceClass(exp2.Return) .. " addition operator for " .. QC.NiceClass(exp1.Return) .. ".") end
+
+	return { Trace = trace, Inline = QC.CompileOperator(operator, exp1.Inline, exp2.Inline), Return = exp1.Return }
+end
+
+function META:Compile_SUB(trace, exp1, exp2)
+	// TODO: Class operator functions
+
+	return { Trace = trace, Inline = exp1.Inline .. " - " .. exp2.Inline, Return = exp1.Return }
 end

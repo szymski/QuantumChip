@@ -16,3 +16,5 @@ Class_Number:AddAlias("int")
 Class_Boolean:SetDefault("true")
 Class_Number:SetDefault("0")
 Class_String:SetDefault("\"\"")
+
+QC.AddInlineOperator(nil, "+", "n,n", "n", "@1 + @2")

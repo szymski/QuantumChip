@@ -129,7 +129,6 @@ function META:Tokenize(input)
 				self:PushToken("s", QC.RawSymbols[self.PatternMatch][1])
 			else
 				self:PrevPattern()
-				self:NextChar()
 				if QC.RawSymbols[self.Char] then
 					self:PushToken("s", QC.RawSymbols[self.Char][1])
 				else

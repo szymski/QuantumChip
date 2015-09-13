@@ -13,6 +13,14 @@ function META:AddInlineFunction(name, params, ret, inline)
 
 end
 
+function META:AddInlineOperator(...)
+	QC.AddInlineOperator(self, ...)
+end
+
+function META:AddPreparedOperator(...)
+	QC.AddPreparedOperator(self, ...)
+end
+
 /*--------------------------------
 	Creation
 ----------------------------------*/

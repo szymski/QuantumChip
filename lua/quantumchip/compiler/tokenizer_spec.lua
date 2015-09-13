@@ -106,6 +106,8 @@ QC.RawKeywords = {
 	["return"] = { "ret", "return" },
 	["void"] = { "void", "void" },
 
+	["this"] = { "ths", "this" },
+
 	["true"] = { "tre", "true" },
 	["false"] = { "fls", "false" },
 

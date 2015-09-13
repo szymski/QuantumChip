@@ -28,7 +28,9 @@ function META:PopScope()
 end
 
 function META:AddScopeVariable(name, class)
-	self.Scope[name] = class
+	self.VariableId = self.VariableId + 1 
+	self.Scope[name] = { class, self.VariableId }
+	return self.VariableId
 end
 
 function META:GetScopeVariable(name)
@@ -52,6 +54,8 @@ function META:NextToken()
 	self.Token = self.Tokens[self.Index]
 
 	if !self.Token then
+		self:PrevToken()
+		self:Error(self:GetTokenTrace(), "Unexpected end of file. Further input required.")
 		return false
 	end
 end
@@ -114,6 +118,10 @@ function META:AcceptString()
 	return false
 end
 
+function META:CheckSymbol(...)
+	return  self.Tokens[self.Index+1] && self.Tokens[self.Index+1][1] == "s" && table.HasValue({...}, self.Tokens[self.Index+1][2])
+end
+
 /*--------------------------------
 	Errors
 ----------------------------------*/
@@ -155,6 +163,8 @@ function META:Sequence(trace, exitToken)
 		end
 
 		sequence[#sequence + 1] = self:Statement()
+
+		self:AcceptSymbol("sep")
 	end
 
 	return self:Compile_SEQ(trace, sequence)
@@ -215,8 +225,39 @@ function META:Statement_1()
 	return self:Statement_2()
 end
 
-// Client-server separation
+// While loop
 function META:Statement_2()
+	if self:AcceptKeyword("whl") then
+		return self:Compile_WHL(self:GetTokenTrace(), self:GetCondition(), self:Block(self:GetTokenTrace())) 
+	end	
+
+	return self:Statement_3()
+end
+
+// For loop
+function META:Statement_3()
+	if self:AcceptKeyword("for") then
+		// TODO
+		return self:Compile_WHL(self:GetTokenTrace(), self:GetCondition(), self:Block(self:GetTokenTrace())) 
+	end	
+
+	return self:Statement_4()
+end
+
+// Foreach loop
+function META:Statement_4()
+	
+	return self:Statement_5()
+end
+
+// Break / continue
+function META:Statement_5()
+	
+	return self:Statement_6()
+end
+
+// Client-server separation
+function META:Statement_6()
 	if self:AcceptKeyword("sv") then
 		if self.Side != nil then self:Error(self:GetTokenTrace(), "Multiple client/server side blocks not allowed.") end
 
@@ -235,11 +276,32 @@ function META:Statement_2()
 		return self:Compile_CLSV(self:GetTokenTrace(), "CLIENT", block) 
 	end
 
-	return self:Statement_3()
+	return self:Statement_7()
 end
 
-// Variable Assignments
-function META:Statement_3()
+// Existing variable assignments
+function META:Statement_7()
+	if self:AcceptIdent() then
+		local var = self:GetScopeVariable(self.Token[2])
+
+		if !var then
+			self:PrevToken()
+			return self:Statement_8()
+		end
+
+		if self:AcceptSymbol("ass") then
+			return self:Compile_EASS(self:GetTokenTrace(), var, self:Expression())
+		else
+			self:NextToken()
+			self:Error(self:GetTokenTrace(), "Wtf are you trying to do here?")
+		end
+	end
+
+	return self:Statement_8()
+end
+
+// New variable assignments
+function META:Statement_8()
 	local modifier = nil
 
 	if self:AcceptKeyword("nw") then modifier = "nw"
@@ -272,11 +334,26 @@ end
 ----------------------------------*/
 
 function META:Expression()
-	return self:Expression_1()
+	return self:Expression_10()
+end
+
+// Addition and subtraction
+function META:Expression_10()
+	local exp = self:Expression_15()
+
+	while self:CheckSymbol("add", "sub") do
+		if self:AcceptSymbol("add") then
+			exp = self:Compile_ADD(self:GetTokenTrace(), exp, self:Expression_15())
+		elseif self:AcceptToken("sub") then
+			exp = self:Compile_SUB(self:GetTokenTrace(), exp, self:Expression_15())
+		end
+	end
+
+	return exp
 end
 
 // Raw values
-function META:Expression_1()
+function META:Expression_15()
 	if self:AcceptKeyword("tre") then
 		return self:Compile_BOOL(self:GetTokenTrace(), true)
 	elseif self:AcceptKeyword("fls") then
@@ -285,6 +362,19 @@ function META:Expression_1()
 		return self:Compile_NUM(self:GetTokenTrace(), self.Token[2])
 	elseif self:AcceptString() then
 		return self:Compile_STR(self:GetTokenTrace(), self.Token[2])
+	end
+
+	return self:Expression_16()
+end
+
+// Variables
+function META:Expression_16()
+	if self:AcceptIdent() then
+		local var = self:GetScopeVariable(self.Token[2])
+
+		if !var then self:Error(self:GetTokenTrace(), "Variable '" .. self.Token[2] .. "' isn't accessible from here.") end
+
+		return self:Compile_VAR(self:GetTokenTrace(), var)
 	end
 
 	return self:Expression_END()
@@ -304,7 +394,9 @@ function META:Parse(tokens)
 	self.Index = 0
 
 	self.Scopes = { { } }
-	self.Scope = self.Scopes[0]
+	self.Scope = self.Scopes[1]
+
+	self.VariableId = 0
 
 	self.Side = nil // false - clientside, true - serverside
 
