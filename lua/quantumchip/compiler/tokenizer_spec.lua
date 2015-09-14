@@ -19,7 +19,7 @@ QC.RawSymbols = {
 		["*"] = { "mul", "multiplier" },
 		["/"] = { "div", "division" },
 		["%"] = { "mod", "modulus" },
-		["^"] = { "exp", "power" },
+		["^"] = { "pow", "power" },
 		["="] = { "ass", "assign" },
 		["+="] = { "aadd", "increase" },
 		["-="] = { "asub", "decrease" },

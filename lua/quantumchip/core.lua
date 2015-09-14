@@ -60,19 +60,6 @@ function QC.AddPreparedOperator(component, operator, input, ret, prep, inline)
 	}
 end
 
-function QC.CompileOperator(operator, ...)
-	local inputs = {...}
-
-	local compiled = operator.Inline
-
-	for i = 1, #inputs do
-		compiled = string.Replace(compiled, "@" .. i, inputs[i])
-	end
-
-	return compiled
-end
-
-
 
 
 QC.Init()
@@ -96,12 +83,12 @@ print()
 local code = compiler:Compile([[
 
    	server {
-   		int dupa = 10;
+   		
+   		int test;
 
-   		int second = dupa;
+   		test = 1*2+5*7/25%4*123+512*12%64-53+46*6;
 
-   		bool gay = true;
-
+   		
    		
     }
 

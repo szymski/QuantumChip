@@ -150,6 +150,14 @@ function META:RequireIdent(msg, trace)
 end
 
 /*--------------------------------
+	Statement preparation
+----------------------------------*/
+
+function META:PushPreparation(code)
+	self.CurPrepare[#self.CurPrepare+1] = code
+end
+
+/*--------------------------------
 	Sequences & blocks
 ----------------------------------*/
 
@@ -159,10 +167,22 @@ function META:Sequence(trace, exitToken)
 	while self.Tokens[self.Index+1] do
 		if exitToken && self:AcceptSymbol(exitToken) then
 			self:PrevToken()
-			return self:Compile_SEQ(trace, sequence)
+			break
 		end
 
-		sequence[#sequence + 1] = self:Statement()
+		self.StatementPrepare[#self.StatementPrepare+1] = {  }
+		self.CurPrepare = self.StatementPrepare[#self.StatementPrepare]
+
+		local statement = self:Statement()
+
+		for k, v in pairs(self.CurPrepare) do
+			sequence[#sequence + 1] = { Prepared = v }
+		end
+
+		self.StatementPrepare[#self.StatementPrepare] = nil
+		self.CurPrepare = self.StatementPrepare[#self.StatementPrepare]
+
+		sequence[#sequence + 1] = statement
 
 		self:AcceptSymbol("sep")
 	end
@@ -182,7 +202,7 @@ function META:Block(trace)
 	end
 
 	self:PushScope()
-	local statement = self:Statement()
+	local statement = self:Statement() // TODO: Preparation inside block
 	self:PopScope()
 
 	return statement
@@ -339,13 +359,32 @@ end
 
 // Addition and subtraction
 function META:Expression_10()
-	local exp = self:Expression_15()
+	local exp = self:Expression_11()
 
 	while self:CheckSymbol("add", "sub") do
 		if self:AcceptSymbol("add") then
-			exp = self:Compile_ADD(self:GetTokenTrace(), exp, self:Expression_15())
-		elseif self:AcceptToken("sub") then
-			exp = self:Compile_SUB(self:GetTokenTrace(), exp, self:Expression_15())
+			exp = self:Compile_ADD(self:GetTokenTrace(), exp, self:Expression_11())
+		elseif self:AcceptSymbol("sub") then
+			exp = self:Compile_SUB(self:GetTokenTrace(), exp, self:Expression_11())
+		end
+	end
+
+	return exp
+end
+
+// Multiplication, division, modulo, power
+function META:Expression_11()
+	local exp = self:Expression_15()
+
+	while self:CheckSymbol("mul", "div", "mod", "pow") do
+		if self:AcceptSymbol("mul") then
+			exp = self:Compile_MUL(self:GetTokenTrace(), exp, self:Expression_15())
+		elseif self:AcceptSymbol("div") then
+			exp = self:Compile_DIV(self:GetTokenTrace(), exp, self:Expression_15())
+		elseif self:AcceptSymbol("mod") then
+			exp = self:Compile_MOD(self:GetTokenTrace(), exp, self:Expression_15())
+		elseif self:AcceptSymbol("pow") then
+			exp = self:Compile_POW(self:GetTokenTrace(), exp, self:Expression_15())
 		end
 	end
 
@@ -392,6 +431,8 @@ end
 function META:Parse(tokens)
 	self.Tokens = tokens
 	self.Index = 0
+
+	self.StatementPrepare = { }
 
 	self.Scopes = { { } }
 	self.Scope = self.Scopes[1]

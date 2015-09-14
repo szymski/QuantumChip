@@ -11,6 +11,8 @@ local META = QC.PARSER
 		Return
 */
 
+local stringReplace = string.Replace
+
 /*--------------------------------
 	Primitive types
 ----------------------------------*/
@@ -29,17 +31,6 @@ end
 
 function META:Compile_STR(trace, value)
 	return { Trace = trace, Inline = value, Return = "s" }
-end
-
-/*--------------------------------
-	Operators
-----------------------------------*/
-
-function META:Compile_IS(trace, exp)
-	if exp.Return == "b" then return exp end
-	if exp.Return == "n" then return { Trace = trace, Inline = exp.Inline .. " > 0", Return = "b" } end
-
-	self:Error(trace, exp.Return .. " can not be used as condition.")
 end
 
 /*--------------------------------
@@ -105,16 +96,93 @@ end
 	Operators
 ----------------------------------*/
 
+function META:Compile_IS(trace, exp)
+	//if exp.Return == "b" then return exp end
+	//if exp.Return == "n" then return { Trace = trace, Inline = exp.Inline .. " > 0", Return = "b" } end
+
+	local operator =  QC.Operators["is,"..exp.Return]
+	if !operator then self:Error(trace, "No condition operator for " .. QC.NiceClass(exp.Return) .. ".") end
+
+	local compiled = self:CompileOperator(operator, exp.Inline)
+	if compiled.Return == "b" then return compiled end
+
+	self:Error(trace, "Condition operator of " .. QC.NiceClass(exp.Return) .. " doesn't return boolean. This shouldn't happen.")
+end
+
+/*--------------------------------
+	Arithmetic operators
+----------------------------------*/
+
 function META:Compile_ADD(trace, exp1, exp2)
 	local operator =  QC.Operators["+,"..exp1.Return..","..exp2.Return]
 
 	if !operator then self:Error(trace, "No " .. QC.NiceClass(exp2.Return) .. " addition operator for " .. QC.NiceClass(exp1.Return) .. ".") end
 
-	return { Trace = trace, Inline = QC.CompileOperator(operator, exp1.Inline, exp2.Inline), Return = exp1.Return }
+	return self:CompileOperator(operator, exp1.Inline, exp2.Inline)
 end
 
 function META:Compile_SUB(trace, exp1, exp2)
-	// TODO: Class operator functions
+	local operator =  QC.Operators["-,"..exp1.Return..","..exp2.Return]
 
-	return { Trace = trace, Inline = exp1.Inline .. " - " .. exp2.Inline, Return = exp1.Return }
+	if !operator then self:Error(trace, "No " .. QC.NiceClass(exp2.Return) .. " subtraction operator for " .. QC.NiceClass(exp1.Return) .. ".") end
+
+	return self:CompileOperator(operator, exp1.Inline, exp2.Inline)
+end
+
+function META:Compile_MUL(trace, exp1, exp2)
+	local operator =  QC.Operators["*,"..exp1.Return..","..exp2.Return]
+
+	if !operator then self:Error(trace, "No " .. QC.NiceClass(exp2.Return) .. " multiplication operator for " .. QC.NiceClass(exp1.Return) .. ".") end
+
+	return self:CompileOperator(operator, exp1.Inline, exp2.Inline)
+end
+
+function META:Compile_DIV(trace, exp1, exp2)
+	local operator =  QC.Operators["/,"..exp1.Return..","..exp2.Return]
+
+	if !operator then self:Error(trace, "No " .. QC.NiceClass(exp2.Return) .. " division operator for " .. QC.NiceClass(exp1.Return) .. ".") end
+
+	return self:CompileOperator(operator, exp1.Inline, exp2.Inline)
+end
+
+function META:Compile_MOD(trace, exp1, exp2)
+	local operator =  QC.Operators["%,"..exp1.Return..","..exp2.Return]
+
+	if !operator then self:Error(trace, "No " .. QC.NiceClass(exp2.Return) .. " modulo operator for " .. QC.NiceClass(exp1.Return) .. ".") end
+
+	return self:CompileOperator(operator, exp1.Inline, exp2.Inline)
+end
+
+function META:Compile_POW(trace, exp1, exp2)
+	local operator =  QC.Operators["^,"..exp1.Return..","..exp2.Return]
+
+	if !operator then self:Error(trace, "No " .. QC.NiceClass(exp2.Return) .. " power operator for " .. QC.NiceClass(exp1.Return) .. ".") end
+
+	return self:CompileOperator(operator, exp1.Inline, exp2.Inline)
+end
+
+/*--------------------------------
+	Operator compilation
+----------------------------------*/
+
+function META:CompileOperator(operator, ...)
+	local inputs = {...}
+
+	if operator.Prepared then
+		local prep = operator.Prepared
+
+		for i = 1, #inputs do
+			prep = stringReplace(prep, "@" .. i, inputs[i])
+		end
+
+		self:PushPreparation(prep)
+	end
+
+	local compiled = operator.Inline
+
+	for i = 1, #inputs do
+		compiled = stringReplace(compiled, "@" .. i, inputs[i])
+	end
+
+	return { Inline = compiled, Return = operator.Return }
 end

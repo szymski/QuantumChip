@@ -17,4 +17,12 @@ Class_Boolean:SetDefault("true")
 Class_Number:SetDefault("0")
 Class_String:SetDefault("\"\"")
 
+QC.AddInlineOperator(nil, "is", "b", "b", "@1")
+QC.AddInlineOperator(nil, "is", "n", "b", "@1 >= 1")
+
 QC.AddInlineOperator(nil, "+", "n,n", "n", "@1 + @2")
+QC.AddInlineOperator(nil, "-", "n,n", "n", "@1 - @2")
+QC.AddInlineOperator(nil, "*", "n,n", "n", "@1 * @2")
+QC.AddInlineOperator(nil, "/", "n,n", "n", "@1 / @2")
+QC.AddInlineOperator(nil, "%", "n,n", "n", "@1 % @2")
+QC.AddInlineOperator(nil, "^", "n,n", "n", "@1 ^ @2")
