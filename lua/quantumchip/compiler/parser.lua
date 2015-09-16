@@ -333,6 +333,8 @@ function META:Statement_8()
 		self:RequireIdent("Variable name expected.")
 		local name = self.Token[2]
 
+		if QC.Classes[name] then self:Error(self:GetTokenTrace(), "Variables can not be named as classes.") end
+
 		if self:AcceptSymbol("ass") then
 			return self:Compile_ASS(self:GetTokenTrace(), class, name, self:Expression())
 		end
@@ -374,21 +376,36 @@ end
 
 // Multiplication, division, modulo, power
 function META:Expression_11()
-	local exp = self:Expression_15()
+	local exp = self:Expression_14()
 
 	while self:CheckSymbol("mul", "div", "mod", "pow") do
 		if self:AcceptSymbol("mul") then
-			exp = self:Compile_MUL(self:GetTokenTrace(), exp, self:Expression_15())
+			exp = self:Compile_MUL(self:GetTokenTrace(), exp, self:Expression_14())
 		elseif self:AcceptSymbol("div") then
-			exp = self:Compile_DIV(self:GetTokenTrace(), exp, self:Expression_15())
+			exp = self:Compile_DIV(self:GetTokenTrace(), exp, self:Expression_14())
 		elseif self:AcceptSymbol("mod") then
-			exp = self:Compile_MOD(self:GetTokenTrace(), exp, self:Expression_15())
+			exp = self:Compile_MOD(self:GetTokenTrace(), exp, self:Expression_14())
 		elseif self:AcceptSymbol("pow") then
-			exp = self:Compile_POW(self:GetTokenTrace(), exp, self:Expression_15())
+			exp = self:Compile_POW(self:GetTokenTrace(), exp, self:Expression_14())
 		end
 	end
 
 	return exp
+end
+
+// Grouped equation
+function META:Expression_14()
+	if self:AcceptSymbol("lpa") then
+		local exp = self:Expression()
+
+		self:RequireSymbol("rpa", "Right parenthesis ')' missing, to close grouped equation.")
+
+		exp.Inline = "(" .. exp.Inline .. ")"
+
+		return exp
+	end
+
+	return self:Expression_15()
 end
 
 // Raw values
@@ -411,12 +428,39 @@ function META:Expression_16()
 	if self:AcceptIdent() then
 		local var = self:GetScopeVariable(self.Token[2])
 
+		if self:CheckSymbol("lpa") then return self:Expression_17(self.Token[2]) end
+
 		if !var then self:Error(self:GetTokenTrace(), "Variable '" .. self.Token[2] .. "' isn't accessible from here.") end
 
-		return self:Compile_VAR(self:GetTokenTrace(), var)
+		local compiled = self:Compile_VAR(self:GetTokenTrace(), var)
+
+		if self:AcceptSymbol("inc") then
+			compiled = self:Compile_INC(self:GetTokenTrace(), compiled)
+		elseif self:AcceptSymbol("dec") then
+			compiled = self:Compile_DEC(self:GetTokenTrace(), compiled)
+		end
+
+		return compiled
 	end
 
 	return self:Expression_END()
+end
+
+// Functions
+function META:Expression_17(name)
+	self:RequireSymbol("lpa", "Left parenthesis '(' missing.")
+
+	local params = { }
+
+	if !self:CheckSymbol("rpa") then
+		repeat
+			params[#params+1] = self:Expression()
+		until !self:AcceptSymbol("com")
+	end
+
+	self:RequireSymbol("rpa", "Right parenthesis ')' missing.")
+
+	return self:Compile_FUNC(self:GetTokenTrace(), name, params)
 end
 
 // Invalid expression
@@ -439,7 +483,7 @@ function META:Parse(tokens)
 
 	self.VariableId = 0
 
-	self.Side = nil // false - clientside, true - serverside
+	self.Side = nil // false - clientside, true - serverside, nil - shared
 
 	self.StartTime = SysTime()
 

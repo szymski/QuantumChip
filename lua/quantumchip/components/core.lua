@@ -3,7 +3,7 @@
 ----------------------------------*/
 
 local Component = QC.CreateComponent("core")
-Component.Description = "Core component. Includes all primitive types."
+Component.Description = "Core component. Includes all primitive types and basic functions."
 Component.Author = "Szymekk"
 
 local Class_Boolean = QC.CreateClass(Component, "boolean", "b")
@@ -26,3 +26,11 @@ QC.AddInlineOperator(nil, "*", "n,n", "n", "@1 * @2")
 QC.AddInlineOperator(nil, "/", "n,n", "n", "@1 / @2")
 QC.AddInlineOperator(nil, "%", "n,n", "n", "@1 % @2")
 QC.AddInlineOperator(nil, "^", "n,n", "n", "@1 ^ @2")
+
+QC.AddPreparedOperator(nil, "++", "n", "n", "@1 = @1 + 1", "@1")
+QC.AddPreparedOperator(nil, "--", "n", "n", "@1 = @1 - 1", "@1")
+
+
+QC.AddInlineFunction(nil, "testFunc", "", "n", "1234")
+QC.AddInlineFunction(nil, "testFunc", "n,n", "n", "@1 + @2")
+QC.AddPreparedFunction(nil, "anotherFunc", "", "n", "local num = 5+5", "num")

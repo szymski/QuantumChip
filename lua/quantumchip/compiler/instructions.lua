@@ -97,9 +97,6 @@ end
 ----------------------------------*/
 
 function META:Compile_IS(trace, exp)
-	//if exp.Return == "b" then return exp end
-	//if exp.Return == "n" then return { Trace = trace, Inline = exp.Inline .. " > 0", Return = "b" } end
-
 	local operator =  QC.Operators["is,"..exp.Return]
 	if !operator then self:Error(trace, "No condition operator for " .. QC.NiceClass(exp.Return) .. ".") end
 
@@ -161,8 +158,42 @@ function META:Compile_POW(trace, exp1, exp2)
 	return self:CompileOperator(operator, exp1.Inline, exp2.Inline)
 end
 
+function META:Compile_INC(trace, var)
+	local operator =  QC.Operators["++,"..var.Return]
+
+	if !operator then self:Error(trace, "No incrementation operator for " .. QC.NiceClass(var.Return) .. ".") end
+
+	return self:CompileOperator(operator, var.Inline)
+end
+
+function META:Compile_DEC(trace, var)
+	local operator =  QC.Operators["--,"..var.Return]
+
+	if !operator then self:Error(trace, "No decrementation operator for " .. QC.NiceClass(var.Return) .. ".") end
+
+	return self:CompileOperator(operator, var.Inline)
+end
+
 /*--------------------------------
-	Operator compilation
+	Functions and methods
+----------------------------------*/
+
+function META:Compile_FUNC(trace, name, params)
+	local paramStr = ""
+
+	for k, v in pairs(params) do
+		paramStr = paramStr .. v.Return .. (k == #params and "" or ",")
+	end
+
+	local func = QC.Functions[name][paramStr]
+
+	if !func then self:Error(trace, "No such function '" .. name .. "(" .. paramStr .. ")" .. "'.") end
+
+	return self:CompileFunction(func, params)
+end
+
+/*--------------------------------
+	Operator/function compilation
 ----------------------------------*/
 
 function META:CompileOperator(operator, ...)
@@ -185,4 +216,24 @@ function META:CompileOperator(operator, ...)
 	end
 
 	return { Inline = compiled, Return = operator.Return }
+end
+
+function META:CompileFunction(func, params)
+	if func.Prepared then
+		local prep = func.Prepared
+
+		for i = 1, #params do
+			prep = stringReplace(prep, "@" .. i, params[i].Inline)
+		end
+
+		self:PushPreparation(prep)
+	end
+
+	local compiled = func.Inline
+
+	for i = 1, #params do
+		compiled = stringReplace(compiled, "@" .. i, params[i].Inline)
+	end
+
+	return { Inline = compiled, Return = func.Return }
 end

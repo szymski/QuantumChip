@@ -60,6 +60,37 @@ function QC.AddPreparedOperator(component, operator, input, ret, prep, inline)
 	}
 end
 
+/*--------------------------------
+	Functions
+
+	Function table [name][params]
+----------------------------------*/
+
+function QC.AddInlineFunction(component, name, input, ret, inline)
+	QC.Functions[name] = QC.Functions[name] or { }
+
+	QC.Functions[name][input] = {
+		Component = component,
+		Operator = operator,
+		Input = input,
+		Return = ret,
+		Inline = inline
+	}
+end
+
+function QC.AddPreparedFunction(component, name, input, ret, prep, inline)
+	QC.Functions[name] = QC.Functions[name] or { }
+
+	QC.Functions[name][input] = {
+		Component = component,
+		Operator = operator,
+		Input = input,
+		Return = ret,
+		Prepared = prep,
+		Inline = inline
+	}
+end
+
 
 
 QC.Init()
@@ -84,12 +115,8 @@ local code = compiler:Compile([[
 
    	server {
    		
-   		int test;
+   		int lol = testFunc(testFunc(), testFunc());
 
-   		test = 1*2+5*7/25%4*123+512*12%64-53+46*6;
-
-   		
-   		
     }
 
 
