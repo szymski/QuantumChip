@@ -127,7 +127,9 @@ end
 ----------------------------------*/
 
 function META:Error(trace, msg)
-	print("ERROR!    -    Line: " .. trace[1] .. ", Char: " .. trace[2] .. " - " .. msg)
+	QC.ErrorLine = trace[1]
+	QC.ErrorChar = trace[2]
+	QC.ErrorMsg = msg
 	coroutine.yield()
 end
 
@@ -276,8 +278,23 @@ function META:Statement_5()
 	return self:Statement_6()
 end
 
-// Client-server separation
+// Events
 function META:Statement_6()
+	if self:AcceptKeyword("ev") then
+		if !self:AcceptIdent() then self:Error(self:GetTokenTrace(), "Event name expected.") end
+
+		local name = self.Token[2]
+
+		// TODO: Params
+
+		return self:Compile_EVENT(self:GetTokenTrace(), name, self:Block(self:GetTokenTrace())) 
+	end
+
+	return self:Statement_7()
+end
+
+// Client-server separation
+function META:Statement_7()
 	if self:AcceptKeyword("sv") then
 		if self.Side != nil then self:Error(self:GetTokenTrace(), "Multiple client/server side blocks not allowed.") end
 
@@ -296,32 +313,32 @@ function META:Statement_6()
 		return self:Compile_CLSV(self:GetTokenTrace(), "CLIENT", block) 
 	end
 
-	return self:Statement_7()
+	return self:Statement_8()
 end
 
 // Existing variable assignments
-function META:Statement_7()
+function META:Statement_8()
 	if self:AcceptIdent() then
 		local var = self:GetScopeVariable(self.Token[2])
 
 		if !var then
 			self:PrevToken()
-			return self:Statement_8()
+			return self:Statement_9()
 		end
 
 		if self:AcceptSymbol("ass") then
 			return self:Compile_EASS(self:GetTokenTrace(), var, self:Expression())
 		else
 			self:NextToken()
-			self:Error(self:GetTokenTrace(), "Wtf are you trying to do here?")
+			self:Error(self:GetTokenTrace(), "Unexpected variable")
 		end
 	end
 
-	return self:Statement_8()
+	return self:Statement_9()
 end
 
 // New variable assignments
-function META:Statement_8()
+function META:Statement_9()
 	local modifier = nil
 
 	if self:AcceptKeyword("nw") then modifier = "nw"
@@ -434,6 +451,8 @@ function META:Expression_16()
 
 		local compiled = self:Compile_VAR(self:GetTokenTrace(), var)
 
+		if self:AcceptSymbol("prd") then return self:Expression_18(compiled) end
+
 		if self:AcceptSymbol("inc") then
 			compiled = self:Compile_INC(self:GetTokenTrace(), compiled)
 		elseif self:AcceptSymbol("dec") then
@@ -460,7 +479,32 @@ function META:Expression_17(name)
 
 	self:RequireSymbol("rpa", "Right parenthesis ')' missing.")
 
+	if self:AcceptSymbol("prd") then return self:Expression_18(self:Compile_FUNC(self:GetTokenTrace(), name, params)) end
+
 	return self:Compile_FUNC(self:GetTokenTrace(), name, params)
+end
+
+// Methods
+function META:Expression_18(exp)
+	if !self:AcceptIdent() then self:Error(self:GetTokenTrace(), "Method name expected.") end
+
+	local method = self.Token[2]
+
+	self:RequireSymbol("lpa", "Left parenthesis '(' missing.")
+
+	local params = { }
+
+	if !self:CheckSymbol("rpa") then
+		repeat
+			params[#params+1] = self:Expression()
+		until !self:AcceptSymbol("com")
+	end
+
+	self:RequireSymbol("rpa", "Right parenthesis ')' missing.")
+
+	if self:AcceptSymbol("prd") then return self:Expression_18(self:Compile_METHOD(self:GetTokenTrace(), exp, method, params)) end
+
+	return self:Compile_METHOD(self:GetTokenTrace(), exp, method, params)
 end
 
 // Invalid expression
@@ -475,6 +519,10 @@ end
 function META:Parse(tokens)
 	self.Tokens = tokens
 	self.Index = 0
+
+	QC.ErrorLine = nil
+	QC.ErrorChar = nil
+	QC.ErrorMsg = nil
 
 	self.StatementPrepare = { }
 

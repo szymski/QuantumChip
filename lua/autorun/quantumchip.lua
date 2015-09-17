@@ -13,13 +13,12 @@ if SERVER then
 	AddCSLuaFile("quantumchip/compiler/compiler.lua")
 	AddCSLuaFile("quantumchip/compiler/tokenizer.lua")
 	AddCSLuaFile("quantumchip/compiler/tokenizer_spec.lua")
+	AddCSLuaFile("quantumchip/context.lua")
 	AddCSLuaFile("quantumchip/component_meta.lua")
 	AddCSLuaFile("quantumchip/class_meta.lua")
 	AddCSLuaFile("quantumchip/components/core.lua")
 
 	CreateConVar("qc_ver", 1, FCVAR_NOTIFY)
-
-	return
 end
 
 include("quantumchip/core.lua")

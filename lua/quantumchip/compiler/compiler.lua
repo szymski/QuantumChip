@@ -57,7 +57,7 @@ function META:Compile(code)
 
 	if !success then print("Compiler error: " .. err) end
 
-	if !QC.Compiled then return "THERE WAS AN ERROR" end
+	if !QC.Compiled then return nil, QC.ErrorLine, QC.ErrorChar, QC.ErrorMsg end
 
 	local compiled = QC.Compiled
 
@@ -70,9 +70,9 @@ function META:Compile(code)
 return function(context)
 
 	// Preparation
-	local Vars = { }
-	local Funcs = { }
-
+	local Vars = context.Vars
+	local Funcs = context.Funcs
+	local Events = context.Events
 
 	// Main
 	]], compiled, [[

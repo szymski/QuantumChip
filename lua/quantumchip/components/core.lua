@@ -31,6 +31,13 @@ QC.AddPreparedOperator(nil, "++", "n", "n", "@1 = @1 + 1", "@1")
 QC.AddPreparedOperator(nil, "--", "n", "n", "@1 = @1 - 1", "@1")
 
 
+QC.AddInlineFunction(nil, "boolFunc", "", "b", "true")
+
+QC.AddInlineFunction(nil, "pow", "n:n", "n", "math.pow(@1, @2)")
+
+QC.AddInlineFunction(nil, "print", "n", "n", "print('@1')")
+
 QC.AddInlineFunction(nil, "testFunc", "", "n", "1234")
 QC.AddInlineFunction(nil, "testFunc", "n,n", "n", "@1 + @2")
 QC.AddPreparedFunction(nil, "anotherFunc", "", "n", "local num = 5+5", "num")
+

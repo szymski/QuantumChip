@@ -4,6 +4,7 @@
 
 QC = { }
 
+include("context.lua")
 include("component_meta.lua")
 include("class_meta.lua")
 include("compiler/compiler.lua")
@@ -111,16 +112,18 @@ print()
 print()
 print()
 
-local code = compiler:Compile([[
+local code, line, char, err = compiler:Compile([[
 
-   	server {
-   		
-   		int lol = testFunc(testFunc(), testFunc());
-
-    }
+   	server event dupa {
+   		int asd = 5;
+   	}
 
 
     ]])
+
+if !code then
+	print("ERROR!    -    Line: " .. line .. ", Char: " .. char .. " - " .. err)
+end
 
 print()
 print("FINAL CODE")

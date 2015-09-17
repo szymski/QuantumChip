@@ -59,6 +59,10 @@ function META:Compile_CLSV(trace, cond, seq)
 	return { Trace = trace, Prepared = "if " .. cond .. " then\n" .. seq.Prepared .. "\nend", Return = "" }
 end
 
+function META:Compile_EVENT(trace, name, seq)
+	return { Trace = trace, Prepared = "Events[\""..name.."\"] = function()\n" .. seq.Prepared .. "\nend", Return = "" }
+end
+
 /*--------------------------------
 	Variables
 ----------------------------------*/
@@ -185,9 +189,25 @@ function META:Compile_FUNC(trace, name, params)
 		paramStr = paramStr .. v.Return .. (k == #params and "" or ",")
 	end
 
-	local func = QC.Functions[name][paramStr]
+	local func = (QC.Functions[name] and QC.Functions[name][paramStr] or nil)
 
 	if !func then self:Error(trace, "No such function '" .. name .. "(" .. paramStr .. ")" .. "'.") end
+
+	return self:CompileFunction(func, params)
+end
+
+function META:Compile_METHOD(trace, exp, name, params)
+	local paramStr = ""
+
+	for k, v in pairs(params) do
+		paramStr = paramStr .. v.Return .. (k == #params and "" or ",")
+	end
+
+	local func = (QC.Functions[name] and QC.Functions[name][exp.Return .. ":" .. paramStr] or nil)
+
+	if !func then self:Error(trace, "No such method '" .. exp.Return .. ":" .. name .. "(" .. paramStr .. ")" .. "'.") end
+
+	table.insert(params, 1, exp)
 
 	return self:CompileFunction(func, params)
 end

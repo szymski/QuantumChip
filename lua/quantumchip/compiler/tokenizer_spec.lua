@@ -86,6 +86,8 @@ QC.RawKeywords = {
 	["server"] = { "sv", "serverside" },
 	["client"] = { "cl", "clientside" },
 
+	["event"] = { "ev", "event" },
+
 	["if"] = { "if", "if statement" },
 	["elseif"] = { "eif", "elseif statement" },
 	["else"] = { "els", "else statement" },
