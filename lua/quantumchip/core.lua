@@ -114,12 +114,16 @@ print()
 
 local code, line, char, err = compiler:Compile([[
 
-   	server event dupa {
-   		int asd = 5;
+   	server {
+   		string dupa = @"
+
+   			this is a multiline string
+asd
+   		
    	}
 
 
-    ]])
+]])
 
 if !code then
 	print("ERROR!    -    Line: " .. line .. ", Char: " .. char .. " - " .. err)

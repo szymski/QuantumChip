@@ -27,6 +27,9 @@ QC.AddInlineOperator(nil, "/", "n,n", "n", "@1 / @2")
 QC.AddInlineOperator(nil, "%", "n,n", "n", "@1 % @2")
 QC.AddInlineOperator(nil, "^", "n,n", "n", "@1 ^ @2")
 
+QC.AddInlineOperator(nil, "+", "s,s", "s", "@1 .. @2")
+
+
 QC.AddPreparedOperator(nil, "++", "n", "n", "@1 = @1 + 1", "@1")
 QC.AddPreparedOperator(nil, "--", "n", "n", "@1 = @1 - 1", "@1")
 

@@ -30,7 +30,7 @@ function META:Compile_NUM(trace, value)
 end
 
 function META:Compile_STR(trace, value)
-	return { Trace = trace, Inline = value, Return = "s" }
+	return { Trace = trace, Inline = "\"" .. value .. "\"", Return = "s" }
 end
 
 /*--------------------------------
@@ -52,7 +52,7 @@ function META:Compile_IF(trace, cond, seq)
 end
 
 function META:Compile_WHL(trace, cond, seq)
-	return { Trace = trace, Prepared = "while " .. self:Compile_IS(trace, cond).Inline .. " do\n" .. seq.Prepared .. "\ncoroutine.yield()\nend", Return = "" }
+	return { Trace = trace, Prepared = "while " .. self:Compile_IS(trace, cond).Inline .. " do\n" .. seq.Prepared .. "\nend", Return = "" }
 end
 
 function META:Compile_CLSV(trace, cond, seq)

@@ -35,7 +35,7 @@ end
 function META:NextChar()
 	self.Pos = self.Pos + 1
 	self.Char = self.Input[self.Line][self.Pos]
-	return self.Input[self.Line][self.Pos] != nil
+	return self.Char != ""
 end
 
 function META:PrevChar()
@@ -91,6 +91,7 @@ end
 
 // Tokenizer error, returns msg, line, character
 function META:Error(msg)
+	QC.ErrorLine, QC.ErrorChar, QC.ErrorMsg = self.Line, self.Pos, msg
 	return "Line: " .. self.Line .. " Char: " .. self.Pos .. " - " .. msg, self.Line, self.Pos
 end
 
@@ -123,7 +124,77 @@ function META:Tokenize(input)
 		elseif self:AcceptPattern("%d+%.%d+") || self:AcceptPattern("%d+") then 							// Number
 			self:PushToken("n", tonumber(self.PatternMatch))
 		elseif self:AcceptPattern("\"") then 																// Strings
-			self:NextChar()
+			self.InSingleLineString = true
+			local str = {}
+
+			while self:NextChar() do
+				if self.Char == "\"" then
+					self.InSingleLineString = false
+					self:PushToken("S", table.concat(str))
+					break
+				elseif self.Char == "\\" then
+					self:NextChar()
+					if self.Char == "\\" then
+						str[#str+1] = "\\\\"
+					elseif self.Char == "n" then
+						str[#str+1] = "\\n"
+					elseif self.Char == "t" then
+						str[#str+1] = "\\t"
+					elseif self.Char == "\"" then
+						str[#str+1] = "\\\""
+					else
+						return self:Error("Invalid escape sequence '\\" .. self.Char .. "'.")
+					end
+				else
+					str[#str+1] = self.Char
+				end
+			end
+
+			if self.InSingleLineString then
+				return self:Error("Unfinished string.")
+			end
+		elseif self:AcceptPattern("@\"") then 															// Multiline Strings
+			self.InMultiLineString = true
+			local str = {}
+
+			while true do
+				if !self:NextChar() then
+					self:CheckNextLine()
+
+					str[#str+1] = "\\n"
+
+					if !self.Input[self.Line] then
+						return self:Error("Unfinished string.")
+					end
+
+					self:NextChar()
+				end
+
+				if self.Char == "\"" then
+					self.InMultiLineString = false
+					self:PushToken("S", table.concat(str))
+					break
+				elseif self.Char == "\\" then
+					self:NextChar()
+					if self.Char == "\\" then
+						str[#str+1] = "\\\\"
+					elseif self.Char == "n" then
+						str[#str+1] = "\\n"
+					elseif self.Char == "t" then
+						str[#str+1] = "\\t"
+					elseif self.Char == "\"" then
+						str[#str+1] = "\\\""
+					else
+						return self:Error("Invalid escape sequence '\\" .. self.Char .. "'.")
+					end
+				else
+					str[#str+1] = self.Char
+				end
+			end
+
+			if self.InMultiLineString then
+				return self:Error("Unfinished string.")
+			end
 		elseif self:AcceptPattern("[^%w^%s][^%w^%s]?") then 												// Symbol
 			if QC.RawSymbols[self.PatternMatch] then
 				self:PushToken("s", QC.RawSymbols[self.PatternMatch][1])

@@ -73,7 +73,6 @@ QC.RawSymbols = {
 
 	// MISC:
 
-		["@"] = { "dir", "directive operator" },
 		["..."] = { "varg", "varargs" },
 }
 

@@ -39,6 +39,10 @@ function META:Compile(code)
 
 	print("Tokenization time: " .. (SysTime()-time))
 
+	if isstring(tokens) then
+		return nil, QC.ErrorLine, QC.ErrorChar, QC.ErrorMsg
+	end
+
 	for k, v in pairs(tokens) do
 		print(v[1] .. "    -    " .. v[2])
 	end
