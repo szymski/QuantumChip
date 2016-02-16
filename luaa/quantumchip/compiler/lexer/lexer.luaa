@@ -3,7 +3,9 @@
     The constructor and other functions are in lexer_utils.luaa file.
 -------------------------------------*/
 
-include("lexer_utils.luaa");
+QC_Lexer = null; // Required for partial classes
+
+include("lexer_utils.lua");
 
 partial class QC_Lexer {
     
@@ -11,7 +13,17 @@ partial class QC_Lexer {
         Analyses the code
     */
     function Pass() {
-        
+        while(this:NextChar()) {
+            
+            this:SkipWhitespace();
+            
+            if(this:AcceptPattern("%a+")) {
+                print(this.PatternMatch);
+            }
+            else
+                print("Dupa: " .. this.CurrentChar);
+                
+        } 
     }
     
 }

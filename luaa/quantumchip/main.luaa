@@ -8,16 +8,39 @@
 
 if(SERVER) {
 	AddCSLuaFile();
-	AddCSLuaFile("compiler/language_specification.luaa");
-	AddCSLuaFile("compiler/lexer/lexer.luaa");
-	AddCSLuaFile("compiler/lexer/lexer_utils.luaa");
+	AddCSLuaFile("compiler/language_specification.lua");
+	AddCSLuaFile("compiler/lexer/lexer.lua");
+	AddCSLuaFile("compiler/lexer/lexer_utils.lua");
 }
 
 /*-----------------------------------
     Initialization
 -------------------------------------*/
 
-QC = { };
+QC = { }; 
 
-include("compiler/language_specification.luaa");
-include("compiler/lexer/lexer.luaa");
+include("compiler/language_specification.lua"); 
+include("compiler/lexer/lexer.lua");
+ 
+      
+  
+      
+  
+  
+#if DEBUG 
+
+print("Creating lexer object");
+
+var lexer = QC_Lexer(@"Su perDuper 
+
+ 
+
+                
+
+
+
+    Test
+    Extra
+Lol, derp");
+
+#endif

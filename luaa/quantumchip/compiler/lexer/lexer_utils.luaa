@@ -18,23 +18,23 @@ partial class QC_Lexer {
     
     // Stack containing all pattern matches
     // MODIFIED ONLY WHILE USING AcceptPattern FUNCTION!
-    // Entry structure: { Line, Character, CurrentChar, CurrentLine, CurrentMatch }
-    var PatternStack = { };
+    // Entry structure: { Line, Position, CurrentMatch }
+    var PatternStack = { }; 
     
     /*
         Constructor
     */
-    function Lexer(input) {
+    function QC_Lexer(input) {
         this.InputLines = string.Explode("\n", input);
         this:Pass();
-    }
+    } 
     
     /*-----------------------------------
         Cursor moving & pattern matching
     -------------------------------------*/
     
     /*
-        Next character
+       Goes to the next character. Returns false, if EOF.
     */
     function NextChar() {
         this.Position = this.Position + 1;
@@ -42,7 +42,7 @@ partial class QC_Lexer {
         // Go to the next line, if we're at the end of current one
         if(this.Position > this.CurrentLine:len())
         {
-            this.Position = 0;
+            this.Position = 1;
 
             this.Line = this.Line + 1;
             while(this.Line <= #this.InputLines && #this.InputLines[this.Line] == 0)
@@ -53,16 +53,16 @@ partial class QC_Lexer {
         }
         
         this.CurrentLine = this.InputLines[this.Line];
-        this.CurrentChar = this.CurrentLine[1];
+        this.CurrentChar = this.CurrentLine[this.Position];
         
         return true;
     }
     
     /*
-        Next line
+        Goes to the next line. Returns false, if EOF.
     */
     function NextLine() {
-        this.Position = 0;
+        this.Position = 1;
 
         this.Line = this.Line + 1;
         while(this.Line <= #this.InputLines && #this.InputLines[this.Line] == 0)
@@ -72,9 +72,45 @@ partial class QC_Lexer {
             return false;
         
         this.CurrentLine = this.InputLines[this.Line];
-        this.CurrentChar = this.CurrentLine[1];
+        this.CurrentChar = this.CurrentLine[this.Position];
         
         return true;
+    }
+    
+    /*
+        Matches a pattern and saves it into CurrentMatch. If fails, returns false.
+    */
+    function AcceptPattern(pattern) {
+        var startPos, endPos = string.find(this.CurrentLine, pattern, this.Position);
+        
+        if(startPos && startPos != -1 && startPos == this.Position) {
+            this.PatternStack[#this.PatternStack + 1] = { this.Line, this.Position, this.CurrentMatch }; 
+            this.PatternMatch = this.CurrentLine:sub(this.Position, endPos);
+            this.Position = endPos;
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /*
+        Skips the whitespace.
+    */
+    function SkipWhitespace() { 
+        var startPos, endPos = string.find(this.CurrentLine, "[^%s]+", this.Position); // Find the first, non-whitespace character
+       
+        if(startPos && startPos != -1) { // We found it, so set position to it 
+            this.Position = startPos - 1;
+            this:NextChar();
+        }
+        else { // If we don't find any character on the current line, we go to the next one and do the same thing
+            if(!this:NextLine())
+                return;
+            this:SkipWhitespace();
+        }
+
+       
     }
     
     /*-----------------------------------
