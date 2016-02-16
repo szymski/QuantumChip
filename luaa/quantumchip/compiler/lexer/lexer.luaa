@@ -1,0 +1,17 @@
+/*-----------------------------------
+    Lexer
+    The constructor and other functions are in lexer_utils.luaa file.
+-------------------------------------*/
+
+include("lexer_utils.luaa");
+
+partial class QC_Lexer {
+    
+    /*
+        Analyses the code
+    */
+    function Pass() {
+        
+    }
+    
+}

@@ -1,0 +1,83 @@
+/*-----------------------------------
+    Lexer utils
+    Included by lexer.luaa file.
+-------------------------------------*/
+
+partial class QC_Lexer {
+    
+    var Tokens = { }; // Output tokens
+    
+    var InputLines; // A table of code lines
+    
+    var Line, Position = 0, 0; // Current positions
+    
+    // Current values - strings
+    var CurrentChar = "";
+    var CurrentLine = "";
+    var CurrentMatch = "";
+    
+    // Stack containing all pattern matches
+    // MODIFIED ONLY WHILE USING AcceptPattern FUNCTION!
+    // Entry structure: { Line, Character, CurrentChar, CurrentLine, CurrentMatch }
+    var PatternStack = { };
+    
+    /*
+        Constructor
+    */
+    function Lexer(input) {
+        this.InputLines = string.Explode("\n", input);
+        this:Pass();
+    }
+    
+    /*-----------------------------------
+        Cursor moving & pattern matching
+    -------------------------------------*/
+    
+    /*
+        Next character
+    */
+    function NextChar() {
+        this.Position = this.Position + 1;
+        
+        // Go to the next line, if we're at the end of current one
+        if(this.Position > this.CurrentLine:len())
+        {
+            this.Position = 0;
+
+            this.Line = this.Line + 1;
+            while(this.Line <= #this.InputLines && #this.InputLines[this.Line] == 0)
+                this.Line = this.Line + 1;
+                
+            if(this.Line > #this.InputLines) // Check EOF
+                return false;
+        }
+        
+        this.CurrentLine = this.InputLines[this.Line];
+        this.CurrentChar = this.CurrentLine[1];
+        
+        return true;
+    }
+    
+    /*
+        Next line
+    */
+    function NextLine() {
+        this.Position = 0;
+
+        this.Line = this.Line + 1;
+        while(this.Line <= #this.InputLines && #this.InputLines[this.Line] == 0)
+            this.Line = this.Line + 1;
+            
+        if(this.Line > #this.InputLines) // Check EOF
+            return false;
+        
+        this.CurrentLine = this.InputLines[this.Line];
+        this.CurrentChar = this.CurrentLine[1];
+        
+        return true;
+    }
+    
+    /*-----------------------------------
+        Tokens
+    -------------------------------------*/
+}

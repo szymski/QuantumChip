@@ -1,5 +1,23 @@
+/*-----------------------------------
+    QuantumChip main file
+-------------------------------------*/
+
+/*-----------------------------------
+    Files
+-------------------------------------*/
+
 if(SERVER) {
 	AddCSLuaFile();
+	AddCSLuaFile("compiler/language_specification.luaa");
+	AddCSLuaFile("compiler/lexer/lexer.luaa");
+	AddCSLuaFile("compiler/lexer/lexer_utils.luaa");
 }
 
-print("Welcome!");
+/*-----------------------------------
+    Initialization
+-------------------------------------*/
+
+QC = { };
+
+include("compiler/language_specification.luaa");
+include("compiler/lexer/lexer.luaa");
