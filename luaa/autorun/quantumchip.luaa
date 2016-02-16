@@ -1,0 +1,9 @@
+if(SERVER) {
+	AddCSLuaFile("luaa/luaa.lua");
+	AddCSLuaFile("luaa/luaa_objects.lua");
+	AddCSLuaFile("luaa/luaa_enumerable.lua");
+	AddCSLuaFile();
+}
+
+include("luaa/luaa.lua");
+include("quantumchip/main.lua");

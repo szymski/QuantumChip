@@ -1,0 +1,24 @@
+{
+	"comment": [
+		"--[[",
+		"	Quantum Chip",
+		"	https://github.com/szymski/QuantumChip",
+		"	",
+		"	%filename%",
+		"	%date% %time%",
+		"	Compiled using LuaAdvanced.",
+		"	This file should not be modified.",
+		"	",
+		"	MIT License",
+		"]]"
+	],
+
+	"directives": {
+		"DEBUG": "true",
+	},
+
+	"include_luaa_lib" : false,
+
+	"input_dir": ".",
+	"output_dir": "../lua/",
+}
