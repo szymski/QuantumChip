@@ -1,0 +1,46 @@
+/*-----------------------------------
+    Preprocessor
+    The constructor and other functions are in preprocessor_utils.luaa file.
+-------------------------------------*/
+
+QC_Preprocessor = null; // Required for partial classes
+
+include("preprocessor_utils.lua");
+
+partial class QC_Preprocessor {
+    
+    /*
+        Preprocesses the code
+    */
+    function Process() {
+        var startTime = SysTime();
+        
+        while(this:NextChar()) { 
+            
+            // ANTI-STUCK
+            if(SysTime()  - startTime > 0.1) {
+                print("STUCK");
+                return;
+            }
+            
+            // Single-line comment
+            if(this:AcceptPattern("//")) {
+                this.InputLines[this.Line] = this.CurrentLine:sub(1, this.MatchPosition - 1);
+            }
+            
+            // Multi-line comment
+            else if(this:AcceptPattern("/\\*")) {
+                var startPos, endPos = string.find(this.CurrentLine, "\\*/", this.Position + 1);
+                if(startPos && startPos != -1) {
+                    // TODO: Put spaces here
+                    this.InputLines[this.Line] = this.CurrentLine:sub(1, this.MatchPosition - 1) .. this.CurrentLine:sub(endPos + 1); 
+                }
+                
+                // TODO: Actual multi-line
+            }
+        } 
+        
+        this.Time = SysTime() - startTime; // Save total time
+    }
+    
+}

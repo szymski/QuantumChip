@@ -9,8 +9,11 @@
 if(SERVER) {
 	AddCSLuaFile();
 	AddCSLuaFile("compiler/language_specification.lua");
+    AddCSLuaFile("compiler/preprocessor/preprocessor.lua");
+	AddCSLuaFile("compiler/preprocessor/preprocessor_utils.lua");
 	AddCSLuaFile("compiler/lexer/lexer.lua");
 	AddCSLuaFile("compiler/lexer/lexer_utils.lua");
+    AddCSLuaFile("compiler/compiler.lua");
 }
 
 /*-----------------------------------
@@ -19,28 +22,31 @@ if(SERVER) {
 
 QC = { }; 
 
-include("compiler/language_specification.lua"); 
-include("compiler/lexer/lexer.lua");
+include("compiler/compiler.lua");
  
-      
-  
-      
-  
-  
-#if DEBUG 
-
-print("Creating lexer object");
-
-var lexer = QC_Lexer(@"Su perDuper 
-
+           
+            
+                   
+/*-----------------------------------
+    Testing
+-------------------------------------*/
+       
+#if DEBUG  
+               
+var compiler = QC_Compiler();
+compiler:Compile(@"  
+    int cipa = 123; // Define new variable
+    // Then a function 
+    
+    Multi/**/line comment/* Gay */ in single line
+     
+    Multiline comment2 /* 
+rzopa        xDasdasdasdasdasd
+    */ End of it 12313 #
+    
+    function Hey() {
+        print(5 + 5); // Print a number
+    }
+");
  
-
-                
-
-
-
-    Test
-    Extra
-Lol, derp");
-
 #endif

@@ -5,40 +5,53 @@
 QC.Spec = { };
 
 /*-----------------------------------
+    Tokens
+    
+        Token structure: { Type, Value, Line, Position }
+        
+        Token types:
+            k - keyword
+            i - identifier
+            s - symbol
+            n - number
+            S - string
+            I - include
+-------------------------------------*/
+
+/*-----------------------------------
     Keywords
 -------------------------------------*/
 
 QC.Spec.Keywords = {
     
-    "var",
-    "local",
-    "global",
-
-    "if",
-    "else",
-
-    "while",
-    "for",
-    "foreach",
-    "break",
-    "continue",
-    "in",
-
-    "switch",
-    "case",
-    "default",
-
-    "function",
-    "void",
-    "return",
-
-    "this",
-
-    "true",
-    "false",
-    "null",
-
-    "class",
+    ["var"] = true,
+	["global"] = true,
+	
+	["if"] = true,
+	["else"] = true,
+	
+	["while"] = true,
+	["for"] = true,
+	["foreach"] = true,
+	["break"] = true,
+	["continue"] = true,
+	["in"] = true,
+	
+	["switch"] = true,
+	["case"] = true,
+	["default"] = true,
+	
+	["function"] = true,
+	["void"] = true,
+	["return"] = true,
+	
+	["this"] = true,
+	
+	["true"] = true,
+	["false"] = true,
+	["null"] = true,
+	
+	["class"] = true,
     
 };
 
@@ -48,55 +61,55 @@ QC.Spec.Keywords = {
 
 QC.Spec.Symbols = { 
     
-    "+",
-    "-",
-    "*",
-    "/",
-    "%",
-    "^",
-    "=",
-    "+=",
-    "-=",
-    "*=",
-    "/=",
-    "^=",
-    "++",
-    "--",
+    ["+"] = true,
+    ["-"] = true,
+    ["*"] = true,
+    ["/"] = true,
+    ["%"] = true,
+    ["^"] = true,
+    ["="] = true,
+    ["+="] = true,
+    ["-="] = true,
+    ["*="] = true,
+    ["/="] = true,
+    ["^="] = true,
+    ["++"] = true,
+    ["--"] = true,
 
-    "==",
-    "!=",
-    "<",
-    "<=",
-    ">",
-    ">=",
+    ["=="] = true,
+    ["!="] = true,
+    ["<"] = true,
+    ["<="] = true,
+    [">"] = true,
+    [">="] = true,
 
-    "&",
-    "|",
-    "^^",
-    ">>",
-    "<<",
-    "~",
-    
-    "!",
-    "&&",
-    "||",
+    ["&"] = true,
+    ["|"] = true,
+    ["^^"] = true,
+    [">>"] = true,
+    ["<<"] = true,
+    ["~"] = true,
 
-    "?",
-    ":",
-    "??",
-    ";",
-    ",",
-    "#",
-    ".",
+    ["!"] = true,
+    ["&&"] = true,
+    ["||"] = true,
 
-    "(",
-    ")",
-    "{",
-    "}",
-    "[",
-    "]",
+    ["?"] = true,
+    [":"] = true,
+    ["??"] = true,
+    [";"] = true,
+    [","] = true,
+    ["#"] = true,
+    ["."] = true,
 
-    "=>",
-    "...",
+    ["("] = true,
+    [")"] = true,
+    ["{"] = true,
+    ["}"] = true,
+    ["["] = true,
+    ["]"] = true,
+
+    ["=>"] = true,
+    ["..."] = true,
     
 };

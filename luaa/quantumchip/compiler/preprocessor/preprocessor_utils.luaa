@@ -1,14 +1,12 @@
 /*-----------------------------------
-    Lexer utils
-    Included by lexer.luaa file.
+    Preprocessor utils
+    Included by preprocessor.luaa file.
 -------------------------------------*/
 
-partial class QC_Lexer {
+partial class QC_Preprocessor {
     
-    // Token structure: { Type, Value, Line, Position }
-    // Token types are described in language_specification.luaa
-    var Tokens = { }; // Output tokens
-    var Time = 0; // Analysis time
+    var Output = ""; // Output code
+    var Time = 0; // Processing time
     
     var InputLines; // A table of code lines
     
@@ -18,6 +16,7 @@ partial class QC_Lexer {
     var CurrentChar = "";
     var CurrentLine = "";
     var CurrentMatch = "";
+    var MatchPosition = 1; // The start position of current match
     
     // Stack containing all pattern matches
     // MODIFIED ONLY WHILE USING AcceptPattern FUNCTION!
@@ -27,9 +26,10 @@ partial class QC_Lexer {
     /*
         Constructor
     */
-    function QC_Lexer(input) {
+    function QC_Preprocessor(input) {
         this.InputLines = string.Explode("\n", input); 
         this:Process();
+        this.Output = table.concat(this.InputLines, "\n");
     } 
     
     /*-----------------------------------
@@ -114,6 +114,7 @@ partial class QC_Lexer {
             this:PrintLine("AcceptPattern 1");
             
             this.PatternStack[#this.PatternStack + 1] = { this.Line, this.Position, this.CurrentMatch }; 
+            this.MatchPosition = startPos;
             this.PatternMatch = this.CurrentLine:sub(this.Position, endPos);
             this.Position = endPos;
             
@@ -142,17 +143,6 @@ partial class QC_Lexer {
             this:SkipWhitespace();
         }
     } 
-    
-    /*-----------------------------------
-        Tokens
-    -------------------------------------*/
-    
-    /*
-        Pushes the token into the table.
-    */
-    function PushToken(type, value) {
-        this.Tokens[#this.Tokens + 1] = { type, value, this.Line, this.Position };
-    }
     
     /*-----------------------------------
         Debug

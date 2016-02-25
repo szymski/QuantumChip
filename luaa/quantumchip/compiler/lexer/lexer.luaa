@@ -11,19 +11,89 @@ partial class QC_Lexer {
     
     /*
         Analyses the code
-    */
-    function Pass() {
-        while(this:NextChar()) {
+    */ 
+    function Process() {
+        var startTime = SysTime();
+        
+        while(this:NextChar()) { 
             
-            this:SkipWhitespace();
+            // ANTI-STUCK
+            if(SysTime()  - startTime > 0.1) {
+                print("STUCK");
+                return;
+            } 
             
-            if(this:AcceptPattern("%a+")) {
-                print(this.PatternMatch);
+            //this:SkipWhitespace(); // Whitespace skipping function seems slow. I won't be using it for now.
+            
+            // Keywords and identifiers
+            if(this:AcceptPattern("[%a_][%a%d_]*")) {
+                this:PushToken(QC.Spec.Keywords[this.PatternMatch] ? "k" : "i", this.PatternMatch);
             }
-            else
-                print("Dupa: " .. this.CurrentChar);
+            
+            // Numbers 
+            else if(this:AcceptPattern("-?%d+%.%d+") || this:AcceptPattern("-?%d+")) {
+                this:PushToken("n", this.PatternMatch);
+            }   
+            
+            // TODO: Hex numbers
+            else if(this:AcceptPattern("%d+%.%d+") || this:AcceptPattern("%d+")) {
+                this:PushToken("n", this.PatternMatch);
+            }  
+            
+            // Strings 
+            else if(this:AcceptPattern("\"")) {
+                var value, ok = "", false;
                 
+                while(this:NextChar()) {
+                    // String end
+                    if(this.CurrentChar == "\"") {
+                        ok = true;
+                        break;
+                    }
+                    
+                    value = value .. this.CurrentChar;
+                    
+                    // Special characters
+                    if (this.CurrentChar == "\\")
+                    { 
+                        // TODO: Check special characters
+                        this:NextChar();
+                        value = value .. this.CurrentChar;
+                    }
+                }
+                
+                if(!ok) {
+                    print("Unfinished string"); // TODO: Change to error
+                }
+                                
+                this:PushToken("S", value);
+            }  
+          
+            // Symbols
+            else if(this:AcceptPattern("[^%w^%s]+")) {
+                for(var i = this.PatternMatch:len(); i > 0; i--) {
+                    if(QC.Spec.Symbols[this.PatternMatch:sub(1, i)]) {
+                        this:PushToken("s", this.PatternMatch:sub(1, i));
+                        break; 
+                    } 
+                    else if(i == 1)
+                        print("No such symbol - ", this.PatternMatch:sub(1, i)); // TODO: Change this to error
+                    else
+                        this.Position = this.Position - 1;
+                }
+            }    
+            
+            // Whitespace - ignore
+            else if(this:AcceptPattern("%s+")) {
+            }
+            
+            // Unknown characters
+            else {
+                 print("Unknown character: ", this.CurrentChar); // TODO: Change to error  
+            }
         } 
+        
+        this.Time = SysTime() - startTime; // Save total time
     }
     
 }

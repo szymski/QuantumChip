@@ -1,0 +1,43 @@
+/*-----------------------------------
+    Main compiler class
+-------------------------------------*/
+
+include("language_specification.lua"); 
+include("preprocessor/preprocessor.lua");
+include("lexer/lexer.lua");
+
+class QC_Compiler {
+    
+    // File entry: { Name = "name", Source = "" }
+    var Files = { };
+    
+    var Success = false;
+    var Error = "No error.";
+    
+    /*
+        Compiles everything and returns the final code.
+    */
+    function Compile(input) {
+        // Preprocessor
+        
+        print();
+        print("Creating preprocessor object");
+        var preprocessor = QC_Preprocessor(input);           
+        print("Preprocessing time: ", preprocessor.Time);
+        print("Preprocessor output: ");
+        print(preprocessor.Output);
+        print();
+         
+        // Lexer
+         
+        print("Creating lexer object");
+        var lexer = QC_Lexer(preprocessor.Output);           
+        print("Analysis time: ", lexer.Time);
+            
+        foreach(var v in lexer.Tokens) {
+            print(v[1], ": ", v[2]);
+        }
+        
+        print();
+    }
+}
