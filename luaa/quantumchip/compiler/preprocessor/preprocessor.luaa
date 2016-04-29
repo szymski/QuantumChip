@@ -28,15 +28,37 @@ partial class QC_Preprocessor {
                 this.InputLines[this.Line] = this.CurrentLine:sub(1, this.MatchPosition - 1);
             }
             
-            // Multi-line comment
+            // Multi-line comment 
             else if(this:AcceptPattern("/\\*")) {
                 var startPos, endPos = string.find(this.CurrentLine, "\\*/", this.Position + 1);
                 if(startPos && startPos != -1) {
                     // TODO: Put spaces here
                     this.InputLines[this.Line] = this.CurrentLine:sub(1, this.MatchPosition - 1) .. this.CurrentLine:sub(endPos + 1); 
+                    continue;
                 }
                 
-                // TODO: Actual multi-line
+                this.InputLines[this.Line] = this.CurrentLine:sub(1, this.MatchPosition - 1);
+                this.Line = this.Line + 1;
+                var curLine, ok = this.Line, false;
+                while (this:NextChar()) 
+                {
+                    if (this.Line != curLine)
+                        this.InputLines[this.Line - 1] = "";
+                        
+                    if (this:AcceptPattern(@"\\*/")) {
+                        ok = true;
+                        break;
+                    }
+                        
+                    curLine = this.Line;
+                }
+                
+                if(!ok) {
+                    print("Unfinished comment"); // TODO: Change to error
+                    return;
+                }
+                
+                this.InputLines[this.Line] = this.InputLines[this.Line]:sub(this.Position + 1);
             }
         } 
         
