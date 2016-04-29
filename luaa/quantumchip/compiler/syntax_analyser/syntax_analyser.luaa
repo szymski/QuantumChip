@@ -10,5 +10,37 @@ include("syntax_analyser_statements.lua");
 include("syntax_analyser_expressions.lua");
 
 partial class QC_SyntaxAnalyser {
-
+    
+    /*
+        Returns a sequence of instructions.
+    */
+    function Sequence() {
+        var instructions = { };
+        
+        while(true) {
+            if(this:CheckEOF()) 
+                break;
+                
+            instructions[#instructions + 1] = this:Statement();
+        }
+        
+        return instructions;
+    }
+    
+    /*
+        Analyses tokens. 
+    */
+    function Analyse() {
+        var seq = this:Sequence();
+        PrintTable(seq);
+    }
+    
 } 
+ 
+/*-----------------------------------
+    Testing
+-------------------------------------*/
+
+#if DEBUG 
+QC.DoTest();  
+#endif  

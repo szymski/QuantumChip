@@ -5,4 +5,33 @@
 
 partial class QC_SyntaxAnalyser {
 
+    function Statement() {
+        return this:Statement1_Side();
+    }
+    
+    function Statement1_Side() {
+        if(this:AcceptKeywords("server", "client")) {
+            print("Side: " .. this.CurrentToken[2]);
+            return;
+        }
+        
+        return this:Statement2_If(); 
+    }
+    
+    function Statement2_If() {
+        return this:Statement_Invalid();
+    }
+
+    function Statement_Invalid() { 
+        this:NextToken();
+        error("Unexpected token '" .. this.CurrentToken[2] .. "' of type " .. this.CurrentToken[1]);
+    }
 } 
+
+/*-----------------------------------
+    Testing
+-------------------------------------*/
+  
+#if DEBUG 
+QC.DoTest();
+#endif 

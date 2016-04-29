@@ -26,6 +26,9 @@ QC.Spec.Keywords = {
     
     ["var"] = true,
 	["global"] = true,
+    
+	["server"] = true,
+	["client"] = true,    
 	
 	["if"] = true,
 	["else"] = true,

@@ -43,7 +43,7 @@ class QC_Compiler {
         
         print();
         print("Creating syntax analyser object");
-        var syntax_analyser = QC_SyntaxAnalyser();          
+        var syntax_analyser = QC_SyntaxAnalyser(lexer.Tokens);          
         print("Analysis time: ", syntax_analyser.Time);
         print("Analysis output: ");
         print(syntax_analyser.Output);

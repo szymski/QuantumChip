@@ -35,12 +35,17 @@ include("compiler/compiler.lua");
     Testing
 -------------------------------------*/
        
-#if DEBUG  
-               
-var compiler = QC_Compiler();
-compiler:Compile(@"     
-int shit = 5 + 5;
-shit.ICanDoIt(\"!\");
-");
+#if DEBUG   
+
+function QC.DoTest() {
+	var compiler = QC_Compiler();
+	compiler:Compile(@"    
+	 
+server
+client client server 
+	");
+}
+
+QC.DoTest();
  
 #endif
