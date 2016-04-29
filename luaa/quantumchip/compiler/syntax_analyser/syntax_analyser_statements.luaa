@@ -11,8 +11,7 @@ partial class QC_SyntaxAnalyser {
     
     function Statement1_Side() {
         if(this:AcceptKeywords("server", "client")) {
-            print("Side: " .. this.CurrentToken[2]);
-            return;
+            return this:Block(true);
         }
         
         return this:Statement2_If(); 
@@ -34,4 +33,4 @@ partial class QC_SyntaxAnalyser {
   
 #if DEBUG 
 QC.DoTest();
-#endif 
+#endif  

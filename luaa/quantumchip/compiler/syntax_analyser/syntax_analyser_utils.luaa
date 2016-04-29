@@ -167,6 +167,13 @@ partial class QC_SyntaxAnalyser {
         return this:RequireToken("S", null, "Number expected.");
     }
     
+    /*-----------------------------------
+        Errors
+    -------------------------------------*/
+    
+    function Error(message) {
+        error(message);
+    }
 }
 
 /*-----------------------------------

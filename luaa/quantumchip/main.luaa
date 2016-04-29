@@ -41,8 +41,10 @@ function QC.DoTest() {
 	var compiler = QC_Compiler();
 	compiler:Compile(@"    
 	 
-server
-client client server 
+server { 
+	client {
+	}	
+}
 	");
 }
 

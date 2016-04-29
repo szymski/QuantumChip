@@ -14,17 +14,41 @@ partial class QC_SyntaxAnalyser {
     /*
         Returns a sequence of instructions.
     */
-    function Sequence() {
+    function Sequence(endToken) {
         var instructions = { };
+        var broke = false;
         
-        while(true) {
+        while(true) {     
             if(this:CheckEOF()) 
                 break;
+                
+            if(endToken && this:AcceptSymbol(endToken)) {
+                broke = true;
+                break; 
+            }
                 
             instructions[#instructions + 1] = this:Statement();
         }
         
+        if(endToken && !broke)
+            this:Error("'}' required to close the block.");
+        
         return instructions;
+    }
+    
+    /*
+        Returns a sequence opened with '{', or single statement.
+        If singleStatement is true, block doesn't require '{' '}'.
+    */
+    function Block(singleStatement) {
+        if(this:AcceptSymbol("{")) {
+            return this:Sequence("}");
+        }
+        
+        if(singleStatement)
+            return this:Statement(); // TODO: Maybe sequence?
+            
+        error("Code block expected.");
     }
     
     /*
