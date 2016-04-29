@@ -10,8 +10,8 @@ partial class QC_SyntaxAnalyser {
     }
     
     function Statement1_Side() {
-        if(this:AcceptKeywords("server", "client")) {
-            return this:Block(true);
+        if(this:AcceptKeywords("server", "client")) { 
+            return QC_Instruction_Side(this.CurrentToken[2]:upper(), this:Block(true));
         }
         
         return this:Statement2_If(); 

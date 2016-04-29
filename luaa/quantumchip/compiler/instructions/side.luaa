@@ -1,0 +1,15 @@
+/*-----------------------------------
+    Code side
+-------------------------------------*/
+
+class QC_Instruction_Side : QC_Instruction {
+
+    function QC_Instruction_Side(side, sequence) {
+        this.Side = side;
+        this.Sequence = sequence;
+    }
+    
+    function GetChildren() {
+        return { this.Sequence }; 
+    }
+}

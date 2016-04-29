@@ -33,7 +33,7 @@ partial class QC_SyntaxAnalyser {
         if(endToken && !broke)
             this:Error("'}' required to close the block.");
         
-        return instructions;
+        return QC_Instruction_Sequence(instructions);
     }
     
     /*
@@ -56,7 +56,10 @@ partial class QC_SyntaxAnalyser {
     */
     function Analyse() {
         var seq = this:Sequence();
-        PrintTable(seq);
+        
+        print("\n------- INSTRUCTION TREE -------");
+        seq:PrintTree();
+        print("------- INSTRUCTION TREE -------\n");
     }
     
 } 

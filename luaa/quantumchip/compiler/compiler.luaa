@@ -7,6 +7,12 @@ include("preprocessor/preprocessor.lua");
 include("lexer/lexer.lua");
 include("syntax_analyser/syntax_analyser.lua");
 
+include("instructions/instruction.lua");
+include("instructions/sequence.lua"); 
+include("instructions/side.lua"); 
+
+include("instructions/expressions/expression.lua"); 
+
 class QC_Compiler {
     
     // File entry: { Name = "name", Source = "" }

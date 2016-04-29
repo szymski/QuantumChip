@@ -18,7 +18,15 @@ if(SERVER) {
 	AddCSLuaFile("compiler/syntax_analyser/syntax_analyser_statements.lua");
 	AddCSLuaFile("compiler/syntax_analyser/syntax_analyser_expressions.lua");
     AddCSLuaFile("compiler/compiler.lua");
-}
+	
+	AddCSLuaFile("compiler/instructions/instruction.lua");
+	AddCSLuaFile("compiler/instructions/sequence.lua");
+	AddCSLuaFile("compiler/instructions/if.lua");
+	AddCSLuaFile("compiler/instructions/side.lua");
+	AddCSLuaFile("compiler/instructions/variable_declaration.lua");
+	
+	AddCSLuaFile("compiler/instructions/expressions/expression.lua");
+} 
 
 /*-----------------------------------
     Initialization
@@ -28,26 +36,26 @@ QC = { };
 
 include("compiler/compiler.lua");
  
-            
-                
-                   
+             
+                    
+                     
 /*-----------------------------------
     Testing
 -------------------------------------*/
-       
+        
 #if DEBUG   
-
+  
 function QC.DoTest() {
 	var compiler = QC_Compiler();
 	compiler:Compile(@"    
 	 
 server { 
 	client {
-	}	
-}
-	");
-}
-
+	}	 
+}  
+	");    
+}  
+  
 QC.DoTest();
  
 #endif

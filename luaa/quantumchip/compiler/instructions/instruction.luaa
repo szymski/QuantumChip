@@ -1,0 +1,26 @@
+/*-----------------------------------
+    Instruction
+-------------------------------------*/
+
+class QC_Instruction {
+    
+    function PrintTree(depth) {
+        var str = "";
+        
+        depth = depth ?? 0;
+        
+        for(i = 0; i < depth; i++)
+            str = str .. "    ";
+            
+        print(str .. this.__type .. " - " .. #this:GetChildren() .. " children");
+        
+        foreach(var child in this:GetChildren()) {
+            child:PrintTree(depth + 1);
+        }
+    }
+    
+    function GetChildren() {
+        return { };
+    }
+    
+}

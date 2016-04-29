@@ -1,0 +1,15 @@
+/*-----------------------------------
+    Sequence
+-------------------------------------*/
+
+class QC_Instruction_Sequence : QC_Instruction {
+
+    function QC_Instruction_Sequence(instructionList) {
+        this.List = instructionList;
+    }
+    
+    function GetChildren() {
+        return this.List;  
+    }
+    
+}
