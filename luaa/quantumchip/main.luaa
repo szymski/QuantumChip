@@ -13,6 +13,10 @@ if(SERVER) {
 	AddCSLuaFile("compiler/preprocessor/preprocessor_utils.lua");
 	AddCSLuaFile("compiler/lexer/lexer.lua");
 	AddCSLuaFile("compiler/lexer/lexer_utils.lua");
+	AddCSLuaFile("compiler/syntax_analyser/syntax_analyser.lua");
+	AddCSLuaFile("compiler/syntax_analyser/syntax_analyser_utils.lua");
+	AddCSLuaFile("compiler/syntax_analyser/syntax_analyser_statements.lua");
+	AddCSLuaFile("compiler/syntax_analyser/syntax_analyser_expressions.lua");
     AddCSLuaFile("compiler/compiler.lua");
 }
 
@@ -24,8 +28,8 @@ QC = { };
 
 include("compiler/compiler.lua");
  
-           
             
+                
                    
 /*-----------------------------------
     Testing
@@ -34,19 +38,9 @@ include("compiler/compiler.lua");
 #if DEBUG  
                
 var compiler = QC_Compiler();
-compiler:Compile(@"  
-    int cipa = 123; // Define new variable
-    // Then a function 
-    
-    Multi/**/line comment/* Gay */ in single line
-     
-    Multiline comment2 /* 
-rzopa        xDasdasdasdasdasd
-    */ End of it 12313 #
-    
-    function Hey() {
-        print(5 + 5); // Print a number
-    }
+compiler:Compile(@"     
+int shit = 5 + 5;
+shit.ICanDoIt(\"!\");
 ");
  
 #endif

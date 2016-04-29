@@ -5,6 +5,7 @@
 include("language_specification.lua"); 
 include("preprocessor/preprocessor.lua");
 include("lexer/lexer.lua");
+include("syntax_analyser/syntax_analyser.lua");
 
 class QC_Compiler {
     
@@ -37,6 +38,16 @@ class QC_Compiler {
         foreach(var v in lexer.Tokens) {
             print(v[1], ": ", v[2]);
         }
+        
+        // Syntax analyser
+        
+        print();
+        print("Creating syntax analyser object");
+        var syntax_analyser = QC_SyntaxAnalyser();          
+        print("Analysis time: ", syntax_analyser.Time);
+        print("Analysis output: ");
+        print(syntax_analyser.Output);
+        print();
         
         print();
     }

@@ -1,0 +1,103 @@
+/*-----------------------------------
+    Syntax analyser utils
+    Included by syntax_analyser.luaa file.
+-------------------------------------*/
+
+partial class QC_SyntaxAnalyser {
+       
+    var Output = { }; // Output instruction table
+    var Time = 0; // Analysis time
+    
+    var InputTokens;
+    
+    var CurrentTokenIndex = 0;
+    var CurrentToken;
+       
+    /*
+        Constructor
+    */
+    function QC_SyntaxAnalyser(input) {
+        var startTime = SysTime();
+        
+        this.InputTokens = input;
+        
+        this.Time = SysTime() - startTime;
+    }
+    
+    /*-----------------------------------
+        Token moving
+        Token structure: { Type, Value, Line, Position }
+    -------------------------------------*/
+    
+    /*
+        Goes to the next token. Updates CurrentToken value.
+        Returns false if EOF.
+    */
+    function NextToken() {
+        this.CurrentTokenIndex = this.CurrentTokenIndex + 1;
+        
+        if(this.CurrentTokenIndex > #this.InputTokens)
+            return false;
+            
+        this.CurrentToken = this.InputTokens[this.CurrentTokenIndex];
+            
+        return true;
+    }
+    
+    /*
+        Goes to the previous token. Updates CurrentToken value.
+        Returns false if EOF. IN ANALYSIS USE AS RARELY AS POSSIBLE!
+    */
+    function PrevToken() {
+        this.CurrentTokenIndex = this.CurrentTokenIndex - 1;
+        
+        if(this.CurrentTokenIndex < 1)
+            return false;
+            
+        this.CurrentToken = this.InputTokens[this.CurrentTokenIndex];
+            
+        return true;
+    }
+    
+    /*-----------------------------------
+        Token accepting
+    -------------------------------------*/
+    
+    /*
+        Returns true, if next token is of specified type (and optionally value).
+    */
+    function AcceptToken(type, value) {
+        var next = this.InputTokens[this.CurrentTokenIndex - 1];
+        
+        if(next && next[1] == type && (!value ? true : next[2] == value)) {
+            this:NextToken();
+            return true;
+        }
+        
+        return false;
+    }
+    
+    function AcceptKeyword(value) {
+        return this:AcceptToken("k", value);
+    }
+    
+    function AcceptSymbol(value) {
+        return this:AcceptToken("s", value);
+    }
+    
+    function AcceptIdentifier() {
+        return this:AcceptToken("i");
+    }
+    
+    function AcceptNumber() {
+        return this:AcceptToken("n");
+    }
+    
+    function AcceptString() {
+        return this:AcceptToken("S");
+    }
+    
+    /*-----------------------------------
+        Token requiring
+    -------------------------------------*/
+}

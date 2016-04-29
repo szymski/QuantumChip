@@ -1,0 +1,14 @@
+/*-----------------------------------
+    Syntax analyser
+    The constructor and other functions are in syntax_analyser_utils.luaa file.
+-------------------------------------*/
+
+QC_SyntaxAnalyser = null; // Required for partial classes
+
+include("syntax_analyser_utils.lua");
+include("syntax_analyser_statements.lua");
+include("syntax_analyser_expressions.lua");
+
+partial class QC_SyntaxAnalyser {
+
+} 

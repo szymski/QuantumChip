@@ -1,0 +1,8 @@
+/*-----------------------------------
+    Syntax analyser expressions
+    The constructor and other functions are in syntax_analyser_utils.luaa file.
+-------------------------------------*/
+
+partial class QC_SyntaxAnalyser {
+
+}
