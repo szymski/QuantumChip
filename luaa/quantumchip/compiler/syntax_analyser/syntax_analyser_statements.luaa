@@ -18,14 +18,109 @@ partial class QC_SyntaxAnalyser {
     }
     
     function Statement2_If() {
+        if(this:AcceptKeyword("if")) {
+            this:RequireSymbol("(", "'(' expected to open if statement condition.");
+            var cond = this:Expression();
+            this:RequireSymbol(")", "')' expected to close if statement condition.");
+            return QC_Instruction_If(cond, this:Block(true));
+        }
+        
+        return this:Statement3_WhileLoop();
+    }
+    
+     function Statement3_WhileLoop() {
+        if(this:AcceptKeyword("while")) {
+            this:RequireSymbol("(", "'(' expected to open while loop condition.");
+            var cond = this:Expression();
+            this:RequireSymbol(")", "')' expected to close while loop condition.");
+            return QC_Instruction_While(cond, this:Block(true));
+        }
+        
+        return this:Statement4_ForLoop();
+    }
+    
+     function Statement4_ForLoop() {
+        if(this:AcceptKeyword("for")) {
+            this:RequireSymbol("(", "'(' expected to open for loop condition.");
+            
+            // TODO: For loop 
+            this:Error("Not implemented");
+            
+            this:RequireSymbol(")", "')' expected to close for loop condition.");
+            return QC_Instruction_For(declaration, condition, code, this:Block(true));
+        }
+        
+        return this:Statement5_ForEachLoop();
+    }
+
+    function Statement5_ForEachLoop() {
+        if(this:AcceptKeyword("foreach")) {
+            this:RequireSymbol("(", "'(' expected to open foreach loop condition.");
+            
+            // TODO: Foreach loop 
+            this:Error("Not implemented");
+            
+            this:RequireSymbol(")", "')' expected to closeforeachfor loop condition.");
+            return QC_Instruction_ForEach(variable, table, this:Block(true));
+        }
+        
+        return this:Statement6_Switch();
+    }
+    
+     function Statement6_Switch() {
+        if(this:AcceptKeyword("switch")) {
+            this:RequireSymbol("(", "'(' expected.");
+            
+            // TODO: Switch
+            this:Error("Not implemented");
+            
+            this:RequireSymbol(")", "')' expected.");
+            return QC_Instruction_Switch(variable, conditionList, this:Block(true));
+        }
+        
+        return this:Statement7_Function();
+    }
+    
+    function Statement7_Function() {
+        if(this:AcceptKeyword("function")) {
+            
+            // TODO: Function
+            this:Error("Not implemented");
+            
+            return QC_Instruction_Function();
+        }
+        
+        return this:Statement8_VariableDeclarationFunctionCall();
+    }
+    
+    function Statement8_VariableDeclarationFunctionCall() {
+        if(this:AcceptIdentifier()) {
+            var type = this.CurrentToken[2]; 
+            
+            // Check if function call
+            if(this:AcceptSymbol("(")) {
+                // TODO: Function calls
+                this:Error("Not implemented");
+                
+                return QC_Instruction_FunctionCall();
+            }
+            
+            var name = this:RequireIdentifier("Variable name expected.")[2];
+            
+            if(this:AcceptSymbol("="))
+                return QC_Instruction_VariableDeclaration(type, name, this:Expression());
+            
+            return QC_Instruction_VariableDeclaration(type, name);
+        }
+        
         return this:Statement_Invalid();
     }
 
     function Statement_Invalid() { 
         this:NextToken();
-        error("Unexpected token '" .. this.CurrentToken[2] .. "' of type " .. this.CurrentToken[1]);
+        this:Error("Unexpected token '" .. this.CurrentToken[2] .. "' of type " .. this.CurrentToken[1]);
     }
-} 
+}   
 
 /*-----------------------------------
     Testing

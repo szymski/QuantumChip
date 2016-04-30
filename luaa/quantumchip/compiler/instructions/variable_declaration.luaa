@@ -1,0 +1,17 @@
+/*-----------------------------------
+    Sequence
+-------------------------------------*/
+
+class QC_Instruction_VariableDeclaration : QC_Instruction {
+
+    function QC_Instruction_VariableDeclaration(type, name, value) {
+        this.Type = type;
+        this.Name = name;
+        this.Value = value;
+    }
+    
+    function GetChildren() {
+        return { this.Value };  
+    }
+    
+}

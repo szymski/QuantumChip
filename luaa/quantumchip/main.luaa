@@ -2,9 +2,26 @@
     QuantumChip main file
 -------------------------------------*/
 
+QC = { }; 
+
 /*-----------------------------------
     Files
 -------------------------------------*/
+
+QC.InstructionFiles = {
+	"instruction",
+	"sequence", 
+	"if",
+	"side",
+	"variable_declaration",
+	
+	"expressions/expression",
+	"expressions/rawvalue",
+	"expressions/number",
+	"expressions/boolean",
+	"expressions/string",
+	"expressions/null",
+};
 
 if(SERVER) {
 	AddCSLuaFile();
@@ -17,22 +34,17 @@ if(SERVER) {
 	AddCSLuaFile("compiler/syntax_analyser/syntax_analyser_utils.lua");
 	AddCSLuaFile("compiler/syntax_analyser/syntax_analyser_statements.lua");
 	AddCSLuaFile("compiler/syntax_analyser/syntax_analyser_expressions.lua");
+	AddCSLuaFile("compiler/semantic_analyser/semantic_analyser.lua");
+	AddCSLuaFile("compiler/semantic_analyser/semantic_analyser_utils.lua");
     AddCSLuaFile("compiler/compiler.lua");
 	
-	AddCSLuaFile("compiler/instructions/instruction.lua");
-	AddCSLuaFile("compiler/instructions/sequence.lua");
-	AddCSLuaFile("compiler/instructions/if.lua");
-	AddCSLuaFile("compiler/instructions/side.lua");
-	AddCSLuaFile("compiler/instructions/variable_declaration.lua");
-	
-	AddCSLuaFile("compiler/instructions/expressions/expression.lua");
+	foreach(var v in QC.InstructionFiles)
+		AddCSLuaFile("compiler/instructions/" .. v .. ".lua");
 } 
 
 /*-----------------------------------
     Initialization
 -------------------------------------*/
-
-QC = { }; 
 
 include("compiler/compiler.lua");
  
@@ -49,13 +61,14 @@ function QC.DoTest() {
 	var compiler = QC_Compiler();
 	compiler:Compile(@"    
 	 
-server { 
-	client {
-	}	 
-}  
+server {  
+	if (123) {
+		int gay = 5
+	}    
+}   
 	");    
 }  
-  
+   
 QC.DoTest();
  
-#endif
+#endif  

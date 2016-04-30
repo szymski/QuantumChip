@@ -140,31 +140,34 @@ partial class QC_SyntaxAnalyser {
             error("Unexpected end of file.");
             
         this.CurrentToken = this.InputTokens[this.CurrentTokenIndex];
-            
-        if(this.CurrentToken[1] != type || (!value ? false : this.CurrentToken[2] != value))
+                   
+        if(this.CurrentToken[1] != type)
             error(message ?? "Token expected.");
+            
+        if(value && this.CurrentToken[2] != value)
+            error(message ?? "Token expected.");  
         
         return this.CurrentToken;
     }
     
-    function RequireKeyword(value) {
-        return this:RequireToken("k", value, "Keyword '" .. value .. "' expected.");
+    function RequireKeyword(value, message) {
+        return this:RequireToken("k", value, message ?? ("Keyword '" .. value .. "' expected."));
     }
     
-    function RequireSymbol(value) {
-        return this:RequireToken("s", value, "Symbol '" .. value .. "' expected.");
+    function RequireSymbol(value, message) {
+        return this:RequireToken("s", value, message ?? ("Symbol '" .. value .. "' expected."));
     }
     
-    function RequireIdentifier() {
-        return this:RequireToken("i", null, "Identifier expected.");
+    function RequireIdentifier(message) {
+        return this:RequireToken("i", null, message ?? ("Identifier expected."));
     }
     
-    function RequireNumber() {
-        return this:RequireToken("n", null, "Number expected.");
+    function RequireNumber(message) {
+        return this:RequireToken("n", null, message ?? ("Number expected."));
     }
     
-    function RequireString() {
-        return this:RequireToken("S", null, "Number expected.");
+    function RequireString(message) {
+        return this:RequireToken("S", null, message ?? ("Number expected."));
     }
     
     /*-----------------------------------

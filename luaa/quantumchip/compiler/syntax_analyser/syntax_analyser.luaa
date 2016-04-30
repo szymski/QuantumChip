@@ -46,7 +46,7 @@ partial class QC_SyntaxAnalyser {
         }
         
         if(singleStatement)
-            return this:Statement(); // TODO: Maybe sequence?
+            return QC_Instruction_Sequence({ this:Statement() });
             
         error("Code block expected.");
     }
@@ -60,6 +60,8 @@ partial class QC_SyntaxAnalyser {
         print("\n------- INSTRUCTION TREE -------");
         seq:PrintTree();
         print("------- INSTRUCTION TREE -------\n");
+        
+        this.Output = seq;
     }
     
 } 

@@ -1,0 +1,34 @@
+/*-----------------------------------
+    Semantic analyser
+    The constructor and other functions are in semantic_analyser_utils.luaa file.
+-------------------------------------*/
+
+QC_SemanticAnalyser = null; // Required for partial classes
+
+include("semantic_analyser_utils.lua");
+
+partial class QC_SemanticAnalyser {
+    
+    /*-----------------------------------
+        Data
+    -------------------------------------*/
+    
+    var Side;
+    
+    /*-----------------------------------
+        Analysing
+    -------------------------------------*/
+    
+    function Analyse() {
+        this.InputSequence:Analyse(this);
+    }
+    
+} 
+ 
+/*-----------------------------------
+    Testing
+-------------------------------------*/
+
+#if DEBUG 
+QC.DoTest();  
+#endif      

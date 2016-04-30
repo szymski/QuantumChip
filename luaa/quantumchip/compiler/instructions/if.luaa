@@ -1,0 +1,24 @@
+/*-----------------------------------
+    If
+-------------------------------------*/
+
+class QC_Instruction_If : QC_Instruction {
+
+    function QC_Instruction_If(condition, sequence) {
+        this.Condition = condition;
+        this.Sequence = sequence;
+    }
+    
+    function GetChildren() {
+        return { this.Condition, this.Sequence };  
+    }
+    
+    function Analyse(analyser) {
+        if(this.Condition:GetValueType() != "b")
+            analyser:Error("Condition type must be boolean!");
+        
+        // TODO: Is operator
+        
+        this.Sequence:Analyse(analyser);
+    }
+}

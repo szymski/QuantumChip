@@ -1,0 +1,41 @@
+/*-----------------------------------
+    Semantic analyser utils
+-------------------------------------*/
+
+partial class QC_SemanticAnalyser {
+    
+    var Time = 0; // Analysis time
+    
+    var InputSequence;
+    
+    /*
+        Constructor
+    */
+    function QC_SemanticAnalyser(sequence) {
+        var startTime = SysTime();
+        
+        assert(sequence != null, "Input is nil. Sequence tree expected.");
+        
+        this.InputSequence = sequence;
+        this:Analyse();
+        
+        this.Time = SysTime() - startTime;
+    }
+    
+    /*-----------------------------------
+        Errors
+    -------------------------------------*/
+    
+    function Error(message) {
+        error(message);
+    }
+    
+} 
+  
+/*-----------------------------------
+    Testing
+-------------------------------------*/
+
+#if DEBUG 
+QC.DoTest();  
+#endif   

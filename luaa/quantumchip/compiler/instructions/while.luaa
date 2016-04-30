@@ -1,0 +1,16 @@
+/*-----------------------------------
+    While loop
+-------------------------------------*/
+
+class QC_Instruction_While : QC_Instruction {
+
+    function QC_Instruction_While(condition, sequence) {
+        this.Condition = condition;
+        this.Sequence = sequence;
+    }
+    
+    function GetChildren() {
+        return { this.Condition, this.Sequence };  
+    }
+    
+}

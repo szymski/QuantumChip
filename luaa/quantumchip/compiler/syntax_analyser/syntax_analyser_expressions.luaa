@@ -5,4 +5,30 @@
 
 partial class QC_SyntaxAnalyser {
 
+    function Expression() {
+        return this:Expression5_RawValue();
+    }
+    
+    function Expression5_RawValue() {
+        if(this:AcceptNumber()) {
+            return QC_Expression_Number(this.CurrentToken[2]);
+        }
+        else if(this:AcceptString()) {
+            return QC_Expression_String(this.CurrentToken[2]);
+        }
+        else if(this:AcceptKeywords("true", "false")) {
+            return QC_Expression_Boolean(this.CurrentToken[2]);
+        }
+        else if(this:AcceptKeyword("null")) {
+            return QC_Expression_Null();
+        }
+        
+        return this:Expression_Invalid();
+    }
+    
+    function Expression_Invalid() {
+        this:NextToken();
+        this:Error("Unexpected token '" .. this.CurrentToken[2] .. "' of type " .. this.CurrentToken[1]);
+    }
+   
 }

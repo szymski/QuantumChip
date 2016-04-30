@@ -1,0 +1,15 @@
+/*-----------------------------------
+    Number
+-------------------------------------*/
+
+class QC_Expression_Number : QC_Expression_RawValue {
+
+    function QC_Expression_Number(value) {
+        this.Value = value;
+    }    
+    
+    function GetValueType() {
+        return "n";
+    }
+    
+} 

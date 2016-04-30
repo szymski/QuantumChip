@@ -12,4 +12,14 @@ class QC_Instruction_Side : QC_Instruction {
     function GetChildren() {
         return { this.Sequence }; 
     }
+    
+    function Analyse(analyser) {
+        if(analyser.Side && analyser.Side != this.Side)
+            analyser:Error("Cannot run " .. this.Side:lower() .. "side code in " .. analyser.Side:lower() .. "side-only scope.");
+        
+        var prev = analyser.Side; 
+        analyser.Side = this.Side;
+        this.Sequence:Analyse(analyser);
+        analyser.Side = prev;
+    }
 }

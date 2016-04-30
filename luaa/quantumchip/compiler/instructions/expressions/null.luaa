@@ -1,0 +1,15 @@
+/*-----------------------------------
+    Null
+-------------------------------------*/
+
+class QC_Expression_Null : QC_Expression_RawValue {
+
+    function QC_Expression_Null() {
+        
+    }
+
+    function GetValueType() {
+        return "null";
+    }
+    
+}

@@ -1,0 +1,8 @@
+/*-----------------------------------
+    Raw value
+-------------------------------------*/
+
+class QC_Expression_RawValue : QC_Expression {
+
+
+}

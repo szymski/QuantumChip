@@ -1,0 +1,15 @@
+/*-----------------------------------
+    String
+-------------------------------------*/
+
+class QC_Expression_String : QC_Expression_RawValue {
+
+    function QC_Expression_String(value) {
+        this.Value = value;
+    }
+
+    function GetValueType() {
+        return "s";
+    }
+    
+}

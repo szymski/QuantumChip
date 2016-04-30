@@ -1,0 +1,15 @@
+/*-----------------------------------
+    Boolean
+-------------------------------------*/
+
+class QC_Expression_Boolean : QC_Expression_RawValue {
+
+    function QC_Expression_Boolean(value) {
+        this.Value = value;
+    }
+    
+    function GetValueType() {
+        return "b";
+    }
+
+}

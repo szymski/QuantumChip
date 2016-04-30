@@ -2,16 +2,23 @@
     Main compiler class
 -------------------------------------*/
 
+/*-----------------------------------
+    Files
+-------------------------------------*/
+
 include("language_specification.lua"); 
 include("preprocessor/preprocessor.lua");
 include("lexer/lexer.lua");
 include("syntax_analyser/syntax_analyser.lua");
+include("semantic_analyser/semantic_analyser.lua");
 
-include("instructions/instruction.lua");
-include("instructions/sequence.lua"); 
-include("instructions/side.lua"); 
+// Include instructions
+foreach(var v in QC.InstructionFiles)
+	include("instructions/" .. v .. ".lua");
 
-include("instructions/expressions/expression.lua"); 
+/*-----------------------------------
+    Compiler class
+-------------------------------------*/
 
 class QC_Compiler {
     
@@ -53,6 +60,14 @@ class QC_Compiler {
         print("Analysis time: ", syntax_analyser.Time);
         print("Analysis output: ");
         print(syntax_analyser.Output);
+        print();
+        
+        // Semantic analyser
+        
+        print();
+        print("Creating semantic analyser object");
+        var semantic_analyser = QC_SemanticAnalyser(syntax_analyser.Output);          
+        print("Analysis time: ", semantic_analyser.Time);
         print();
         
         print();
