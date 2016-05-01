@@ -1,0 +1,11 @@
+COMPONENT.Name = "Core";
+COMPONENT.Description = "Core component of QuantumChip";
+COMPONENT.Author = "Szymekk";
+
+/*-----------------------------------
+    Basic types
+-------------------------------------*/
+
+COMPONENT:AddClass("b", "boolean");  
+COMPONENT:AddClass("n", "number");  
+COMPONENT:AddClass("s", "string");   

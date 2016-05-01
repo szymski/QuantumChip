@@ -1,0 +1,100 @@
+/*-----------------------------------
+    Function manager
+-------------------------------------*/
+
+QC_FUNCTION_INLINE = 0;
+QC_FUNCTION_PREPARED = 1;
+QC_FUNCTION_VIRTUAL = 2;
+
+/*
+    Function table keys:
+        Component - component the function was registered by
+        Type - function type
+        Name - function name
+        MethodOf - method class, nil if not a method
+        Arguments - list of arguments
+        ReturnType - type of returned value
+        Compile - compiling delegate
+*/
+QC.Functions = { };
+QC.FunctionsByName = { };
+QC.FunctionsByClass = { };
+QC.Operators = { };
+QC.OperatorsByName = { };
+QC.OperatorsByClass = { };
+ 
+/*-----------------------------------
+    Registering functions
+-------------------------------------*/
+
+function QC.AddInlineFunction(component, name, arguments, returnType, inline) {
+    QC.AddFunction(component, QC_FUNCTION_INLINE, name, arguments, returnType, code);
+}
+
+function QC.AddFunction(component, type, name, arguments, returnType, arg1, arg2, arg3) {
+    var splitArguments = string.Explode(":", arguments);
+    assert(#splitArguments <= 2, name .. " function arguments of component " .. component.Name .. " are broken.");
+    
+    var isMethod = #splitArguments == 2;
+    var methodOf = isMethod ? splitArguments[1] : null;
+    
+    // TODO: Compile delegate generating
+    
+    var tbl = {
+        Component = component,
+        Type = type,
+        Name = name,
+        MethodOf = methodOf,
+        Arguments = arguments,
+        ReturnType = returnType,
+        Compile = compileFunc,
+    };
+}
+
+/*-----------------------------------
+    Classes
+-------------------------------------*/
+
+QC_SIDE_SHARED = 0;
+QC_SIDE_SERVER = 1;
+QC_SIDE_CLIENT = 2;
+
+/*
+    Class table keys:
+        Component - component the class was registered by
+        ShortName - identifier of class
+        NiceName - name used in the code
+        Side - codeside class class is only restriced to
+        Aliases - table with class aliases      
+*/
+QC.Classes = { };
+QC.ClassesByName = { }; // By short name
+QC.ClassNiceNameToShortName = { };
+
+function QC.AddClass(component, shortName, niceName) {
+    assert(shortName, "Short name missing.");
+    assert(niceName, "Nice name missing.");
+    assert(!QC.ClassesByName[shortName], "Class " .. shortName .. " is already registered.");
+    assert(!QC.ClassNiceNameToShortName[niceName], "Class " .. niceName .. " is already registered.");
+    
+    var tbl = {
+        Component = component,
+        ShortName = shortName,
+        NiceName = niceName,
+        Side = QC_SIDE_SHARED,
+    };
+     
+    QC.Classes[#QC.Classes + 1] = tbl;
+    QC.ClassesByName[shortName] = tbl;
+    QC.ClassNiceNameToShortName[niceName] = shortName;
+    
+    QC.FunctionsByClass[shortName] = { };
+    QC.FunctionsByClass[niceName] = QC.FunctionsByClass[shortName];
+}
+
+function QC.AddClassAlias(component, shortName, alias) {
+    QC.ClassesByName[shortName].Aliases[#QC.ClassesByName[shortName].Aliases + 1] = alias;
+    QC.ClassNiceNameToShortName[alias] = shortName;
+    
+    QC.FunctionsByClass[alias] = QC.FunctionsByClass[shortName];
+}

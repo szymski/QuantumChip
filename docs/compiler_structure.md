@@ -7,7 +7,7 @@ Each file added to the compiler is processed separately by preprocessor, lexer a
 ## Preprocessor - luaa/quantumchip/compiler/preprocessor/
 Comments are removed and preprocessor directives are handled.
 
-## Lexer - luaa/quantumchip/compiler/lexer/
+## Lexical analyser - luaa/quantumchip/compiler/lexer/
 Lexer translates source code into a list of tokens.
 
 ## Syntax analyser - luaa/quantumchip/compiler/lexer/

@@ -1,0 +1,57 @@
+/*-----------------------------------
+    Component manager
+-------------------------------------*/
+
+// List of components.
+QC.Components = { };
+QC.ComponentsByName = { };
+
+/*-----------------------------------
+    Loading components
+-------------------------------------*/
+
+var componentList = { 
+    "core"
+};
+
+function QC.LoadComponents() {
+    foreach(var filename in componentList) {
+        if(SERVER)
+            AddCSLuaFile("components/" .. filename .. ".lua");
+            
+        COMPONENT = QC_Component();
+        COMPONENT.FileName = "lua/quantumchip/components/" .. filename .. ".lua";
+        
+        include("components/" .. filename .. ".lua");
+        
+        COMPONENT:Validate();
+        
+        QC.Components[#QC.Components + 1] = COMPONENT;
+        QC.ComponentsByName[COMPONENT.Name] = COMPONENT;
+    }
+} 
+
+/*-----------------------------------
+    Component class
+-------------------------------------*/
+
+class QC_Component {
+    
+    function Validate() {
+        assert(this.Name && this.Name != "", this.FileName .. ": Component name is nil.");
+        assert(this.Author && this.Author != "", this.FileName .. ": Component author is nil.");
+        assert(!QC.ComponentsByName[this.Name], this.FileName .. ": Component with name '" .. this.Name .. "' is already registered.");
+    } 
+     
+    function AddClass(...) {
+        QC.AddClass(this, ...);
+    }
+    
+    function AddClassAlias(...) {
+        QC.AddClassAlias(this, ...);
+    }
+    
+    function AddFunctionInline(...) {
+        QC.AddFunctionInline(this, ...);
+    }
+}
