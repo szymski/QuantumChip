@@ -139,12 +139,12 @@ partial class QC_SyntaxAnalyser {
         var expression = this:Expression11_MultiplicationDivisionModulo();
         
         if(this:AcceptSymbol("+")) {
-            var expression2 = this:Expression10_AdditionSubtraction();
+            var expression2 = this:Expression2_LogicalOr();
             
             return QC_Expression_Addition(expression, expression2);
         }
         else if(this:AcceptSymbol("-")) {
-            var expression2 = this:Expression10_AdditionSubtraction();
+            var expression2 = this:Expression2_LogicalOr();
             
             return QC_Expression_Subtraction(expression, expression2);
         } 
@@ -156,17 +156,17 @@ partial class QC_SyntaxAnalyser {
         var expression = this:Expression12_UnaryOperations();
         
         if(this:AcceptSymbol("*")) {
-            var expression2 = this:Expression10_AdditionSubtraction();
+            var expression2 = this:Expression2_LogicalOr();
             
             return QC_Expression_Multiplication(expression, expression2);
         }
         else if(this:AcceptSymbol("/")) {
-            var expression2 = this:Expression10_AdditionSubtraction();
+            var expression2 = this:Expression2_LogicalOr();
             
             return QC_Expression_Division(expression, expression2);
         }
         else if(this:AcceptSymbol("%")) {
-            var expression2 = this:Expression10_AdditionSubtraction();
+            var expression2 = this:Expression2_LogicalOr();
             
             return QC_Expression_Modulo(expression, expression2);
         } 
@@ -176,14 +176,24 @@ partial class QC_SyntaxAnalyser {
     
     function Expression12_UnaryOperations() {
         if(this:AcceptSymbol("-"))
-            return QC_Expression_Negation(this:Expression16_RawValue());
-        else if(this:AcceptSymbol("!"))
-            return QC_Expression_Not(this:Expression16_RawValue());
+            return QC_Expression_Negation(this:Expression13_GroupedEquation());
+        else if(this:AcceptSymbol("!")) 
+            return QC_Expression_Not(this:Expression13_GroupedEquation());
         else if(this:AcceptSymbol("#"))
-            return QC_Expression_Length(this:Expression16_RawValue());
+            return QC_Expression_Length(this:Expression13_GroupedEquation());
             
         // TODO: Casting
             
+        return this:Expression13_GroupedEquation();
+    }
+    
+    function Expression13_GroupedEquation() {
+        if(this:AcceptSymbol("(")) {
+            var expression = this:Expression();
+            this:RequireSymbol(")", "')' expected to close grouped equation.");
+            return QC_Expression_GroupedEquation(expression);
+        }
+              
         return this:Expression16_RawValue();
     }
     

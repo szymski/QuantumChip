@@ -70,7 +70,7 @@ partial class QC_Lexer {
             }  
           
             // Symbols
-            else if(this:AcceptPattern("[^%w^%s]+")) {
+            else if(this:AcceptPattern("[^%w^%s]+") || this:AcceptPattern("[%^]")) {
                 for(var i = this.PatternMatch:len(); i > 0; i--) {
                     if(QC.Spec.Symbols[this.PatternMatch:sub(1, i)]) {
                         this:PushToken("s", this.PatternMatch:sub(1, i));

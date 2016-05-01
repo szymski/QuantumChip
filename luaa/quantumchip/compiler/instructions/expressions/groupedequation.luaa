@@ -1,0 +1,34 @@
+/*-----------------------------------
+    Grouped equation
+-------------------------------------*/
+
+class QC_Expression_GroupedEquation : QC_Expression {
+
+    function QC_Expression_GroupedEquation(value) {
+        this.Value = value;
+    }    
+    
+    function GetValueType() {
+        return this.Value:GetValueType();
+    }
+    
+    function GetToken() {
+        return this.Token;
+    }
+    
+    function Analyse(analyser) {
+        this.Value:Analyse(analyser);
+    } 
+    
+    function GetChildren() {
+        return { this.Value };
+    }
+    
+    function GenerateCode(generator, tbl) {
+        tbl[#tbl + 1] = "(";
+        this.Value:GenerateCode(generator, tbl);
+        tbl[#tbl + 1] = ")";
+        
+    }
+    
+} 

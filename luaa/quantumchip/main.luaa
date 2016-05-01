@@ -82,19 +82,19 @@ include("compiler/compiler.lua");
     Testing
 -------------------------------------*/
         
-#if DEBUG   
-  
+#if DEBUG    
+    
 function QC.DoTest() {
 	var compiler = QC_Compiler();
 	compiler:Compile(@"    
-	 
-server {  
-	 
-	int gay = 123
-	       
-}       
-	");        
-}     
+	  
+server {    
+	   
+	int gay = -25 * (18 + (14^8)) 
+	        
+}         
+	");         
+}      
    
 QC.DoTest();
   
