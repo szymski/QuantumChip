@@ -23,4 +23,13 @@ class QC_Instruction_Side : QC_Instruction {
         this.Sequence:Analyse(analyser);
         analyser.Side = prev;
     }
+    
+    function GenerateCode(generator, tbl) {
+        tbl[#tbl + 1] = "if ";
+        tbl[#tbl + 1] = this.Side;
+        tbl[#tbl + 1] = " then\n";
+        this.Sequence:GenerateCode(generator, tbl);
+        tbl[#tbl + 1] = "\nend";   
+    }
+    
 }

@@ -27,8 +27,17 @@ QC.InstructionFiles = {
 	"expressions/ternary",
 	"expressions/logicalor",
 	"expressions/logicaland",
+	"expressions/bitwisexor",
+	"expressions/bitwiseor",
+	"expressions/bitwiseand",
+	"expressions/equals",
+	"expressions/notequals",
+	"expressions/greater",
+	"expressions/less",
+	"expressions/greaterorequal",
+	"expressions/lessorequal",
 };
-
+ 
 if(SERVER) {
 	AddCSLuaFile();
 	AddCSLuaFile("compiler/language_specification.lua");
@@ -42,11 +51,13 @@ if(SERVER) {
 	AddCSLuaFile("compiler/syntax_analyser/syntax_analyser_expressions.lua");
 	AddCSLuaFile("compiler/semantic_analyser/semantic_analyser.lua");
 	AddCSLuaFile("compiler/semantic_analyser/semantic_analyser_utils.lua");
+	AddCSLuaFile("compiler/code_generator/code_generator.lua");
+	AddCSLuaFile("compiler/code_generator/code_generator_utils.lua");
     AddCSLuaFile("compiler/compiler.lua");
 	
 	foreach(var v in QC.InstructionFiles)
 		AddCSLuaFile("compiler/instructions/" .. v .. ".lua");
-} 
+}  
 
 /*-----------------------------------
     Initialization
@@ -68,12 +79,12 @@ function QC.DoTest() {
 	compiler:Compile(@"    
 	 
 server {  
-	
-	int gay = true && false || false && true && true 
-	   
-}     
+	 
+	int gay = true == 5
+	       
+}      
 	");        
-}    
+}     
    
 QC.DoTest();
  

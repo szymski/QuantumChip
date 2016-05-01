@@ -17,5 +17,11 @@ class QC_Instruction_Sequence : QC_Instruction {
             instruction:Analyse(analyser);
         }
     }
-     
+    
+    function GenerateCode(generator, tbl) {
+        foreach(var instruction in this.List) {
+            instruction:GenerateCode(generator, tbl);
+        }
+    }
+    
 }

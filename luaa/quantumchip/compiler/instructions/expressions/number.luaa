@@ -17,4 +17,8 @@ class QC_Expression_Number : QC_Expression_RawValue {
         return this.Token;
     }
     
+    function GenerateCode(generator, tbl) {
+        tbl[#tbl + 1] = this.Value;
+    }
+    
 } 

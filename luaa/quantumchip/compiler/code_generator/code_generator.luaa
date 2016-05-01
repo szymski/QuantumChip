@@ -1,0 +1,31 @@
+/*-----------------------------------
+    Code generator
+    The constructor and other functions are in code_generator_utils.luaa file.
+-------------------------------------*/
+
+QC_CodeGenerator = null; // Required for partial classes
+
+include("code_generator_utils.lua");
+
+partial class QC_CodeGenerator {
+    
+    /*
+        Generates output code.
+    */
+    function Generate() {
+        var outputTable = { };
+        
+        this.InputSequence:GenerateCode(this, outputTable);
+        
+        this.OutputCode = table.concat(outputTable, ""); 
+    }
+     
+} 
+ 
+/*-----------------------------------
+    Testing
+-------------------------------------*/
+
+#if DEBUG 
+QC.DoTest();  
+#endif  

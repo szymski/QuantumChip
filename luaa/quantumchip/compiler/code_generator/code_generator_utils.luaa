@@ -1,0 +1,34 @@
+/*-----------------------------------
+    Code generator utils
+-------------------------------------*/
+
+partial class QC_CodeGenerator {
+    
+    var Time = 0; // Generating time
+    var InputSequence;
+    
+    var OutputCode;
+    
+    /*
+        Constructor
+    */
+    function QC_CodeGenerator(sequence) {
+        var startTime = SysTime();
+        
+        assert(sequence != null, "Input is nil. Sequence tree expected.");
+        
+        this.InputSequence = sequence;
+        this:Generate();
+        
+        this.Time = SysTime() - startTime;
+    }
+    
+} 
+ 
+/*-----------------------------------
+    Testing
+-------------------------------------*/
+
+#if DEBUG 
+QC.DoTest();  
+#endif  

@@ -2,9 +2,9 @@
     Boolean
 -------------------------------------*/
 
-class QC_Expression_LogicalAnd : QC_Expression {
+class QC_Expression_Greater : QC_Expression {
 
-    function QC_Expression_LogicalAnd(expression1, expression2) {
+    function QC_Expression_Greater(expression1, expression2) {
         this.Expression1 = expression1;
         this.Expression2 = expression2;
     }
@@ -18,11 +18,11 @@ class QC_Expression_LogicalAnd : QC_Expression {
     }
     
     function Analyse(analyser) {
-        if(this.Expression1:GetValueType() != "b")
-            analyser:ErrorToken(this.Expression1:GetToken(), "Expression type must be boolean!");
+        if(this.Expression1:GetValueType() != "n")
+            analyser:ErrorToken(this.Expression1:GetToken(), "Expression type must be number!");
             
-        if(this.Expression2:GetValueType() != "b")
-            analyser:ErrorToken(this.Expression2:GetToken(), "Expression type must be boolean!");
+        if(this.Expression2:GetValueType() != "n")
+            analyser:ErrorToken(this.Expression2:GetToken(), "Expression type must be number!");
         
         // TODO: Is operator
         
@@ -36,7 +36,7 @@ class QC_Expression_LogicalAnd : QC_Expression {
     
     function GenerateCode(generator, tbl) {
         this.Expression1:GenerateCode(generator, tbl);
-        tbl[#tbl + 1] = " and ";   
+        tbl[#tbl + 1] = " > ";   
         this.Expression2:GenerateCode(generator, tbl);        
     }
     

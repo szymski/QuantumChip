@@ -28,5 +28,8 @@ class QC_Instruction {
     function Analyse(analyser) {
         
     }
-       
+        
+    function GenerateCode(generator, tbl) {
+        error("Generator not implemented for " .. this:GetType()); 
+    }
 } 

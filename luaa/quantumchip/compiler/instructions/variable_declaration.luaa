@@ -23,4 +23,16 @@ class QC_Instruction_VariableDeclaration : QC_Instruction {
         return { this.Value };  
     }
     
+    function GenerateCode(generator, tbl) {
+        tbl[#tbl + 1] = "local ";
+        tbl[#tbl + 1] = this.Name;
+        if(this.Value) {
+            tbl[#tbl + 1] = " = ";
+            this.Value:GenerateCode(generator, tbl);
+        }
+        tbl[#tbl + 1] = "\n";
+        
+        print(this:GetType() .. " - generation not implemented");
+    }
+    
 }

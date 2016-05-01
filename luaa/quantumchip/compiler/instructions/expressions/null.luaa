@@ -16,4 +16,10 @@ class QC_Expression_Null : QC_Expression_RawValue {
         return this.Token;
     }
     
+    function GenerateCode(generator, tbl) {
+        tbl[#tbl + 1] = "nil";
+        
+        // TODO: Nullable checking
+    }
+    
 }

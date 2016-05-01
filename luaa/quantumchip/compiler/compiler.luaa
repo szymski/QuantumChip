@@ -11,6 +11,7 @@ include("preprocessor/preprocessor.lua");
 include("lexer/lexer.lua");
 include("syntax_analyser/syntax_analyser.lua");
 include("semantic_analyser/semantic_analyser.lua");
+include("code_generator/code_generator.lua");
 
 // Include instructions
 foreach(var v in QC.InstructionFiles)
@@ -70,6 +71,15 @@ class QC_Compiler {
         print("Analysis time: ", semantic_analyser.Time);
         print();
         
+        // Code generator
+        
+        print();
+        print("Creating code generator object");
+        var code_generator = QC_CodeGenerator(syntax_analyser.Output);          
+        print("Generating time: ", code_generator.Time);
+        print("Output code: " .. code_generator.OutputCode);
+        print();
+          
         print();
     }
-}
+}  

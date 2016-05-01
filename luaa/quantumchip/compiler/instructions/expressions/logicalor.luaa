@@ -34,4 +34,10 @@ class QC_Expression_LogicalOr : QC_Expression {
         return { this.Expression1, this.Expression2 };
     }
     
+    function GenerateCode(generator, tbl) {
+        this.Expression1:GenerateCode(generator, tbl);
+        tbl[#tbl + 1] = " or ";   
+        this.Expression2:GenerateCode(generator, tbl);        
+    }
+    
 }

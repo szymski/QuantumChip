@@ -32,4 +32,14 @@ class QC_Expression_Ternary : QC_Expression {
         return { this.Condition, this.IfTrue, this.IfFalse };
     }
     
+    function GenerateCode(generator, tbl) {
+        tbl[#tbl + 1] = "(";
+        this.Condition:GenerateCode(generator, tbl);
+        tbl[#tbl + 1] = " and ";
+        this.IfTrue:GenerateCode(generator, tbl);
+        tbl[#tbl + 1] = " or ";
+        this.IfFalse:GenerateCode(generator, tbl);
+        tbl[#tbl + 1] = ")";   
+    }
+    
 }

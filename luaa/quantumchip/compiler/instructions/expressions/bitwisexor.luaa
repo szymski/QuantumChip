@@ -2,15 +2,15 @@
     Boolean
 -------------------------------------*/
 
-class QC_Expression_LogicalAnd : QC_Expression {
+class QC_Expression_BitwiseXor : QC_Expression {
 
-    function QC_Expression_LogicalAnd(expression1, expression2) {
+    function QC_Expression_BitwiseXor(expression1, expression2) {
         this.Expression1 = expression1;
         this.Expression2 = expression2;
     }
     
     function GetValueType() {
-        return "b";
+        return "n";
     } 
     
     function GetToken() {
@@ -18,13 +18,11 @@ class QC_Expression_LogicalAnd : QC_Expression {
     }
     
     function Analyse(analyser) {
-        if(this.Expression1:GetValueType() != "b")
-            analyser:ErrorToken(this.Expression1:GetToken(), "Expression type must be boolean!");
+        if(this.Expression1:GetValueType() != "n")
+            analyser:ErrorToken(this.Expression1:GetToken(), "Expression type must be number!");
             
-        if(this.Expression2:GetValueType() != "b")
-            analyser:ErrorToken(this.Expression2:GetToken(), "Expression type must be boolean!");
-        
-        // TODO: Is operator
+        if(this.Expression2:GetValueType() != "n")
+            analyser:ErrorToken(this.Expression2:GetToken(), "Expression type must be number!");
         
         this.Expression1:Analyse(analyser);
         this.Expression2:Analyse(analyser);
@@ -35,9 +33,11 @@ class QC_Expression_LogicalAnd : QC_Expression {
     }
     
     function GenerateCode(generator, tbl) {
+        tbl[#tbl + 1] = "bit.bxor(";
         this.Expression1:GenerateCode(generator, tbl);
-        tbl[#tbl + 1] = " and ";   
-        this.Expression2:GenerateCode(generator, tbl);        
+        tbl[#tbl + 1] = ", ";   
+        this.Expression2:GenerateCode(generator, tbl);    
+        tbl[#tbl + 1] = ")";    
     }
     
 }

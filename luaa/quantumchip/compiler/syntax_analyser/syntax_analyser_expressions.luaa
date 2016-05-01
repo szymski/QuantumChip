@@ -40,7 +40,7 @@ partial class QC_SyntaxAnalyser {
     }
     
     function Expression3_LogicalAnd() {
-        var expression = this:Expression5_RawValue();
+        var expression = this:Expression4_BitwiseXor();
         
         if(this:AcceptSymbol("&&")) {
             var expression2 = this:Expression3_LogicalAnd();
@@ -51,7 +51,87 @@ partial class QC_SyntaxAnalyser {
         return expression;
     }
     
-    function Expression5_RawValue() {
+    function Expression4_BitwiseXor() {
+        var expression = this:Expression5_BitwiseOr();
+        
+        if(this:AcceptSymbol("^")) {
+            var expression2 = this:Expression4_BitwiseXor();
+            
+            return QC_Expression_BitwiseXor(expression, expression2);
+        }
+        
+        return expression;
+    }
+    
+    function Expression5_BitwiseOr() {
+        var expression = this:Expression6_BitwiseAnd();
+        
+        if(this:AcceptSymbol("|")) {
+            var expression2 = this:Expression5_BitwiseOr();
+            
+            return QC_Expression_BitwiseOr(expression, expression2);
+        }
+        
+        return expression;
+    }
+    
+    function Expression6_BitwiseAnd() {
+        var expression = this:Expression7_EqualNotEqual();
+        
+        if(this:AcceptSymbol("&")) {
+            var expression2 = this:Expression6_BitwiseAnd();
+            
+            return QC_Expression_BitwiseAnd(expression, expression2);
+        }
+        
+        return expression;
+    }  
+    
+    function Expression7_EqualNotEqual() {
+        var expression = this:Expression8_GreaterLess();
+        
+        if(this:AcceptSymbol("==")) {
+            var expression2 = this:Expression();
+            
+            return QC_Expression_Equals(expression, expression2);
+        }
+        else if(this:AcceptSymbol("!=")) {
+            var expression2 = this:Expression();
+            
+            return QC_Expression_NotEquals(expression, expression2);
+        }
+        
+        return expression;
+    }
+    
+    function Expression8_GreaterLess() {
+        var expression = this:Expression16_RawValue();
+        
+        if(this:AcceptSymbol(">")) {
+            var expression2 = this:Expression();
+            
+            return QC_Expression_Greater(expression, expression2);
+        }
+        else if(this:AcceptSymbol("<")) {
+            var expression2 = this:Expression();
+            
+            return QC_Expression_Less(expression, expression2);
+        }
+        else if(this:AcceptSymbol(">=")) {
+            var expression2 = this:Expression();
+            
+            return QC_Expression_GreaterOrEqual(expression, expression2);
+        }
+        else if(this:AcceptSymbol("<=")) {
+            var expression2 = this:Expression();
+            
+            return QC_Expression_LessOrEqual(expression, expression2);
+        }
+        
+        return expression;
+    }
+    
+    function Expression16_RawValue() {
         if(this:AcceptNumber()) {
             return QC_Expression_Number(this.CurrentToken, this.CurrentToken[2]);
         }
@@ -70,7 +150,7 @@ partial class QC_SyntaxAnalyser {
     
     function Expression_Invalid() {
         this:NextToken();
-        this:ErrorToken(this.CurrentToken, "Unexpected token '" .. this.CurrentToken[2] .. "'. " .. this.Message);
+        this:ErrorToken(this.CurrentToken, "Unexpected token '" .. this.CurrentToken[2] .. "'. " .. (this.Message ?? ""));
     }
    
 }
