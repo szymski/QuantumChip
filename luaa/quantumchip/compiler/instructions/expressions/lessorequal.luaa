@@ -1,5 +1,5 @@
 /*-----------------------------------
-    Boolean
+    Less or equal
 -------------------------------------*/
 
 class QC_Expression_LessOrEqual : QC_Expression {

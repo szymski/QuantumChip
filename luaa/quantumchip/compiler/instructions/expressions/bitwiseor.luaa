@@ -1,5 +1,5 @@
 /*-----------------------------------
-    Boolean
+    Bitwise or
 -------------------------------------*/
 
 class QC_Expression_BitwiseOr : QC_Expression {

@@ -1,16 +1,16 @@
 /*-----------------------------------
-    Less
+    Multiplication
 -------------------------------------*/
 
-class QC_Expression_Less : QC_Expression {
+class QC_Expression_Multiplication : QC_Expression {
 
-    function QC_Expression_Less(expression1, expression2) {
+    function QC_Expression_Multiplication(expression1, expression2) {
         this.Expression1 = expression1;
         this.Expression2 = expression2;
     }
     
     function GetValueType() {
-        return "b";
+        return "n";
     } 
     
     function GetToken() {
@@ -36,7 +36,7 @@ class QC_Expression_Less : QC_Expression {
     
     function GenerateCode(generator, tbl) {
         this.Expression1:GenerateCode(generator, tbl);
-        tbl[#tbl + 1] = " < ";   
+        tbl[#tbl + 1] = " * ";   
         this.Expression2:GenerateCode(generator, tbl);        
     }
     

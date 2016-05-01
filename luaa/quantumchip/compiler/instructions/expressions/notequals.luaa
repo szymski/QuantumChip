@@ -1,5 +1,5 @@
 /*-----------------------------------
-    Boolean
+    Not equals
 -------------------------------------*/
 
 class QC_Expression_NotEquals : QC_Expression {

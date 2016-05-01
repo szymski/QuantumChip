@@ -36,6 +36,16 @@ QC.InstructionFiles = {
 	"expressions/less",
 	"expressions/greaterorequal",
 	"expressions/lessorequal",
+	"expressions/addition",
+	"expressions/subtraction",
+	"expressions/multiplication",
+	"expressions/division",
+	"expressions/modulo",
+	"expressions/groupedequation",
+	"expressions/negation",
+	"expressions/length",
+	"expressions/cast",
+	"expressions/not",
 };
  
 if(SERVER) {
@@ -53,7 +63,7 @@ if(SERVER) {
 	AddCSLuaFile("compiler/semantic_analyser/semantic_analyser_utils.lua");
 	AddCSLuaFile("compiler/code_generator/code_generator.lua");
 	AddCSLuaFile("compiler/code_generator/code_generator_utils.lua");
-    AddCSLuaFile("compiler/compiler.lua");
+    AddCSLuaFile("compiler/compiler.lua"); 
 	
 	foreach(var v in QC.InstructionFiles)
 		AddCSLuaFile("compiler/instructions/" .. v .. ".lua");
@@ -80,12 +90,12 @@ function QC.DoTest() {
 	 
 server {  
 	 
-	int gay = true == 5
+	int gay = 123
 	       
-}      
+}       
 	");        
 }     
    
 QC.DoTest();
- 
+  
 #endif  

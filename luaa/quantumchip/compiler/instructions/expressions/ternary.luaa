@@ -1,5 +1,5 @@
 /*-----------------------------------
-    Boolean
+    Ternary
 -------------------------------------*/
 
 class QC_Expression_Ternary : QC_Expression {

@@ -1,0 +1,34 @@
+/*-----------------------------------
+    Length
+-------------------------------------*/
+
+class QC_Expression_Length : QC_Expression {
+
+    function QC_Expression_Length(value) {
+        this.Value = value;
+    }    
+    
+    function GetValueType() {
+        return this.Value:GetValueType();
+    }
+    
+    function GetToken() {
+        return this.Token;
+    }
+    
+    function Analyse(analyser) {
+        // TODO: Length operator
+        
+        this.Value:Analyse(analyser);
+    }
+    
+    function GetChildren() {
+        return { this.Value };
+    }
+    
+    function GenerateCode(generator, tbl) {
+        tbl[#tbl + 1] = "#";
+        this.Value:GenerateCode(generator, tbl);
+    }
+    
+} 

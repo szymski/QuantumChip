@@ -1,5 +1,5 @@
 /*-----------------------------------
-    Boolean
+    Logical or
 -------------------------------------*/
 
 class QC_Expression_LogicalOr : QC_Expression {

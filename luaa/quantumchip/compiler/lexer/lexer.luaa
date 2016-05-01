@@ -31,7 +31,7 @@ partial class QC_Lexer {
             }
             
             // Numbers 
-            else if(this:AcceptPattern("-?%d+%.%d+") || this:AcceptPattern("-?%d+")) {
+            else if(this:AcceptPattern("%d+%.%d+") || this:AcceptPattern("%d+")) {
                 this:PushToken("n", this.PatternMatch);
             }   
             

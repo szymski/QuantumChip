@@ -1,5 +1,5 @@
 /*-----------------------------------
-    Boolean
+    Equals
 -------------------------------------*/
 
 class QC_Expression_Equals : QC_Expression {
