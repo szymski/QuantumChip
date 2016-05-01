@@ -4,12 +4,16 @@
 
 class QC_Expression_Null : QC_Expression_RawValue {
 
-    function QC_Expression_Null() {
-        
+    function QC_Expression_Null(token) {
+        this.Token = token;
     }
 
     function GetValueType() {
         return "null";
+    }
+    
+    function GetToken() {
+        return this.Token;
     }
     
 }

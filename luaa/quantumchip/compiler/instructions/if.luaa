@@ -15,7 +15,7 @@ class QC_Instruction_If : QC_Instruction {
     
     function Analyse(analyser) {
         if(this.Condition:GetValueType() != "b")
-            analyser:Error("Condition type must be boolean!");
+            analyser:ErrorToken(this.Condition:GetToken(), "Condition type must be boolean!");
         
         // TODO: Is operator
         

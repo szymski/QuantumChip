@@ -1,0 +1,35 @@
+/*-----------------------------------
+    Boolean
+-------------------------------------*/
+
+class QC_Expression_Ternary : QC_Expression {
+
+    function QC_Expression_Ternary(condition, ifTrue, ifFalse) {
+        this.Condition = condition;
+        this.IfTrue = ifTrue;
+        this.IfFalse = ifFalse;
+    }
+    
+    function GetValueType() {
+        return "b";
+    } 
+    
+    function GetToken() {
+        return this.Condition:GetToken();
+    }
+    
+    function Analyse(analyser) {
+        if(this.Condition:GetValueType() != "b")
+            analyser:ErrorToken(this.Condition:GetToken(), "Condition type must be boolean!");
+        
+        // TODO: Is operator
+        
+        this.IfTrue:Analyse(analyser);
+        this.IfFalse:Analyse(analyser);
+    }
+    
+    function GetChildren() {
+        return { this.Condition, this.IfTrue, this.IfFalse };
+    }
+    
+}

@@ -26,8 +26,17 @@ partial class QC_SemanticAnalyser {
         Errors
     -------------------------------------*/
     
+    var Errored = false;
+    var ErrorLine, ErrorCharacter;
+    
     function Error(message) {
         error(message);
+    }
+    
+    function ErrorToken(token, message) {
+        this.Errored, this.ErrorLine, this.ErrorCharacter = true, token[3], token[4] - #token[2];
+        
+        error("Line " .. this.ErrorLine .. ", char " .. this.ErrorCharacter .. ": " .. message);
     }
     
 } 

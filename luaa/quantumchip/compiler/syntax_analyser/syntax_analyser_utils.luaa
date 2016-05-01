@@ -5,7 +5,7 @@
 
 partial class QC_SyntaxAnalyser {
        
-    var Output = { }; // Output instruction table
+    var Output; // Output instruction table
     var Time = 0; // Analysis time
     
     var InputTokens;
@@ -174,10 +174,19 @@ partial class QC_SyntaxAnalyser {
         Errors
     -------------------------------------*/
     
+    var Errored = false;
+    var ErrorLine, ErrorCharacter;
+    
     function Error(message) {
         error(message);
     }
-}
+    
+    function ErrorToken(token, message) {
+        this.Errored, this.ErrorLine, this.ErrorCharacter = true, token[3], token[4] - #token[2];
+        
+        error("Line " .. this.ErrorLine .. ", char " .. this.ErrorCharacter .. ": " .. message);
+    }
+} 
 
 /*-----------------------------------
     Testing

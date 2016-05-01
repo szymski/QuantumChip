@@ -14,7 +14,6 @@ class QC_Instruction_Sequence : QC_Instruction {
     
     function Analyse(analyser) {
         foreach(var instruction in this.List) {
-            print(instruction:GetType());
             instruction:Analyse(analyser);
         }
     }

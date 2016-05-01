@@ -11,7 +11,7 @@ partial class QC_SyntaxAnalyser {
     
     function Statement1_Side() {
         if(this:AcceptKeywords("server", "client")) { 
-            return QC_Instruction_Side(this.CurrentToken[2]:upper(), this:Block(true));
+            return QC_Instruction_Side(this.CurrentToken, this.CurrentToken[2]:upper(), this:Block(true));
         }
         
         return this:Statement2_If(); 
@@ -24,7 +24,7 @@ partial class QC_SyntaxAnalyser {
             this:RequireSymbol(")", "')' expected to close if statement condition.");
             return QC_Instruction_If(cond, this:Block(true));
         }
-        
+         
         return this:Statement3_WhileLoop();
     }
     
@@ -96,6 +96,7 @@ partial class QC_SyntaxAnalyser {
     function Statement8_VariableDeclarationFunctionCall() {
         if(this:AcceptIdentifier()) {
             var type = this.CurrentToken[2]; 
+            var typeToken = this.CurrentToken;
             
             // Check if function call
             if(this:AcceptSymbol("(")) {
@@ -106,9 +107,10 @@ partial class QC_SyntaxAnalyser {
             }
             
             var name = this:RequireIdentifier("Variable name expected.")[2];
+            var nameToken = this.CurrentToken;
             
             if(this:AcceptSymbol("="))
-                return QC_Instruction_VariableDeclaration(type, name, this:Expression());
+                return QC_Instruction_VariableDeclaration(typeToken, type, nameToken, name, this:Expression("Variable value expected."));
             
             return QC_Instruction_VariableDeclaration(type, name);
         }
@@ -118,7 +120,7 @@ partial class QC_SyntaxAnalyser {
 
     function Statement_Invalid() { 
         this:NextToken();
-        this:Error("Unexpected token '" .. this.CurrentToken[2] .. "' of type " .. this.CurrentToken[1]);
+        this:ErrorToken(this.CurrentToken, "Unexpected token '" .. this.CurrentToken[2] .. "' of type " .. this.CurrentToken[1]);
     }
 }   
 

@@ -4,6 +4,9 @@
 
 QC = { }; 
 
+print("\n\n------------------------------------\n\n");
+QC.DoTest = function() { };
+
 /*-----------------------------------
     Files
 -------------------------------------*/
@@ -21,6 +24,9 @@ QC.InstructionFiles = {
 	"expressions/boolean",
 	"expressions/string",
 	"expressions/null",
+	"expressions/ternary",
+	"expressions/logicalor",
+	"expressions/logicaland",
 };
 
 if(SERVER) {
@@ -62,12 +68,12 @@ function QC.DoTest() {
 	compiler:Compile(@"    
 	 
 server {  
-	if (123) {
-		int gay = 5
-	}    
-}   
-	");    
-}  
+	
+	int gay = true && false || false && true && true 
+	   
+}     
+	");        
+}    
    
 QC.DoTest();
  

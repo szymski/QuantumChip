@@ -46,13 +46,9 @@ partial class QC_Lexer {
         if(this.Line > #this.InputLines)
             return false;
         
-        this:PrintLine("NextChar 1");
-        
         // Go to the next line, if we're at the end of current one
         if(this.Position > this.CurrentLine:len())
         { 
-            this:PrintLine("NextChar 2");
-            
             this.Line = this.Line + 1;
             this.Position = 0;
             
@@ -68,8 +64,6 @@ partial class QC_Lexer {
             // TODO: REWRITE THIS FUCKING SHIT
             // TODO: TOKENY SIE NIE DODAJA
         }
-        
-        this:PrintLine("NextChar 3");
         
         this.CurrentLine = this.InputLines[this.Line];
         this.CurrentChar = this.CurrentLine[this.Position];
@@ -111,13 +105,9 @@ partial class QC_Lexer {
         var startPos, endPos = string.find(this.CurrentLine, pattern, this.Position);
         
         if(startPos && startPos != -1 && startPos == this.Position) {
-            this:PrintLine("AcceptPattern 1");
-            
             this.PatternStack[#this.PatternStack + 1] = { this.Line, this.Position, this.CurrentMatch }; 
             this.PatternMatch = this.CurrentLine:sub(this.Position, endPos);
             this.Position = endPos;
-            
-            this:PrintLine("AcceptPattern 2");
             
             return true;
         }
@@ -154,13 +144,4 @@ partial class QC_Lexer {
         this.Tokens[#this.Tokens + 1] = { type, value, this.Line, this.Position };
     }
     
-    /*-----------------------------------
-        Debug
-    -------------------------------------*/
-    
-    function PrintLine(prefix) {
-#if DEBUG
-        //MsgC(Color(0, 255, 0), prefix, ":    ", Color(255, 255, 255), "Line: ", this.Line, "    ", Color(255, 255, 255), "Position: ", this.Position, "\n");
-#endif
-    }
 }

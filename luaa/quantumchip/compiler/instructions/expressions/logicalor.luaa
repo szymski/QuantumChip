@@ -1,0 +1,37 @@
+/*-----------------------------------
+    Boolean
+-------------------------------------*/
+
+class QC_Expression_LogicalOr : QC_Expression {
+
+    function QC_Expression_LogicalOr(expression1, expression2) {
+        this.Expression1 = expression1;
+        this.Expression2 = expression2;
+    }
+    
+    function GetValueType() {
+        return "b";
+    } 
+    
+    function GetToken() {
+        return this.Expression1:GetToken();
+    }
+    
+    function Analyse(analyser) {
+        if(this.Expression1:GetValueType() != "b")
+            analyser:ErrorToken(this.Expression1:GetToken(), "Expression type must be boolean!");
+            
+        if(this.Expression2:GetValueType() != "b")
+            analyser:ErrorToken(this.Expression2:GetToken(), "Expression type must be boolean!");
+        
+        // TODO: Is operator
+        
+        this.Expression1:Analyse(analyser);
+        this.Expression2:Analyse(analyser);
+    }
+    
+    function GetChildren() {
+        return { this.Expression1, this.Expression2 };
+    }
+    
+}

@@ -4,7 +4,8 @@
 
 class QC_Instruction_Side : QC_Instruction {
 
-    function QC_Instruction_Side(side, sequence) {
+    function QC_Instruction_Side(sideToken, side, sequence) {
+        this.SideToken = sideToken;
         this.Side = side;
         this.Sequence = sequence;
     }
@@ -15,7 +16,7 @@ class QC_Instruction_Side : QC_Instruction {
     
     function Analyse(analyser) {
         if(analyser.Side && analyser.Side != this.Side)
-            analyser:Error("Cannot run " .. this.Side:lower() .. "side code in " .. analyser.Side:lower() .. "side-only scope.");
+            analyser:ErrorToken(this.SideToken, "Cannot run " .. this.Side:lower() .. "side code in " .. analyser.Side:lower() .. "side-only block.");
         
         var prev = analyser.Side; 
         analyser.Side = this.Side;

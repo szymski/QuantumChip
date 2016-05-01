@@ -4,12 +4,17 @@
 
 class QC_Expression_String : QC_Expression_RawValue {
 
-    function QC_Expression_String(value) {
+    function QC_Expression_String(token, value) {
+        this.Token = token;
         this.Value = value;
     }
 
     function GetValueType() {
         return "s";
+    }
+    
+    function GetToken() {
+        return this.Token;
     }
     
 }

@@ -5,30 +5,72 @@
 
 partial class QC_SyntaxAnalyser {
 
-    function Expression() {
-        return this:Expression5_RawValue();
+    var Message;
+
+    function Expression(message) {
+        this.Message = message;
+        
+        return this:Expression1_Ternary();
+    }
+    
+    function Expression1_Ternary() {
+        var expression = this:Expression2_LogicalOr();
+        
+        if(this:AcceptSymbol("?")) {
+           var ifTrue = this:Expression2_LogicalOr();
+           this:RequireSymbol(":", "':' expected for ternary operator.");
+           var ifFalse = this:Expression2_LogicalOr();
+           
+           return QC_Expression_Ternary(expression, ifTrue, ifFalse);
+        }
+        
+        return expression;
+    }
+    
+    function Expression2_LogicalOr() {
+        var expression = this:Expression3_LogicalAnd();
+        
+        if(this:AcceptSymbol("||")) {
+            var expression2 = this:Expression2_LogicalOr();
+            
+            return QC_Expression_LogicalOr(expression, expression2);
+        }
+        
+        return expression;
+    }
+    
+    function Expression3_LogicalAnd() {
+        var expression = this:Expression5_RawValue();
+        
+        if(this:AcceptSymbol("&&")) {
+            var expression2 = this:Expression3_LogicalAnd();
+            
+            return QC_Expression_LogicalAnd(expression, expression2);
+        }
+        
+        return expression;
     }
     
     function Expression5_RawValue() {
         if(this:AcceptNumber()) {
-            return QC_Expression_Number(this.CurrentToken[2]);
+            return QC_Expression_Number(this.CurrentToken, this.CurrentToken[2]);
         }
         else if(this:AcceptString()) {
-            return QC_Expression_String(this.CurrentToken[2]);
+            return QC_Expression_String(this.CurrentToken, this.CurrentToken[2]);
         }
         else if(this:AcceptKeywords("true", "false")) {
-            return QC_Expression_Boolean(this.CurrentToken[2]);
+            return QC_Expression_Boolean(this.CurrentToken, this.CurrentToken[2]);
         }
         else if(this:AcceptKeyword("null")) {
-            return QC_Expression_Null();
+            return QC_Expression_Null(this.CurrentToken);
         }
         
         return this:Expression_Invalid();
-    }
+    } 
     
     function Expression_Invalid() {
         this:NextToken();
-        this:Error("Unexpected token '" .. this.CurrentToken[2] .. "' of type " .. this.CurrentToken[1]);
+        this:ErrorToken(this.CurrentToken, "Unexpected token '" .. this.CurrentToken[2] .. "'. " .. this.Message);
     }
    
 }

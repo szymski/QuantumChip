@@ -4,10 +4,19 @@
 
 class QC_Instruction_VariableDeclaration : QC_Instruction {
 
-    function QC_Instruction_VariableDeclaration(type, name, value) {
+    function QC_Instruction_VariableDeclaration(typeToken, type, nameToken, name, value) {
+        this.TypeToken = typeToken;
+        this.NameToken = nameToken;
         this.Type = type;
         this.Name = name;
         this.Value = value;
+    }
+    
+    function Analyse(analyser) {
+        // TODO: Type-checking
+        
+        if(this.Value)
+            this.Value:Analyse(analyser);
     }
     
     function GetChildren() {
