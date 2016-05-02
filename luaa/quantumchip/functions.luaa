@@ -14,11 +14,11 @@ QC_FUNCTION_VIRTUAL = 2;
         MethodOf - method class, nil if not a method
         Arguments - list of arguments
         ReturnType - type of returned value
-        Compile - compiling delegate
+        Compile - compiling delegate - (compiler, codeTable, ...)
 */
 QC.Functions = { };
-QC.FunctionsByName = { };
-QC.FunctionsByClass = { };
+QC.FunctionsByName = { }; // Values - tables of funtions
+QC.FunctionsByClass = { }; // Values - functions by name tables
 QC.Operators = { };
 QC.OperatorsByName = { };
 QC.OperatorsByClass = { };
@@ -28,7 +28,7 @@ QC.OperatorsByClass = { };
 -------------------------------------*/
 
 function QC.AddInlineFunction(component, name, arguments, returnType, inline) {
-    QC.AddFunction(component, QC_FUNCTION_INLINE, name, arguments, returnType, code);
+    QC.AddFunction(component, QC_FUNCTION_INLINE, name, arguments, returnType, inline);
 }
 
 function QC.AddFunction(component, type, name, arguments, returnType, arg1, arg2, arg3) {
@@ -38,7 +38,12 @@ function QC.AddFunction(component, type, name, arguments, returnType, arg1, arg2
     var isMethod = #splitArguments == 2;
     var methodOf = isMethod ? splitArguments[1] : null;
     
-    // TODO: Compile delegate generating
+    var arguments = string.Explode(",", isMethod ? splitArguments[2] : splitArguments[1]);
+    
+    var compileFunc = function() { error("Not implemented;"); };
+    
+    if(type == QC_FUNCTION_INLINE)
+        compileFunc = QC.CompileInlineFunctionGenerator(methodOf, arguments, arg1);
     
     var tbl = {
         Component = component,
@@ -49,6 +54,71 @@ function QC.AddFunction(component, type, name, arguments, returnType, arg1, arg2
         ReturnType = returnType,
         Compile = compileFunc,
     };
+    
+    QC.Functions[#QC.Functions + 1] = tbl;
+    
+    QC.FunctionsByName[name] = QC.FunctionsByName[name] ?? { };
+    QC.FunctionsByName[name][#QC.FunctionsByName[name] + 1] = tbl;
+    
+    if(methodOf) {
+        QC.FunctionsByClass[methodOf] = QC.FunctionsByClass[methodOf] ?? { };
+        QC.FunctionsByClass[methodOf][name] = tbl;
+    }
+}
+
+// TODO: Prepared functions
+
+// TODO: Operators
+
+/*-----------------------------------
+    Compiling function generators
+-------------------------------------*/
+
+function QC.ParseFunction(code, outputTbl) {
+    var pos, startPos = 0, 1;
+    
+    while(true) {
+        pos = pos + 1;
+        
+        if(pos > #code) {
+            outputTbl[#outputTbl + 1] = "COMPILER_TABLE[#COMPILER_TABLE + 1] = [[";
+            outputTbl[#outputTbl + 1] = code:sub(startPos, pos);
+            outputTbl[#outputTbl + 1] = "]]";
+            break;
+        }
+        
+        if(code[pos] == "@") {
+            outputTbl[#outputTbl + 1] = "COMPILER_TABLE[#COMPILER_TABLE + 1] = [[";
+			outputTbl[#outputTbl + 1] = code:sub(startPos, pos - 1);
+            outputTbl[#outputTbl + 1] = "]]\n";
+            outputTbl[#outputTbl + 1] = "COMPILER_TABLE[#COMPILER_TABLE + 1] = ";
+			outputTbl[#outputTbl + 1] = "arg";
+			outputTbl[#outputTbl + 1] = code[pos + 1];
+            outputTbl[#outputTbl + 1] = "\n";
+			startPos = pos + 2;
+        }
+    }
+}
+
+function QC.CompileInlineFunctionGenerator(methodOf, arguments, inlineCode) {
+    var codeTbl = { };
+    
+    codeTbl[#codeTbl + 1] = "return function(COMPILER, COMPILER_TABLE, ";
+    if(methodOf)
+        codeTbl[#codeTbl + 1] = "arg1, ";
+    foreach(var k, arg in arguments)
+        codeTbl[#codeTbl + 1] = "arg" .. (k + (methodOf ? 1 : 0)) .. (k == #arguments ? "" : ", ");
+    codeTbl[#codeTbl + 1] = ")\n";
+    
+    QC.ParseFunction(inlineCode, codeTbl);
+    
+    codeTbl[#codeTbl + 1] = "\nend";
+    
+    var final = table.concat(codeTbl, "");
+    
+    print("Generator code: " .. final);
+    
+    return CompileString(final, "QUANTUMCHIP_FUNCTION_COMPILER")();
 }
 
 /*-----------------------------------
@@ -98,3 +168,18 @@ function QC.AddClassAlias(component, shortName, alias) {
     
     QC.FunctionsByClass[alias] = QC.FunctionsByClass[shortName];
 }
+
+/*-----------------------------------
+    Testing
+-------------------------------------*/
+
+#if DEBUG
+
+var codeTbl = { };
+var generator = QC.CompileInlineFunctionGenerator(null, { "s", "s" }, "@1 .. @2 + print(@3)");
+
+generator(null, codeTbl, "object", "Memory[1]", "Memory[2]"); 
+
+print(table.concat(codeTbl, ""));
+
+#endif 

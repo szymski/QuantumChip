@@ -1,0 +1,35 @@
+/*-----------------------------------
+    Function call
+-------------------------------------*/
+
+class QC_Instruction_FunctionCall : QC_Instruction {
+
+    function QC_Instruction_FunctionCall(nameToken, name, argumentList) {
+        this.NameToken = nameToken;
+        this.Name = name;
+        this.ArgumentList = argumentList; // List of expressions
+    }
+    
+    function Analyse(analyser) {
+        this.FunctionTbl = analyser:LookUpFunction(null, this.NameToken, this.Name, this.ArgumentList);
+    }
+    
+    function GetChildren() {
+        return this.ArgumentList;  
+    }
+    
+    function GenerateCode(generator, tbl) {
+        var args = { };
+        
+        generator.Preparation[#generator.Preparation + 1] = "// Preparation";
+        
+        foreach(var arg in this.ArgumentList) {
+            var tbl2 = { };
+            arg:GenerateCode(generator, tbl2);
+            args[#args + 1] = table.concat(tbl2, "");
+        }
+        
+        this.FunctionTbl.Compile(generator, tbl, unpack(args));
+    }
+    
+}

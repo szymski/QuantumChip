@@ -99,11 +99,20 @@ partial class QC_SyntaxAnalyser {
             var typeToken = this.CurrentToken;
             
             // Check if function call
-            if(this:AcceptSymbol("(")) {
-                // TODO: Function calls
+            if(this:AcceptSymbol("("))
+                return QC_Instruction_FunctionCall(typeToken, type, this:CallArgumentList());
+            
+            // Check if method call
+            if(this:AcceptSymbol(".")) {
+                // TODO: Method calls
                 this:Error("Not implemented");
                 
                 return QC_Instruction_FunctionCall();
+            }
+            
+            // Check if variable operator
+            if(this:AcceptSymbol()) {
+               
             }
             
             var name = this:RequireIdentifier("Variable name expected.")[2];
@@ -121,6 +130,32 @@ partial class QC_SyntaxAnalyser {
     function Statement_Invalid() { 
         this:NextToken();
         this:ErrorToken(this.CurrentToken, "Unexpected token '" .. this.CurrentToken[2] .. "' of type " .. this.CurrentToken[1]);
+    }
+    
+    /*-----------------------------------
+        Helpers
+    -------------------------------------*/
+    
+    function CallArgumentList() {
+        var arguments = { };
+        
+        var afterComma = false;
+        
+        while(true) {
+            if(!afterComma && this:AcceptSymbol(")"))
+                break;
+                
+            arguments[#arguments + 1] = this:Expression("Function argument expected.");
+            afterComma = false;
+            
+            if(this:AcceptSymbol(")"))
+                break;
+                
+            this:RequireSymbol(",", "',' expected between function arguments.");
+            afterComma = true;
+        }
+        
+        return arguments;
     }
 }   
 

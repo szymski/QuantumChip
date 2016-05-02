@@ -20,7 +20,25 @@ class QC_Instruction_Sequence : QC_Instruction {
     
     function GenerateCode(generator, tbl) {
         foreach(var instruction in this.List) {
-            instruction:GenerateCode(generator, tbl);
+            var prevPreparation = generator.Preparation;
+            generator.Preparation = { };
+            
+            var tbl2 = { }; // Temporary table for instructions
+            instruction:GenerateCode(generator, tbl2);
+            
+            // Preparation
+            foreach(var prep in generator.Preparation)
+                tbl[#tbl + 1] = prep;
+                
+            tbl[#tbl + 1] = "\n";
+            
+            // Actual code
+            foreach(var code in tbl2)
+                tbl[#tbl + 1] = code;
+            
+            tbl[#tbl + 1] = "\n";
+            
+            generator.Preparation = prevPreparation;
         }
     }
     

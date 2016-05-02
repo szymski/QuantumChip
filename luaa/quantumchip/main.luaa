@@ -17,6 +17,8 @@ QC.InstructionFiles = {
 	"if",
 	"side",
 	"variable_declaration",
+	"functioncall",
+	"methodcall",
 	
 	"expressions/expression",
 	"expressions/rawvalue",
@@ -92,13 +94,14 @@ function QC.DoTest() {
 	compiler:Compile(@"    
 	  
 server {    
-	   
-	int gay = -25 * (18 + (14^8)) 
-	        
-}         
+	         
+	print(\"seems ok\")       
+	print(123)         
+	             
+}            
 	");         
 }      
    
 QC.DoTest();
   
-#endif  
+#endif    

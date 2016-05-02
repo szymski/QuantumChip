@@ -23,6 +23,42 @@ partial class QC_SemanticAnalyser {
     }
     
     /*-----------------------------------
+        Function helpers
+    -------------------------------------*/
+    
+    function LookUpFunction(methodOf, nameToken, name, argumentList) {
+        var functionList = QC.FunctionsByName[name];
+        if(!functionList)
+            this:ErrorToken(nameToken, "No such function " .. name .. ".");
+        
+        var typeArgList = { };
+        foreach(var v in argumentList)
+            typeArgList[#typeArgList + 1] = v:GetValueType();
+        
+        var properFunctionTbl;
+        
+        foreach(var functionTbl in functionList) {
+            if(functionTbl.MethodOf == methodOf && 
+               this:CheckArguments(functionTbl.Arguments, typeArgList)) {
+                   return functionTbl;
+               }
+        }
+        
+        this:ErrorToken(nameToken, "No overload (" .. table.concat(typeArgList, ", ") .. ") for function " .. name .. ".");
+    }
+    
+    function CheckArguments(args1, args2) {
+        if(#args1 != #args2)
+            return false;
+        
+        foreach(var k, v in args1)
+            if(args2[k] != v)
+                return false;
+        
+        return true;
+    }
+    
+    /*-----------------------------------
         Errors
     -------------------------------------*/
     

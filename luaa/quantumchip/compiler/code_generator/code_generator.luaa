@@ -9,6 +9,8 @@ include("code_generator_utils.lua");
 
 partial class QC_CodeGenerator {
     
+    var Preparation = { };
+     
     /*
         Generates output code.
     */

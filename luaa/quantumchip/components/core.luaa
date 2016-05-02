@@ -8,4 +8,11 @@ COMPONENT.Author = "Szymekk";
 
 COMPONENT:AddClass("b", "boolean");  
 COMPONENT:AddClass("n", "number");  
-COMPONENT:AddClass("s", "string");   
+COMPONENT:AddClass("s", "string");    
+
+/*-----------------------------------
+    Print functions
+-------------------------------------*/
+
+COMPONENT:AddFunctionInline("print", "s", "", "print(@1)");
+COMPONENT:AddFunctionInline("print", "n", "", "print(@1)");
