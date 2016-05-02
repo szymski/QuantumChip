@@ -10,6 +10,8 @@ include("code_generator_utils.lua");
 partial class QC_CodeGenerator {
     
     var Preparation = { };
+    var CompilingFuncId = 0;
+    var CurrentUniquePrefix;
      
     /*
         Generates output code.
@@ -22,6 +24,17 @@ partial class QC_CodeGenerator {
         this.OutputCode = table.concat(outputTable, ""); 
     }
      
+    /*
+        Generates a prefix for function generator ($).
+    */
+    function GenerateUniquePrefix() {
+        return this.CurrentUniquePrefix;
+    }
+    
+    function NextFunctionCompiling() {
+        this.CompilingFuncId = this.CompilingFuncId + 1;
+        this.CurrentUniquePrefix = "genvar" .. this.CompilingFuncId .. "_";
+    }
 } 
  
 /*-----------------------------------

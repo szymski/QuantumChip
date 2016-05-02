@@ -14,5 +14,6 @@ COMPONENT:AddClass("s", "string");
     Print functions
 -------------------------------------*/
 
-COMPONENT:AddFunctionInline("print", "s", "", "print(@1)");
-COMPONENT:AddFunctionPrepared("printp", "n", "", "local gay = @1 * 2", "gay");
+COMPONENT:AddFunctionPrepared("print", "n", "", "", "print(@1)");
+COMPONENT:AddFunctionPrepared("printadd", "n,n", "", "local $value = @1 * @2", "print($value)");
+COMPONENT:AddFunctionInline("printi", "n", "", "print(@1)"); 

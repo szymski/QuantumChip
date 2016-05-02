@@ -27,7 +27,8 @@ class QC_Instruction_FunctionCall : QC_Instruction {
             args[#args + 1] = table.concat(tbl2, "");
         }
         
-        this.FunctionTbl.Compile(generator, tbl, unpack(args));
+        if(this.FunctionTbl.Type != QC_FUNCTION_INLINE) // Inline functions not compiled
+            this.FunctionTbl.Compile(generator, tbl, unpack(args));
     }
     
 }
