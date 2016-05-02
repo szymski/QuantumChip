@@ -31,6 +31,10 @@ function QC.AddInlineFunction(component, name, arguments, returnType, inline) {
     QC.AddFunction(component, QC_FUNCTION_INLINE, name, arguments, returnType, inline);
 }
 
+function QC.AddPreparedFunction(component, name, arguments, returnType, prepared, inline) {
+    QC.AddFunction(component, QC_FUNCTION_PREPARED, name, arguments, returnType, inline);
+}
+
 function QC.AddFunction(component, type, name, arguments, returnType, arg1, arg2, arg3) {
     var splitArguments = string.Explode(":", arguments);
     assert(#splitArguments <= 2, name .. " function arguments of component " .. component.Name .. " are broken.");
@@ -44,6 +48,8 @@ function QC.AddFunction(component, type, name, arguments, returnType, arg1, arg2
     
     if(type == QC_FUNCTION_INLINE)
         compileFunc = QC.CompileInlineFunctionGenerator(methodOf, arguments, arg1);
+    else if(type == QC_FUNCTION_PREPARED)
+        compileFunc = QC.CompilePreparedFunctionGenerator(methodOf, arguments, arg1, arg2);
     
     var tbl = {
         Component = component,
@@ -74,28 +80,42 @@ function QC.AddFunction(component, type, name, arguments, returnType, arg1, arg2
     Compiling function generators
 -------------------------------------*/
 
-function QC.ParseFunction(code, outputTbl) {
+function QC.ParseFunction(code, outputTbl, prepared) {
+    var tableString = !prepared ? "COMPILER_TABLE[#COMPILER_TABLE + 1] = [[" : "COMPILER.Preparation[#COMPILER.Preparation + 1] = [[";
+    var tableStringNoString = !prepared ? "COMPILER_TABLE[#COMPILER_TABLE + 1] = " : "COMPILER.Preparation[#COMPILER.Preparation + 1] = ";
+    
     var pos, startPos = 0, 1;
     
     while(true) {
         pos = pos + 1;
         
         if(pos > #code) {
-            outputTbl[#outputTbl + 1] = "COMPILER_TABLE[#COMPILER_TABLE + 1] = [[";
+            outputTbl[#outputTbl + 1] = tableString;
             outputTbl[#outputTbl + 1] = code:sub(startPos, pos);
             outputTbl[#outputTbl + 1] = "]]";
             break;
         }
         
+        // Function argument
         if(code[pos] == "@") {
-            outputTbl[#outputTbl + 1] = "COMPILER_TABLE[#COMPILER_TABLE + 1] = [[";
+            outputTbl[#outputTbl + 1] = tableString;
 			outputTbl[#outputTbl + 1] = code:sub(startPos, pos - 1);
             outputTbl[#outputTbl + 1] = "]]\n";
-            outputTbl[#outputTbl + 1] = "COMPILER_TABLE[#COMPILER_TABLE + 1] = ";
+            outputTbl[#outputTbl + 1] = tableString;
 			outputTbl[#outputTbl + 1] = "arg";
 			outputTbl[#outputTbl + 1] = code[pos + 1];
-            outputTbl[#outputTbl + 1] = "\n";
+            outputTbl[#outputTbl + 1] = "]]\n";
 			startPos = pos + 2;
+        }
+        
+        // Random name
+        if(code[pos] == "$") {
+            outputTbl[#outputTbl + 1] = tableString;
+			outputTbl[#outputTbl + 1] = code:sub(startPos, pos - 1);
+            outputTbl[#outputTbl + 1] = "]]\n";
+            outputTbl[#outputTbl + 1] = tableStringNoString;
+			outputTbl[#outputTbl + 1] = "COMPILER:GenerateUniquePrefix(self)\n";
+			startPos = pos + 1;
         }
     }
 }
@@ -115,6 +135,29 @@ function QC.CompileInlineFunctionGenerator(methodOf, arguments, inlineCode) {
     codeTbl[#codeTbl + 1] = "\nend";
     
     var final = table.concat(codeTbl, "");
+    
+    print("Generator code: " .. final);
+    
+    return CompileString(final, "QUANTUMCHIP_FUNCTION_COMPILER")();
+}
+
+function QC.CompilePreparedFunctionGenerator(methodOf, arguments, preparedCode, inlineCode) {
+    var codeTbl = { };
+    
+    codeTbl[#codeTbl + 1] = "return function(COMPILER, COMPILER_TABLE, ";
+    if(methodOf)
+        codeTbl[#codeTbl + 1] = "arg1, ";
+    foreach(var k, arg in arguments)
+        codeTbl[#codeTbl + 1] = "arg" .. (k + (methodOf ? 1 : 0)) .. (k == #arguments ? "" : ", ");
+    codeTbl[#codeTbl + 1] = ")\n";
+    
+    QC.ParseFunction(preparedCode, codeTbl, true);
+    codeTbl[#codeTbl + 1] = "\n\n";
+    QC.ParseFunction(inlineCode, codeTbl);
+    
+    codeTbl[#codeTbl + 1] = "\nend";
+    
+    var final = table.concat(codeTbl, ""); 
     
     print("Generator code: " .. final);
     
@@ -176,7 +219,7 @@ function QC.AddClassAlias(component, shortName, alias) {
 #if DEBUG
 
 var codeTbl = { };
-var generator = QC.CompileInlineFunctionGenerator(null, { "s", "s" }, "@1 .. @2 + print(@3)");
+var generator = QC.CompilePreparedFunctionGenerator(null, { "n" }, "local $gay = @1 * 2", "gay");
 
 generator(null, codeTbl, "object", "Memory[1]", "Memory[2]"); 
 

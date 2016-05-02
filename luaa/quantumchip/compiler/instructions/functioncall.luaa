@@ -21,8 +21,6 @@ class QC_Instruction_FunctionCall : QC_Instruction {
     function GenerateCode(generator, tbl) {
         var args = { };
         
-        generator.Preparation[#generator.Preparation + 1] = "// Preparation";
-        
         foreach(var arg in this.ArgumentList) {
             var tbl2 = { };
             arg:GenerateCode(generator, tbl2);

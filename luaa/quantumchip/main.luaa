@@ -99,7 +99,7 @@ server {
 	print(123)         
 	             
 }            
-	");         
+	");           
 }      
    
 QC.DoTest();

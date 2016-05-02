@@ -15,4 +15,4 @@ COMPONENT:AddClass("s", "string");
 -------------------------------------*/
 
 COMPONENT:AddFunctionInline("print", "s", "", "print(@1)");
-COMPONENT:AddFunctionInline("print", "n", "", "print(@1)");
+COMPONENT:AddFunctionPrepared("printp", "n", "", "local gay = @1 * 2", "gay");

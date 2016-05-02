@@ -23,6 +23,9 @@ COMPONENT.Author = "Szymekk"
 
 # Adding functions and methods
 
+**Inline functions** - functions that compile into single expression. They **DO NOT** modify any variables. They only return values.
+**Prepared functions** - functions that are split into 2 parts. Inline and prepared. Prepared code can modify outside variables. Inline is optional, used only, if function returns a value.
+
 ```
 COMPONENT:AddFunctionInline(name, arguments, returnType, inlineCode)
 COMPONENT:AddFunctionPrepared(name, arguments, returnType, prepareCode, inlineCode)

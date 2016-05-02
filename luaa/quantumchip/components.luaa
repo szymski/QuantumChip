@@ -54,4 +54,9 @@ class QC_Component {
     function AddFunctionInline(...) {
         QC.AddInlineFunction(this, ...);
     }
+    
+    function AddFunctionPrepared(...) {
+        QC.AddPreparedFunction(this, ...);
+    }
+    
 }
