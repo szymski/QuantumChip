@@ -13,9 +13,13 @@ class QC_Instruction_Sequence : QC_Instruction {
     }
     
     function Analyse(analyser) {
+        analyser:PushScope();
+        
         foreach(var instruction in this.List) {
             instruction:Analyse(analyser);
         }
+        
+        analyser:PopScope();
     }
     
     function GenerateCode(generator, tbl) {

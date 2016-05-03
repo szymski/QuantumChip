@@ -15,12 +15,56 @@ partial class QC_SemanticAnalyser {
     
     var Side;
     
+    var Scopes = { };
+    var CurrentScope; // Table: { type, name, memoryReference }
+    
+    var VariableCount = 0;
+    
+    /*-----------------------------------
+        Scopes
+    -------------------------------------*/
+    
+    function PushScope() {
+        this.Scopes[#this.Scopes + 1] = { };
+        this.CurrentScope = this.Scopes[#this.Scopes];
+    }
+    
+    function PopScope() {
+        table.remove(this.Scopes);
+        this.CurrentScope = this.Scopes[#this.Scopes];
+    }
+    
+    function LookUpVariable(token, name) {
+        for(var i = #this.Scopes; i > 1; i--)
+            if(this.Scopes[i][name])
+                return this.Scopes[i][name];
+                 
+        this:ErrorToken(token, "No such variable '" .. name .. "' in current scope.");
+    }
+     
+    function AddVariable(token, type, name, memoryReference) {
+        for(var i = #this.Scopes; i > 0; i--)
+            if(this.Scopes[i][name])
+                this:ErrorToken(token, "Variable '" .. name .. "' already exists.");
+                
+        this.CurrentScope[name] = { type, name, memoryReference };
+        
+        return this.CurrentScope[name];
+    }
+    
+    function GenerateVariableReference() {
+        this.VariableCount = this.VariableCount + 1;
+        return "Context.Memory[" .. this.VariableCount .. "]";
+    }
+    
     /*-----------------------------------
         Analysing
     -------------------------------------*/
     
     function Analyse() {
+        this:PushScope();
         this.InputSequence:Analyse(this);
+        this:PopScope();
     }
     
 } 

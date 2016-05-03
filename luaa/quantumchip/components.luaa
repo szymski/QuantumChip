@@ -51,6 +51,10 @@ class QC_Component {
         QC.AddClassAlias(this, ...);
     }
     
+    function SetClassDefaultValue(...) {
+        QC.SetClassDefaultValue(...);
+    }
+    
     function AddFunctionInline(...) {
         QC.AddInlineFunction(this, ...);
     }

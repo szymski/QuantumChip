@@ -211,8 +211,31 @@ partial class QC_SyntaxAnalyser {
             return QC_Expression_Null(this.CurrentToken);
         }
         
-        return this:Expression_Invalid();
+        return this:Expression17_VariableFunctionCall();
     } 
+    
+    function Expression17_VariableFunctionCall() {
+        if(this:AcceptIdentifier()) {
+            var name = this.CurrentToken[2]; 
+            var nameToken = this.CurrentToken;
+            
+            // Check if function call
+            if(this:AcceptSymbol("("))
+                return QC_Expression_FunctionCall(nameToken, name, this:CallArgumentList());
+            
+            // Check if method call
+            if(this:AcceptSymbol(".")) {
+                // TODO: Method calls
+                this:Error("Not implemented");
+                
+                return QC_Instruction_FunctionCall();
+            }
+            
+            return QC_Expression_Variable(nameToken, name); 
+        }
+        
+        return this:Expression_Invalid();
+    }
     
     function Expression_Invalid() {
         this:NextToken();

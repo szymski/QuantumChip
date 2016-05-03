@@ -1,0 +1,28 @@
+/*-----------------------------------
+    Variable
+-------------------------------------*/
+
+class QC_Expression_Variable : QC_Expression {
+
+    function QC_Expression_Variable(token, name) {
+        this.Token = token;
+        this.Name = name;
+    }    
+    
+    function GetValueType() {
+        return this.VariableTbl[1];
+    } 
+    
+    function GetToken() {
+        return this.Token;
+    }
+    
+    function Analyse(analyser) {
+        this.VariableTbl = analyser:LookUpVariable(this.Token, this.Name);
+    }
+    
+    function GenerateCode(generator, tbl) {
+        tbl[#tbl + 1] = this.VariableTbl[3];
+    }
+    
+} 

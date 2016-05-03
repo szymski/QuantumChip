@@ -121,7 +121,7 @@ partial class QC_SyntaxAnalyser {
             if(this:AcceptSymbol("="))
                 return QC_Instruction_VariableDeclaration(typeToken, type, nameToken, name, this:Expression("Variable value expected."));
             
-            return QC_Instruction_VariableDeclaration(type, name);
+            return QC_Instruction_VariableDeclaration(typeToken, type, nameToken, name);
         }
         
         return this:Statement_Invalid();

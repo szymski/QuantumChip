@@ -6,9 +6,16 @@ COMPONENT.Author = "Szymekk";
     Basic types
 -------------------------------------*/
 
-COMPONENT:AddClass("b", "boolean");  
+COMPONENT:AddClass("b", "boolean");
+COMPONENT:AddClassAlias("b", "bool");
+COMPONENT:SetClassDefaultValue("b", "false");
+  
 COMPONENT:AddClass("n", "number");  
+COMPONENT:AddClassAlias("n", "int");
+COMPONENT:SetClassDefaultValue("n", "0"); 
+
 COMPONENT:AddClass("s", "string");    
+COMPONENT:SetClassDefaultValue("s", "\"\""); 
 
 /*-----------------------------------
     Print functions
@@ -16,4 +23,4 @@ COMPONENT:AddClass("s", "string");
 
 COMPONENT:AddFunctionPrepared("print", "n", "", "", "print(@1)");
 COMPONENT:AddFunctionPrepared("printadd", "n,n", "", "local $value = @1 * @2", "print($value)");
-COMPONENT:AddFunctionInline("printi", "n", "", "print(@1)"); 
+COMPONENT:AddFunctionInline("add", "n,n", "n", "@1 + @2"); 

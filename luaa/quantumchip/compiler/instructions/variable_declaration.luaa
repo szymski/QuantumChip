@@ -1,5 +1,5 @@
 /*-----------------------------------
-    Sequence
+    Variable delcaration
 -------------------------------------*/
 
 class QC_Instruction_VariableDeclaration : QC_Instruction {
@@ -13,26 +13,40 @@ class QC_Instruction_VariableDeclaration : QC_Instruction {
     }
     
     function Analyse(analyser) {
-        // TODO: Type-checking
+        this.ShortClass = QC.ClassNiceNameToShortName[this.Type];
         
-        if(this.Value)
+        if(!this.ShortClass)
+            analyser:ErrorToken(this.TypeToken, "No such class '" .. this.Type .. "'.");
+        
+        this.VariableTbl = analyser:AddVariable(this.NameToken, this.ShortClass, this.Name, analyser:GenerateVariableReference());
+        
+        if(this.Value) {
             this.Value:Analyse(analyser);
+            if(this.Value:GetValueType() != this.ShortClass)
+                analyser:ErrorToken(this.Value:GetToken(), "Type mismatch. Cannot assign " .. QC.ShortClassToNiceName(this.Value:GetValueType()) .. " to " .. QC.ShortClassToNiceName(this.ShortClass) .. " variable.");
+        }
+        else {
+            this.DefaultValue = QC.ClassesByName[this.ShortClass].DefaultValue;
+            if(!this.DefaultValue) 
+                analyser:ErrorToken(this.TypeToken, "No default value for " .. QC.ShortClassToNiceName(this.ShortClass) .. " class. Use assignment operator '='.");
+        }
     }
     
     function GetChildren() {
         return { this.Value };  
     }
     
-    function GenerateCode(generator, tbl) {
-        tbl[#tbl + 1] = "local ";
-        tbl[#tbl + 1] = this.Name;
+    function GenerateCode(generator, tbl) {        
+        tbl[#tbl + 1] = this.VariableTbl[3];
         if(this.Value) {
             tbl[#tbl + 1] = " = ";
             this.Value:GenerateCode(generator, tbl);
         }
+        else {
+            tbl[#tbl + 1] = " = ";
+            tbl[#tbl + 1] = this.DefaultValue;
+        }
         tbl[#tbl + 1] = "\n";
-        
-        print(this:GetType() .. " - generation not implemented");
     }
     
 }

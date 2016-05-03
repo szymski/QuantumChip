@@ -48,6 +48,9 @@ QC.InstructionFiles = {
 	"expressions/length",
 	"expressions/cast",
 	"expressions/not",
+	"expressions/functioncall",
+	"expressions/methodcall",
+	"expressions/variable",
 };
  
 if(SERVER) {
@@ -93,12 +96,13 @@ function QC.DoTest() {
 	var compiler = QC_Compiler();
 	compiler:Compile(@"    
 	  
-server {    
-	          
-	print(5)       
-	printi(5+18*2)         
-	                      
-}               
+server {         
+	                   
+	string chuj  
+	int cipa    
+	bool gay   
+                           
+}         
 	");           
 }      
    

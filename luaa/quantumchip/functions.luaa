@@ -1,5 +1,5 @@
 /*-----------------------------------
-    Function manager
+    Function & Class manager
 -------------------------------------*/
 
 QC_FUNCTION_INLINE = 0;
@@ -45,12 +45,12 @@ function QC.AddFunction(component, type, name, arguments, returnType, arg1, arg2
     
     var arguments = string.Explode(",", isMethod ? splitArguments[2] : splitArguments[1]);
     
-    var compileFunc = function() { error("Not implemented;"); };
+    var compileFunc;
     
     if(type == QC_FUNCTION_INLINE)
-        compileFunc = QC.CompileInlineFunctionGenerator(methodOf, arguments, arg1);
+        compileFunc = QC.CompileInlineFunctionGenerator(methodOf, arguments, arg1, name);
     else if(type == QC_FUNCTION_PREPARED)
-        compileFunc = QC.CompilePreparedFunctionGenerator(methodOf, arguments, arg1, arg2);
+        compileFunc = QC.CompilePreparedFunctionGenerator(methodOf, arguments, arg1, arg2, name);
     
     var tbl = {
         Component = component,
@@ -108,7 +108,7 @@ function QC.ParseFunction(code, outputTbl, prepared) {
 			startPos = pos + 2;
         }
         
-        // Random name
+        // Unique name
         if(code[pos] == "$") {
             outputTbl[#outputTbl + 1] = tableString;
 			outputTbl[#outputTbl + 1] = code:sub(startPos, pos - 1);
@@ -120,7 +120,7 @@ function QC.ParseFunction(code, outputTbl, prepared) {
     }
 }
 
-function QC.CompileInlineFunctionGenerator(methodOf, arguments, inlineCode) {
+function QC.CompileInlineFunctionGenerator(methodOf, arguments, inlineCode, name) {
     var codeTbl = { };
     
     codeTbl[#codeTbl + 1] = "return function(COMPILER, COMPILER_TABLE, ";
@@ -136,10 +136,10 @@ function QC.CompileInlineFunctionGenerator(methodOf, arguments, inlineCode) {
     
     var final = table.concat(codeTbl, "");
     
-    return CompileString(final, "QUANTUMCHIP_FUNCTION_COMPILER")();
+    return CompileString(final, "QC_FUNC_COMPILER_INLINE")();
 }
 
-function QC.CompilePreparedFunctionGenerator(methodOf, arguments, preparedCode, inlineCode) {
+function QC.CompilePreparedFunctionGenerator(methodOf, arguments, preparedCode, inlineCode, name) {
     var codeTbl = { };
     
     codeTbl[#codeTbl + 1] = "return function(COMPILER, COMPILER_TABLE, ";
@@ -159,7 +159,7 @@ function QC.CompilePreparedFunctionGenerator(methodOf, arguments, preparedCode, 
     
     var final = table.concat(codeTbl, ""); 
     
-    return CompileString(final, "QUANTUMCHIP_FUNCTION_COMPILER")();
+    return CompileString(final, "QC_FUNC_COMPILER_PREPARED")();
 }
 
 /*-----------------------------------
@@ -177,6 +177,7 @@ QC_SIDE_CLIENT = 2;
         NiceName - name used in the code
         Side - codeside class class is only restriced to
         Aliases - table with class aliases      
+        DefaultValue - optional, string representing default value
 */
 QC.Classes = { };
 QC.ClassesByName = { }; // By short name
@@ -193,6 +194,7 @@ function QC.AddClass(component, shortName, niceName) {
         ShortName = shortName,
         NiceName = niceName,
         Side = QC_SIDE_SHARED,
+        Aliases = { },
     };
      
     QC.Classes[#QC.Classes + 1] = tbl;
@@ -210,17 +212,25 @@ function QC.AddClassAlias(component, shortName, alias) {
     QC.FunctionsByClass[alias] = QC.FunctionsByClass[shortName];
 }
 
+function QC.SetClassDefaultValue(shortName, value) {
+    QC.ClassesByName[shortName].DefaultValue = value;
+}
+
+function QC.ShortClassToNiceName(shortClass) {
+    return QC.ClassesByName[shortClass].NiceName;
+}
+
 /*-----------------------------------
     Testing
 -------------------------------------*/
 
 #if DEBUG
 
-var codeTbl = { };
-var generator = QC.CompilePreparedFunctionGenerator(null, { "n" }, "local $gay = @1 * 2", "gay");
+//var codeTbl = { };
+//var generator = QC.CompilePreparedFunctionGenerator(null, { "n" }, "local $gay = @1 * 2", "gay");
 
-generator(null, codeTbl, "object", "Memory[1]", "Memory[2]"); 
-
-print(table.concat(codeTbl, ""));
+//generator(null, codeTbl, "object", "Memory[1]", "Memory[2]"); 
+ 
+//print(table.concat(codeTbl, ""));
 
 #endif  

@@ -23,19 +23,18 @@ partial class QC_SemanticAnalyser {
     }
     
     /*-----------------------------------
-        Function helpers
+        Functions
     -------------------------------------*/
     
     function LookUpFunction(methodOf, nameToken, name, argumentList) {
         var functionList = QC.FunctionsByName[name];
+        
         if(!functionList)
             this:ErrorToken(nameToken, "No such function " .. name .. ".");
         
         var typeArgList = { };
         foreach(var v in argumentList)
             typeArgList[#typeArgList + 1] = v:GetValueType();
-        
-        var properFunctionTbl;
         
         foreach(var functionTbl in functionList) {
             if(functionTbl.MethodOf == methodOf && 
@@ -66,6 +65,7 @@ partial class QC_SemanticAnalyser {
     var ErrorLine, ErrorCharacter;
     
     function Error(message) {
+        assert(message is string, "Error message isn't a string (probably a token). Use ErrorToken instead.");
         error(message);
     }
     

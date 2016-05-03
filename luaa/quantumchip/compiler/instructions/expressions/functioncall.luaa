@@ -2,19 +2,30 @@
     Function call
 -------------------------------------*/
 
-class QC_Instruction_FunctionCall : QC_Instruction {
+class QC_Expression_FunctionCall : QC_Expression {
 
-    function QC_Instruction_FunctionCall(nameToken, name, argumentList) {
+    function QC_Expression_FunctionCall(nameToken, name, argumentList) {
         this.NameToken = nameToken;
         this.Name = name;
         this.ArgumentList = argumentList; // List of expressions
     }
     
+    function GetValueType() {
+        return this.FunctionTbl.ReturnType;
+    } 
+    
+    function GetToken() {
+        return this.NameToken;
+    }
+    
     function Analyse(analyser) {
         foreach(var arg in this.ArgumentList)
             arg:Analyse(analyser);
-        
+
         this.FunctionTbl = analyser:LookUpFunction(null, this.NameToken, this.Name, this.ArgumentList);
+    
+        if(this:GetValueType() == "") 
+            analyser:ErrorToken(this.NameToken, "Function doesn't return any value.");
     }
     
     function GetChildren() {
@@ -28,10 +39,9 @@ class QC_Instruction_FunctionCall : QC_Instruction {
             var tbl2 = { };
             arg:GenerateCode(generator, tbl2);
             args[#args + 1] = table.concat(tbl2, "");
-        } 
-
-        if(this.FunctionTbl.Type != QC_FUNCTION_INLINE) // Inline functions not compiled
-            this.FunctionTbl.Compile(generator, tbl, unpack(args));
+        }
+        
+        this.FunctionTbl.Compile(generator, tbl, unpack(args));
     }
     
 }
