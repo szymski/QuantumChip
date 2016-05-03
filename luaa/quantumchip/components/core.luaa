@@ -13,14 +13,28 @@ COMPONENT:SetClassDefaultValue("b", "false");
 COMPONENT:AddClass("n", "number");  
 COMPONENT:AddClassAlias("n", "int");
 COMPONENT:SetClassDefaultValue("n", "0"); 
+COMPONENT:AddClassOperatorInline("n", "=", "n:n", "", "@1 = @2");
+COMPONENT:AddClassOperatorInline("n", "+", "n:n", "n", "@1 + @2"); 
+COMPONENT:AddClassOperatorInline("n", "-", "n:n", "n", "@1 - @2"); 
+COMPONENT:AddClassOperatorInline("n", "*", "n:n", "n", "@1 * @2"); 
+COMPONENT:AddClassOperatorInline("n", "/", "n:n", "n", "@1 / @2"); 
+COMPONENT:AddClassOperatorInline("n", "%", "n:n", "n", "@1 % @2"); 
+COMPONENT:AddClassOperatorInline("n", "is", "n:", "b", "@1 > 0");
+COMPONENT:AddClassOperatorInline("n", "neg", "n:", "n", "-@1"); 
+COMPONENT:AddClassOperatorInline("n", "==", "n:n", "b", "@1 == @2");
+COMPONENT:AddClassOperatorInline("n", "!=", "n:n", "b", "@1 != @2");
 
 COMPONENT:AddClass("s", "string");    
 COMPONENT:SetClassDefaultValue("s", "\"\""); 
-
+COMPONENT:AddClassOperatorInline("s", "=", "s:s", "", "@1 = @2");
+COMPONENT:AddClassOperatorInline("s", "is", "s:", "b", "#@1 > 0");
+COMPONENT:AddClassOperatorInline("s", "==", "s:s", "b", "@1 == @2");
+COMPONENT:AddClassOperatorInline("s", "#", "s:", "b", "#@1");
+ 
 /*-----------------------------------
     Print functions
 -------------------------------------*/
 
 COMPONENT:AddFunctionPrepared("print", "n", "", "", "print(@1)");
 COMPONENT:AddFunctionPrepared("printadd", "n,n", "", "local $value = @1 * @2", "print($value)");
-COMPONENT:AddFunctionInline("add", "n,n", "n", "@1 + @2"); 
+COMPONENT:AddFunctionInline("add", "n,n", "n", "@1 + @2");  

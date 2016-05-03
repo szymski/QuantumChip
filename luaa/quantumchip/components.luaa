@@ -41,7 +41,7 @@ class QC_Component {
         assert(this.Name && this.Name != "", this.FileName .. ": Component name is nil.");
         assert(this.Author && this.Author != "", this.FileName .. ": Component author is nil.");
         assert(!QC.ComponentsByName[this.Name], this.FileName .. ": Component with name '" .. this.Name .. "' is already registered.");
-    } 
+    }  
      
     function AddClass(...) {
         QC.AddClass(this, ...);
@@ -61,6 +61,14 @@ class QC_Component {
     
     function AddFunctionPrepared(...) {
         QC.AddPreparedFunction(this, ...);
+    }
+    
+    function AddClassOperatorInline(...) {
+        QC.AddClassInlineOperator(this, ...);
+    }
+    
+    function AddClassOperatorPrepared(...) {
+        QC.AddClassPreparedOperator(this, ...);
     }
     
 }

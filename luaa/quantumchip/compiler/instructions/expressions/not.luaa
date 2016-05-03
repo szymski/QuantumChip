@@ -9,26 +9,26 @@ class QC_Expression_Not : QC_Expression {
     }    
     
     function GetValueType() {
-        return this.Value:GetValueType();
-    }
+        return this.Operator.ReturnType;
+    } 
     
     function GetToken() {
-        return this.Token;
+        return this.Expression1:GetToken();
     }
     
     function Analyse(analyser) {
-        // TODO: Not operator
+        this.Expression1:Analyse(analyser);
+        this.Expression2:Analyse(analyser);
         
-        this.Value:Analyse(analyser);
+        this.Operator = analyser:LookUpOperator(this.Expression1:GetValueType(), this.Expression1:GetToken(), "!", { this.Expression1, this.Expression2 });
     }
     
     function GetChildren() {
-        return { this.Value };
+        return { this.Expression1, this.Expression2 };
     }
     
     function GenerateCode(generator, tbl) {
-        tbl[#tbl + 1] = "not ";
-        this.Value:GenerateCode(generator, tbl);
+        this.Operator.Compile(generator, tbl, generator:CompileToString(this.Expression1, this.Expression2));    
     }
     
 } 

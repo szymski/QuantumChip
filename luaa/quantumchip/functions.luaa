@@ -20,61 +20,90 @@ QC_FUNCTION_VIRTUAL = 2;
 QC.Functions = { };
 QC.FunctionsByName = { }; // Values - tables of funtions
 QC.FunctionsByClass = { }; // Values - functions by name tables
-QC.Operators = { };
-QC.OperatorsByName = { };
-QC.OperatorsByClass = { };
  
 /*-----------------------------------
     Registering functions
 -------------------------------------*/
 
 function QC.AddInlineFunction(component, name, arguments, returnType, inline) {
-    QC.AddFunction(component, QC_FUNCTION_INLINE, name, arguments, returnType, inline);
+    var functionTbl = QC.GenerateFunctionTable(component, QC_FUNCTION_INLINE, name, arguments, returnType, inline);
+    QC.RegisterFunction(functionTbl);
 }
 
 function QC.AddPreparedFunction(component, name, arguments, returnType, prepared, inline) {
-    QC.AddFunction(component, QC_FUNCTION_PREPARED, name, arguments, returnType, prepared, inline);
+    var functionTbl = QC.GenerateFunctionTable(component, QC_FUNCTION_PREPARED, name, arguments, returnType, prepared, inline);
+    QC.RegisterFunction(functionTbl);
 }
 
-function QC.AddFunction(component, type, name, arguments, returnType, arg1, arg2, arg3) {
+function QC.GenerateFunctionTable(component, type, name, arguments, returnType, arg1, arg2, arg3) {
     var splitArguments = string.Explode(":", arguments);
     assert(#splitArguments <= 2, name .. " function arguments of component " .. component.Name .. " are broken.");
     
     var isMethod = #splitArguments == 2;
     var methodOf = isMethod ? splitArguments[1] : null;
     
-    var arguments = string.Explode(",", isMethod ? splitArguments[2] : splitArguments[1]);
+    var argumentsTbl = (isMethod ? #splitArguments[2] : #splitArguments[1]) == 0 ? { } : string.Explode(",", isMethod ? splitArguments[2] : splitArguments[1]);
+    if(isMethod) 
+        table.insert(argumentsTbl, 1, methodOf);
     
     var compileFunc;
     
     if(type == QC_FUNCTION_INLINE)
-        compileFunc = QC.CompileInlineFunctionGenerator(methodOf, arguments, arg1, name);
+        compileFunc = QC.CompileInlineFunctionGenerator(methodOf, argumentsTbl, arg1, name);
     else if(type == QC_FUNCTION_PREPARED)
-        compileFunc = QC.CompilePreparedFunctionGenerator(methodOf, arguments, arg1, arg2, name);
+        compileFunc = QC.CompilePreparedFunctionGenerator(methodOf, argumentsTbl, arg1, arg2, name);
     
     var tbl = {
         Component = component,
         Type = type,
         Name = name,
         MethodOf = methodOf,
-        Arguments = arguments,
+        Arguments = argumentsTbl,
         ReturnType = returnType,
         Compile = compileFunc,
         InlineIsPrepared = type == QC_FUNCTION_PREPARED && arg1 == ""
     };
-    
-    QC.Functions[#QC.Functions + 1] = tbl;
-    
-    QC.FunctionsByName[name] = QC.FunctionsByName[name] ?? { };
-    QC.FunctionsByName[name][#QC.FunctionsByName[name] + 1] = tbl;
-    
-    if(methodOf) {
-        QC.FunctionsByClass[methodOf] = QC.FunctionsByClass[methodOf] ?? { };
-        QC.FunctionsByClass[methodOf][name] = tbl;
-    }
+ 
+    return tbl;
 }
 
-// TODO: Operators
+function QC.RegisterFunction(functionTbl) {
+    QC.Functions[#QC.Functions + 1] = functionTbl;
+    
+    QC.FunctionsByName[functionTbl.Name] = QC.FunctionsByName[functionTbl.Name] ?? { };
+    QC.FunctionsByName[functionTbl.Name][#QC.FunctionsByName[functionTbl.Name] + 1] = functionTbl;
+    
+    if(functionTbl.MethodOf) {
+        QC.FunctionsByClass[functionTbl.MethodOf] = QC.FunctionsByClass[functionTbl.MethodOf] ?? { };
+        QC.FunctionsByClass[functionTbl.MethodOf][functionTbl.Name] = QC.FunctionsByClass[functionTbl.MethodOf][functionTbl.Name] ?? { };
+        QC.FunctionsByClass[functionTbl.MethodOf][functionTbl.Name][#QC.FunctionsByClass[functionTbl.MethodOf][functionTbl.Name] + 1] = functionTbl;
+    }
+}
+ 
+/*-----------------------------------
+    Registering operators
+-------------------------------------*/
+
+QC.Operators = { };
+QC.OperatorsByClass = { };
+
+function QC.AddClassInlineOperator(component, methodOf, name, arguments, returnType, inline) {
+    var functionTbl = QC.GenerateFunctionTable(component, QC_FUNCTION_INLINE, name, arguments, returnType, inline);
+    QC.RegisterOperator(functionTbl);
+}
+
+function QC.AddClassPreparedOperator(component, methodOf, name, arguments, returnType, prepared, inline) {
+    var functionTbl = QC.GenerateFunctionTable(component, QC_FUNCTION_PREPARED, name, arguments, returnType, prepared, inline);
+    QC.RegisterOperator(functionTbl);
+}
+
+function QC.RegisterOperator(functionTbl) {
+    QC.Operators[#QC.Operators + 1] = functionTbl;
+    
+    QC.OperatorsByClass[functionTbl.MethodOf] = QC.OperatorsByClass[functionTbl.MethodOf] ?? { };
+    QC.OperatorsByClass[functionTbl.MethodOf][functionTbl.Name] = QC.OperatorsByClass[functionTbl.MethodOf][functionTbl.Name] ?? { };
+    QC.OperatorsByClass[functionTbl.MethodOf][functionTbl.Name][#QC.OperatorsByClass[functionTbl.MethodOf][functionTbl.Name] + 1] = functionTbl;
+}
 
 /*-----------------------------------
     Compiling function generators

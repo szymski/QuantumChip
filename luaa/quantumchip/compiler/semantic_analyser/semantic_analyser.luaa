@@ -21,6 +21,16 @@ partial class QC_SemanticAnalyser {
     var VariableCount = 0;
     
     /*-----------------------------------
+        Analysing
+    -------------------------------------*/
+    
+    function Analyse() {
+        this:PushScope();
+        this.InputSequence:Analyse(this);
+        this:PopScope();
+    }
+    
+    /*-----------------------------------
         Scopes
     -------------------------------------*/
     
@@ -55,16 +65,6 @@ partial class QC_SemanticAnalyser {
     function GenerateVariableReference() {
         this.VariableCount = this.VariableCount + 1;
         return "Context.Memory[" .. this.VariableCount .. "]";
-    }
-    
-    /*-----------------------------------
-        Analysing
-    -------------------------------------*/
-    
-    function Analyse() {
-        this:PushScope();
-        this.InputSequence:Analyse(this);
-        this:PopScope();
     }
     
 } 

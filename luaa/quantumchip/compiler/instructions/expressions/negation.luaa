@@ -9,17 +9,17 @@ class QC_Expression_Negation : QC_Expression {
     }    
     
     function GetValueType() {
-        return this.Value:GetValueType();
-    }
+        return this.Operator.ReturnType;
+    } 
     
     function GetToken() {
-        return this.Token;
+        return this.Value:GetToken();
     }
     
     function Analyse(analyser) {
-        // TODO: Negation operator
-        
         this.Value:Analyse(analyser);
+        
+        this.Operator = analyser:LookUpOperator(this.Value:GetValueType(), this.Value:GetToken(), "neg", { this.Value });
     }
     
     function GetChildren() {
@@ -27,8 +27,7 @@ class QC_Expression_Negation : QC_Expression {
     }
     
     function GenerateCode(generator, tbl) {
-        tbl[#tbl + 1] = "-";
-        this.Value:GenerateCode(generator, tbl);
+        this.Operator.Compile(generator, tbl, generator:CompileToString(this.Value));    
     }
     
 } 

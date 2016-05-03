@@ -17,6 +17,7 @@ QC.InstructionFiles = {
 	"if",
 	"side",
 	"variable_declaration",
+	"variableassignment",
 	"functioncall",
 	"methodcall",
 	
@@ -96,13 +97,12 @@ function QC.DoTest() {
 	var compiler = QC_Compiler();
 	compiler:Compile(@"    
 	  
-server {         
-	                   
-	string chuj  
-	int cipa    
-	bool gay   
-                           
-}         
+server {          
+	                             
+	bool gowno = #\"co mam robic?\"  
+ 
+                                        
+}           
 	");           
 }      
    

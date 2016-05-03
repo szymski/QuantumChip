@@ -112,7 +112,8 @@ partial class QC_SyntaxAnalyser {
             
             // Check if variable operator
             if(this:AcceptSymbol()) {
-               
+                this:PrevToken();
+                return this:Statement_VariableOperator(typeToken, type);
             }
             
             var name = this:RequireIdentifier("Variable name expected.")[2];
@@ -123,6 +124,14 @@ partial class QC_SyntaxAnalyser {
             
             return QC_Instruction_VariableDeclaration(typeToken, type, nameToken, name);
         }
+        
+        return this:Statement_Invalid();
+    }
+    
+    function Statement_VariableOperator(nameToken, name) {
+        
+        if(this:AcceptSymbol("="))
+            return QC_Instruction_VariableAssignmentOperator(QC_Expression_Variable(nameToken, name), this:Expression());
         
         return this:Statement_Invalid();
     }

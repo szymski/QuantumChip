@@ -13,7 +13,7 @@ class QC_Expression_GroupedEquation : QC_Expression {
     }
     
     function GetToken() {
-        return this.Token;
+        return this.Value:GetToken();
     }
     
     function Analyse(analyser) {

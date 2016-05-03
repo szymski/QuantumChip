@@ -11,14 +11,21 @@ class QC_Instruction_If : QC_Instruction {
     
     function GetChildren() {
         return { this.Condition, this.Sequence };  
-    }
+    } 
     
     function Analyse(analyser) {
-        if(this.Condition:GetValueType() != "b")
-            analyser:ErrorToken(this.Condition:GetToken(), "Condition type must be boolean!");
+        this.Condition:Analyse(analyser);
         
-        // TODO: Is operator
+        this.Operator = analyser:LookUpOperator(this.Condition:GetValueType(), this.Condition:GetToken(), "is", { this.Condition });
         
         this.Sequence:Analyse(analyser);
+    }
+    
+    function GenerateCode(generator, tbl) {
+        tbl[#tbl + 1] = "if ";
+        this.Operator.Compile(generator, tbl, generator:CompileToString(this.Condition));
+        tbl[#tbl + 1] = " then\n";
+        this.Sequence:GenerateCode(generator, tbl);
+        tbl[#tbl + 1] = " \nend";
     }
 }

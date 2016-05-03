@@ -11,7 +11,7 @@ partial class QC_CodeGenerator {
     
     /*
         Constructor
-    */
+    */ 
     function QC_CodeGenerator(sequence) {
         var startTime = SysTime();
         
@@ -27,6 +27,21 @@ partial class QC_CodeGenerator {
         Helpers
     -------------------------------------*/
     
+    /*
+        Compiles instructions into strings, so that they can be put
+    */
+    function CompileToString(...) {
+        var instructions = { ... };
+        var compiled = { };
+        
+        foreach(var instruction in instructions) {
+            var codeTbl = { };
+            instruction:GenerateCode(this, codeTbl);
+            compiled[#compiled + 1] = table.concat(codeTbl, "");
+        }
+        
+        return unpack(compiled);
+    }
 } 
  
 /*-----------------------------------

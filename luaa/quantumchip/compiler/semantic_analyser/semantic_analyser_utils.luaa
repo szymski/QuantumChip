@@ -23,7 +23,7 @@ partial class QC_SemanticAnalyser {
     }
     
     /*-----------------------------------
-        Functions
+        Functions / Operators
     -------------------------------------*/
     
     function LookUpFunction(methodOf, nameToken, name, argumentList) {
@@ -44,6 +44,28 @@ partial class QC_SemanticAnalyser {
         }
         
         this:ErrorToken(nameToken, "No overload (" .. table.concat(typeArgList, ", ") .. ") for function " .. name .. ".");
+    }
+    
+    function LookUpOperator(methodOf, nameToken, name, argumentList) {
+        var classNiceName = QC.ShortClassToNiceName(methodOf);
+        
+        var functionList = (QC.OperatorsByClass[methodOf] ?? { })[name];
+        
+        if(!functionList)
+            this:ErrorToken(nameToken, "No such operator " .. name .. " for class " .. classNiceName .. ".");
+        
+        var typeArgList = { };
+        foreach(var v in argumentList)
+            typeArgList[#typeArgList + 1] = v:GetValueType();
+        
+        foreach(var functionTbl in functionList) {
+            if(functionTbl.MethodOf == methodOf && 
+               this:CheckArguments(functionTbl.Arguments, typeArgList)) {
+                   return functionTbl;
+               }
+        }
+        
+        this:ErrorToken(nameToken, "No overload (" .. table.concat(typeArgList, ", ") .. ") for operator " .. name .. " of " .. classNiceName .. " class.");
     }
     
     function CheckArguments(args1, args2) {

@@ -10,7 +10,7 @@ class QC_Expression_Division : QC_Expression {
     }
     
     function GetValueType() {
-        return "n";
+        return this.Operator.ReturnType;
     } 
     
     function GetToken() {
@@ -18,16 +18,10 @@ class QC_Expression_Division : QC_Expression {
     }
     
     function Analyse(analyser) {
-        if(this.Expression1:GetValueType() != "n")
-            analyser:ErrorToken(this.Expression1:GetToken(), "Expression type must be number!");
-            
-        if(this.Expression2:GetValueType() != "n")
-            analyser:ErrorToken(this.Expression2:GetToken(), "Expression type must be number!");
-            
-        // TODO: Is operator
-        
         this.Expression1:Analyse(analyser);
         this.Expression2:Analyse(analyser);
+        
+        this.Operator = analyser:LookUpOperator(this.Expression1:GetValueType(), this.Expression1:GetToken(), "/", { this.Expression1, this.Expression2 });
     }
     
     function GetChildren() {
@@ -35,9 +29,7 @@ class QC_Expression_Division : QC_Expression {
     }
     
     function GenerateCode(generator, tbl) {
-        this.Expression1:GenerateCode(generator, tbl);
-        tbl[#tbl + 1] = " / ";   
-        this.Expression2:GenerateCode(generator, tbl);        
+        this.Operator.Compile(generator, tbl, generator:CompileToString(this.Expression1, this.Expression2));    
     }
     
 }
