@@ -8,16 +8,32 @@ class QC_GUI_BottomBar {
         this:__new();
 
         this:SetMouseInputEnabled(false);
-   }  
+        
+        this.StatusText = this:Add("DLabel");
+        this.StatusText:Dock(LEFT);   
+        this.StatusText:DockMargin(5, 0, 0, 0);   
+        this.StatusText:SetWidth(400);   
+        this.StatusText:SetContentAlignment(4);   
+        this.StatusText:SetFont("qc_editor_font_status");   
+        this.StatusText:SetColor(QC.Editor.CurrentTheme.Status);  
+        this.StatusText:SetText("Length: 0, Row: 0, Column: 0");
+	}  
      
     function Paint(w, h) {
         draw.RoundedBox(0, 0, 0, w, h, QC.Editor.CurrentTheme.BottomBar); 
-    }
-    
+    }  
+     
     function GetEditor() {
         return this:GetParent();
     }
-     
+	
+	function Think() {
+		if(this:GetEditor():GetScriptEditor() && this:GetEditor():GetScriptEditor()) {
+			var textEditor = this:GetEditor():GetScriptEditor():GetTextEditor();
+			this.StatusText:SetText("Length: " .. #textEditor:GetCode() .. ", Row: " .. textEditor.Caret.x .. ", Column: " .. textEditor.Caret.y);
+		}
+	}
+      
 } 
   
 CQC_GUI_BottomBar.__index = null;

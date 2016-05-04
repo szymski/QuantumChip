@@ -1,0 +1,35 @@
+/*-----------------------------------
+    QCScriptEditor
+-------------------------------------*/
+
+local class QC_GUI_ScriptEditor {
+
+    function Init() {  
+        this:__new();
+        
+        Golem.Font:SetFont("Courier New", 20);
+        
+        this.TextEditor = this:Add("GOLEM_Editor");
+        this.TextEditor:Dock(FILL); 
+        
+    }     
+    
+    function GetTextEditor() {
+        return this.TextEditor;
+    }
+        
+} 
+ 
+CQC_GUI_ScriptEditor.__index = null; 
+derma.DefineControl("QCScriptEditor", "QuantumChip ScriptEditor", CQC_GUI_ScriptEditor, "EditablePanel"); 
+ 
+/*-----------------------------------
+    Tests 
+-------------------------------------*/
+  
+#if DEBUG
+
+if(CLIENT)
+QC.OpenEditor(); 
+ 
+#endif     

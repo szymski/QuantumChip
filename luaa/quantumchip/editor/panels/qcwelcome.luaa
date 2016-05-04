@@ -1,0 +1,63 @@
+/*-----------------------------------
+    QCWelcome
+-------------------------------------*/
+
+local class QC_GUI_Welcome {
+
+    function Init() {  
+        this:__new();
+        
+        this.CenterPanel = this:Add("EditablePanel");
+        this.CenterPanel:SetSize(400, 400);
+        
+        this.TitleLabel = this.CenterPanel:Add("DLabel");
+        this.TitleLabel:Dock(TOP);
+        this.TitleLabel:SetText("QuantumChip");
+        this.TitleLabel:SetFont("DermaLarge");
+        this.TitleLabel:SetColor(Color(255, 255, 255));
+        this.TitleLabel:SetHeight(64);
+        this.TitleLabel:SetContentAlignment(5);
+        
+        this.DescLabel = this.CenterPanel:Add("DLabel");
+        this.DescLabel:Dock(FILL);
+        this.DescLabel:SetText("QuantumChip is still under development and it's not usable for now. Visit GitHub repository and contribute. Any help would be very appreciated :)");
+        this.DescLabel:SetFont("qc_editor_font_tab");
+        this.DescLabel:SetColor(Color(255, 255, 255));
+        this.DescLabel:SetHeight(64); 
+        this.DescLabel:SetContentAlignment(7);
+        this.DescLabel:SetWrap(true);
+        
+        this.BtnGithub = this.CenterPanel:Add("DButton");
+        this.BtnGithub:Dock(BOTTOM);
+        this.BtnGithub:SetText("Visit GitHub");
+        function this.BtnGithub:DoClick() {
+            gui.OpenURL("https://github.com/szymski/QuantumChip");
+        }
+        
+        this.BtnNewFile = this.CenterPanel:Add("DButton");
+        this.BtnNewFile:Dock(BOTTOM);
+        this.BtnNewFile:SetText("Create a new script");
+        function this.BtnNewFile:DoClick() {
+            
+        }
+    }  
+    
+    function PerformLayout() {
+        this.CenterPanel:Center();
+    }
+    
+} 
+
+CQC_GUI_Welcome.__index = null; 
+derma.DefineControl("QCWelcome", "QuantumChip Welcome", CQC_GUI_Welcome, "EditablePanel"); 
+
+/*-----------------------------------
+    Tests
+-------------------------------------*/
+  
+#if DEBUG
+
+if(CLIENT)
+QC.OpenEditor(); 
+ 
+#endif   

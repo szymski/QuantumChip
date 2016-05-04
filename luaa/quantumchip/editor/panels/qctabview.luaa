@@ -15,7 +15,7 @@ local class QC_GUI_TabButton {
     }  
     
     function Paint(w, h) {
-        draw.RoundedBox(0, 0, 0, w - 2, h, this:IsHovered() ? (this:IsDown() ? QC.Editor.CurrentTheme.TabDown : QC.Editor.CurrentTheme.TabHover) : (this.Active ? QC.Editor.CurrentTheme.TabActive : QC.Editor.CurrentTheme.Tab)); 
+        draw.RoundedBox(0, 0, 2, w - 2, h, this:IsHovered() ? (this:IsDown() ? QC.Editor.CurrentTheme.TabDown : QC.Editor.CurrentTheme.TabHover) : (this.Active ? QC.Editor.CurrentTheme.TabActive : QC.Editor.CurrentTheme.Tab)); 
     }
     
     function DoClick() {
@@ -67,7 +67,6 @@ class QC_GUI_TabView {
 
     // Tab structure { Name, Button, Content }
     var AllTabs = { };
-    var ActiveTabIndex = 0;
 
     function Init() {  
         this:__new();
@@ -78,15 +77,12 @@ class QC_GUI_TabView {
         
         this.View = this:Add("EditablePanel");
         this.View:Dock(FILL);
+        this.View:DockPadding(2, 2, 2, 2);
         function this.View:Paint(w, h) {
             draw.RoundedBox(0, 0, 0, w, h, QC.Editor.CurrentTheme.TabActive); 
             draw.RoundedBox(0, 2, 2, w - 4, h, QC.Editor.CurrentTheme.Background); 
         }
         
-        // Test
-        this:AddTab("Welcome1", content);
-        this:AddTab("Welcome2", content);
-        this:AddTab("Welcome3", content);
     }
      
     function Paint(w, h) {
@@ -95,24 +91,40 @@ class QC_GUI_TabView {
     
     function GetEditor() {
         return this:GetParent();
-    }
+    } 
     
     function AddTab(name, panel) {
         var btn = this.TabBar:AddTab(name, #this.AllTabs + 1);
         this.AllTabs[#this.AllTabs + 1] = { Name = name, Button = btn, Content = panel };
         btn.Data = this.AllTabs[#this.AllTabs];
+        panel:SetVisible(false);
+         
+        if(panel) {   
+            panel:SetParent(this.View);
+            panel:Dock(FILL);
+        }
+        
+        if(#this.AllTabs == 1)
+            this:SetActiveTab(1); 
     }
     
     function OnTabButtonClick(button) {
         this:SetActiveTab(button.Index);
-    }
+    } 
     
     function SetActiveTab(index) {
         foreach(var index, tab in this.AllTabs) {
-            tab.Button.Active = false; 
+            tab.Button.Active = false;  
+            if(tab.Content)
+                tab.Content:SetVisible(false);
         } 
             
-        this.AllTabs[index].Button.Active = true;
+        this.AllTabs[index].Button.Active = true; 
+        if(this.AllTabs[index].Content)
+            this.AllTabs[index].Content:SetVisible(true);
+            
+        if(this.AllTabs[index].Content.GetTextEditor)
+            this:GetEditor().ScriptEditor = this.AllTabs[index].Content;
     }
 
 } 

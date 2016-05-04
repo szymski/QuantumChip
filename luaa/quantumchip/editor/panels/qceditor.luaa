@@ -4,6 +4,8 @@
 
 class QC_GUI_Editor : QC_GUI_Frame {
 
+    var ScriptEditor;
+
     function Init() {  
         this:__new();
         
@@ -17,9 +19,17 @@ class QC_GUI_Editor : QC_GUI_Frame {
         
         this.TabView = this:Add("QCTabView");
         this.TabView:Dock(FILL);
+        //this.TabView:AddTab("Welcome", this:Add("QCWelcome")); 
+        this.TabView:AddTab("File 1", this:Add("QCScriptEditor")); 
+        this.TabView:AddTab("File 2", this:Add("QCScriptEditor")); 
+        this.TabView:AddTab("File 3", this:Add("QCScriptEditor"));
         
         this.BottomBar = this:Add("QCBottomBar");
         this.BottomBar:Dock(BOTTOM);
+    }
+    
+    function GetScriptEditor() {
+        return this.ScriptEditor;
     }
 
 }

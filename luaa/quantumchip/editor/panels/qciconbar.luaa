@@ -19,7 +19,7 @@ class QC_GUI_IconBar {
     }  
      
     function Paint(w, h) {
-        draw.RoundedBox(0, 0, 0, w, h, QC.Editor.CurrentTheme.IconBar); 
+        draw.RoundedBox(0, 0, 0, w, h, QC.Editor.CurrentTheme.IconBar);  
     }
     
     function GetEditor() {

@@ -10,33 +10,50 @@ QC.Editor.Materials = { };
 -------------------------------------*/ 
 
 if(SERVER) {
-    AddCSLuaFile("panels/qcframe.lua");
+    AddCSLuaFile("panels/golem/editor.lua");
+    AddCSLuaFile("panels/golem/hscrollbar.lua"); 
+    AddCSLuaFile("panels/golem/button.lua"); 
+    AddCSLuaFile("panels/golem/imagebutton.lua"); 
+    AddCSLuaFile("panels/golem/main.lua"); 
+    AddCSLuaFile("panels/golem/font.lua"); 
+    AddCSLuaFile("panels/qcframe.lua"); 
     AddCSLuaFile("panels/qciconbar.lua");
     AddCSLuaFile("panels/qctabview.lua");
     AddCSLuaFile("panels/qcbottombar.lua");
-    AddCSLuaFile("panels/qceditor.lua");
-    AddCSLuaFile("themes.lua");
+    AddCSLuaFile("panels/qcwelcome.lua");
+    AddCSLuaFile("panels/qcscripteditor.lua");    
+    AddCSLuaFile("panels/qceditor.lua"); 
+    AddCSLuaFile("themes.lua");  
 }
 else {
+    // Material Design icons
+    QC.Editor.Materials.Close = Material("materials/quantumchip/editor/close.png", "unlitgeneric");
+    QC.Editor.Materials.Resize = Material("materials/quantumchip/editor/resize-bottom-right.png", "unlitgeneric");
+    QC.Editor.Materials.NewFile = Material("materials/quantumchip/editor/file.png", "unlitgeneric");
+    QC.Editor.Materials.OpenFile = Material("materials/quantumchip/editor/folder.png", "unlitgeneric");
+    QC.Editor.Materials.SaveFile = Material("materials/quantumchip/editor/content-save.png", "unlitgeneric");
+    QC.Editor.Materials.SaveAs = Material("materials/quantumchip/editor/content-save-all.png", "unlitgeneric");
+    QC.Editor.Materials.Settings = Material("materials/quantumchip/editor/settings.png", "unlitgeneric");
+    QC.Editor.Materials.SoundBrowser = Material("materials/quantumchip/editor/volume-high.png", "unlitgeneric");
+    
     include("themes.lua");
-    include("panels/qcframe.lua");
-    include("panels/qciconbar.lua");
-    include("panels/qctabview.lua");
-    include("panels/qcbottombar.lua");
+    include("panels/golem/main.lua");
+    include("panels/golem/font.lua");
+    include("panels/golem/button.lua"); 
+    include("panels/golem/imagebutton.lua"); 
+    include("panels/golem/editor.lua");  
+    include("panels/golem/hscrollbar.lua");  
+    include("panels/qcframe.lua"); 
+    include("panels/qciconbar.lua");   
+    include("panels/qctabview.lua");   
+    include("panels/qcbottombar.lua"); 
+    include("panels/qcwelcome.lua");   
+    include("panels/qctexteditor.lua");
+    include("panels/qcscripteditor.lua");
     include("panels/qceditor.lua");
-}
-
-// Material Design icons
-QC.Editor.Materials.Close = Material("materials/quantumchip/editor/close.png", "unlitgeneric");
-QC.Editor.Materials.Resize = Material("materials/quantumchip/editor/resize-bottom-right.png", "unlitgeneric");
-QC.Editor.Materials.NewFile = Material("materials/quantumchip/editor/file.png", "unlitgeneric");
-QC.Editor.Materials.OpenFile = Material("materials/quantumchip/editor/folder.png", "unlitgeneric");
-QC.Editor.Materials.SaveFile = Material("materials/quantumchip/editor/content-save.png", "unlitgeneric");
-QC.Editor.Materials.SaveAs = Material("materials/quantumchip/editor/content-save-all.png", "unlitgeneric");
-QC.Editor.Materials.Settings = Material("materials/quantumchip/editor/settings.png", "unlitgeneric");
-QC.Editor.Materials.SoundBrowser = Material("materials/quantumchip/editor/volume-high.png", "unlitgeneric");
-
-/*-----------------------------------
+}   
+   
+/*----------------------------------- 
     Opening
 -------------------------------------*/
  
@@ -45,9 +62,10 @@ if(CLIENT) {
  
     function QC.OpenEditor() { 
         QC.Editor.CurrentTheme = QC.Editor.Themes["Dark"]; 
+        QC.Editor.CurrentEditorTheme = QC.Editor.EditorThemes["Monokai"]; 
         QC.Editor.CurrentTheme:Init();   
-        
-        if(IsValid(QC_TESTFRAME))
+          
+        if(IsValid(QC_TESTFRAME)) 
             QC_TESTFRAME:Remove();
         
         QC_TESTFRAME = vgui.Create("QCEditor"); 

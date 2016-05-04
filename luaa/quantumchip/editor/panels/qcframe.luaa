@@ -10,17 +10,19 @@ class QC_GUI_Frame {
         
         this.lblTitle:SetFont("qc_editor_font_title");
         this.lblTitle:SetColor(QC.Editor.CurrentTheme.TitleText);
+        this.lblTitle:SetHeight(32);
+        this.lblTitle:SetContentAlignment(4);
         
         this.btnMaxim:SetVisible(false);
 	    this.btnMinim:SetVisible(false);
     
         this.btnClose:SetText("");        
         function this.btnClose:Paint(w, h) {
-            surface.SetDrawColor(255, 255, 255);
+            surface.SetDrawColor(QC.Editor.CurrentTheme.CloseButton);
             surface.SetMaterial(QC.Editor.Materials.Close);
             surface.DrawTexturedRect(0, 0, w, h);
-        }        
-    } 
+        }           
+    }    
      
     function Paint(w, h) {
         draw.RoundedBox(0, 0, 0, w, h, QC.Editor.CurrentTheme.Background);
@@ -33,6 +35,28 @@ class QC_GUI_Frame {
             surface.SetMaterial(QC.Editor.Materials.Resize);
             surface.DrawTexturedRect(w - 29, h - 29, 32, 32);
         }
+    }
+    
+    function PerformLayout() {
+        var titlePush = 0;
+
+        if(IsValid(this.imgIcon)) {
+            this.imgIcon:SetPos(5, 5);
+            this.imgIcon:SetSize(16, 16);
+            titlePush = 32;
+        }
+
+        this.btnClose:SetPos(this:GetWide() - 31 - 4, 0);
+        this.btnClose:SetSize(31, 31);
+
+        this.btnMaxim:SetPos(this:GetWide() - 31 * 2 - 4, 0);
+        this.btnMaxim:SetSize(31, 31);
+
+        this.btnMinim:SetPos(this:GetWide() - 31 * 3 - 4, 0);
+        this.btnMinim:SetSize(31, 31);
+
+        this.lblTitle:SetPos(8 + titlePush, 2);
+        this.lblTitle:SetSize(this:GetWide() - 25 - titlePush, 28);
     }
 }
  

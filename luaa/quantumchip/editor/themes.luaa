@@ -3,8 +3,54 @@
 -------------------------------------*/
 
 QC.Editor.Themes = { };
+QC.Editor.EditorThemes = { };
 
 QC.Editor.Themes["Dark"] = {
+    
+    Init = function() {
+        surface.CreateFont("qc_editor_font_title", {
+            font = "Calibri",
+            size = 23, 
+            weight = 0,  
+        });
+        
+        surface.CreateFont("qc_editor_font_tab", {
+            font = "Calibri",
+            size = 19, 
+            weight = 0,  
+        }); 
+         
+        surface.CreateFont("qc_editor_font_status", {
+            font = "Tahoma",
+            size = 19, 
+            weight = 0,  
+        }); 
+    }, 
+    
+    Background = Color(50, 50, 50),
+    TitleBar = Color(60, 60, 60),
+    TitleText = Color(255, 255, 255),  
+    CloseButton = Color(255, 255, 255),  
+    ResizeIcon = Color(0, 0, 0, 150),  
+    
+    IconBar = Color(180, 180, 180),
+    Icon = Color(80, 80, 80),
+    IconHover = Color(120, 120, 120),
+    IconDown = Color(60, 60, 60),
+    
+    TabBar = Color(50, 50, 50),
+    Tab = Color(80, 80, 80),
+    TabActive = Color(0, 122, 204),
+    TabHover = Color(120, 120, 120), 
+    TabDown = Color(70, 70, 70),
+    TabText = Color(255, 255, 255),
+    
+    BottomBar = Color(0, 122, 204),
+    Status = Color(255, 255, 255),
+    
+}; 
+
+QC.Editor.Themes["Light"] = {
     
     Init = function() {
         surface.CreateFont("qc_editor_font_title", {
@@ -20,31 +66,42 @@ QC.Editor.Themes["Dark"] = {
         });
     }, 
     
-    Background = Color(50, 50, 50),
-    TitleBar = Color(60, 60, 60),
-    TitleText = Color(255, 255, 255),  
+    Background = Color(255, 255, 255),
+    TitleBar = Color(255, 255, 255),
+    TitleText = Color(50, 50, 50),  
+    CloseButton = Color(0, 0, 0), 
     ResizeIcon = Color(0, 0, 0, 150),  
     
-    IconBar = Color(180, 180, 180),
+    IconBar = Color(240, 240, 240),
     Icon = Color(80, 80, 80),
     IconHover = Color(120, 120, 120),
     IconDown = Color(60, 60, 60),
     
-    TabBar = Color(50, 50, 50),
-    Tab = Color(80, 80, 80),
+    TabBar = Color(220, 220, 220),
+    Tab = Color(180, 180, 180),
     TabActive = Color(0, 122, 204),
     TabHover = Color(120, 120, 120),
-    TabDown = Color(70, 70, 70),
+    TabDown = Color(70, 70, 70), 
     TabText = Color(255, 255, 255),
     
     BottomBar = Color(0, 122, 204),
     
-}; 
+};    
+
+QC.Editor.EditorThemes["Monokai"] = {
+     
+    Background = Color(39, 40, 34),
+    Caret = Color(248, 248, 240),  
+    Lines = Color(49, 50, 44),  
+    Underlay = Color(73, 72, 62),  
+    Selection = Color(73, 72, 62), 
+     
+};  
 
 /*-----------------------------------
     Tests
 -------------------------------------*/
-
+ 
 #if DEBUG 
 
 if(CLIENT)
