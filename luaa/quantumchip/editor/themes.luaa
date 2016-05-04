@@ -1,0 +1,53 @@
+/*-----------------------------------
+    QuantumChip editor themes
+-------------------------------------*/
+
+QC.Editor.Themes = { };
+
+QC.Editor.Themes["Dark"] = {
+    
+    Init = function() {
+        surface.CreateFont("qc_editor_font_title", {
+            font = "Calibri",
+            size = 23, 
+            weight = 0,  
+        });
+        
+        surface.CreateFont("qc_editor_font_tab", {
+            font = "Calibri",
+            size = 19, 
+            weight = 0,  
+        });
+    }, 
+    
+    Background = Color(50, 50, 50),
+    TitleBar = Color(60, 60, 60),
+    TitleText = Color(255, 255, 255),  
+    ResizeIcon = Color(0, 0, 0, 150),  
+    
+    IconBar = Color(180, 180, 180),
+    Icon = Color(80, 80, 80),
+    IconHover = Color(120, 120, 120),
+    IconDown = Color(60, 60, 60),
+    
+    TabBar = Color(50, 50, 50),
+    Tab = Color(80, 80, 80),
+    TabActive = Color(0, 122, 204),
+    TabHover = Color(120, 120, 120),
+    TabDown = Color(70, 70, 70),
+    TabText = Color(255, 255, 255),
+    
+    BottomBar = Color(0, 122, 204),
+    
+}; 
+
+/*-----------------------------------
+    Tests
+-------------------------------------*/
+
+#if DEBUG 
+
+if(CLIENT)
+QC.OpenEditor(); 
+ 
+#endif   

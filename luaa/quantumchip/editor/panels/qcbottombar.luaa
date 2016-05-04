@@ -1,0 +1,35 @@
+/*-----------------------------------
+    QCBottomBar
+-------------------------------------*/
+
+class QC_GUI_BottomBar {
+
+    function Init() {  
+        this:__new();
+
+        this:SetMouseInputEnabled(false);
+   }  
+     
+    function Paint(w, h) {
+        draw.RoundedBox(0, 0, 0, w, h, QC.Editor.CurrentTheme.BottomBar); 
+    }
+    
+    function GetEditor() {
+        return this:GetParent();
+    }
+     
+} 
+  
+CQC_GUI_BottomBar.__index = null;
+derma.DefineControl("QCBottomBar", "QuantumChip BottomBar", CQC_GUI_BottomBar, "EditablePanel"); 
+
+/*----------------------------------- 
+    Tests
+-------------------------------------*/
+
+#if DEBUG
+
+if(CLIENT)
+QC.OpenEditor(); 
+ 
+#endif   

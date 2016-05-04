@@ -1,0 +1,51 @@
+/*-----------------------------------
+    QCFrame
+-------------------------------------*/
+
+class QC_GUI_Frame {
+
+    function Init() {  
+        this:__new();
+        this:SetText("");
+        
+        this.lblTitle:SetFont("qc_editor_font_title");
+        this.lblTitle:SetColor(QC.Editor.CurrentTheme.TitleText);
+        
+        this.btnMaxim:SetVisible(false);
+	    this.btnMinim:SetVisible(false);
+    
+        this.btnClose:SetText("");        
+        function this.btnClose:Paint(w, h) {
+            surface.SetDrawColor(255, 255, 255);
+            surface.SetMaterial(QC.Editor.Materials.Close);
+            surface.DrawTexturedRect(0, 0, w, h);
+        }        
+    } 
+     
+    function Paint(w, h) {
+        draw.RoundedBox(0, 0, 0, w, h, QC.Editor.CurrentTheme.Background);
+        draw.RoundedBox(0, 0, 0, w, 32, QC.Editor.CurrentTheme.TitleBar);
+    }
+    
+    function PaintOver(w, h) {
+        if(this:GetSizable()) {
+            surface.SetDrawColor(QC.Editor.CurrentTheme.ResizeIcon);
+            surface.SetMaterial(QC.Editor.Materials.Resize);
+            surface.DrawTexturedRect(w - 29, h - 29, 32, 32);
+        }
+    }
+}
+ 
+CQC_GUI_Frame.__index = null;
+derma.DefineControl("QCFrame", "QuantumChip Frame", CQC_GUI_Frame, "DFrame"); 
+
+/*-----------------------------------
+    Tests
+-------------------------------------*/
+
+#if DEBUG
+
+if(CLIENT)
+QC.OpenEditor(); 
+ 
+#endif   

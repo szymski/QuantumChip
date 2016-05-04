@@ -1,0 +1,69 @@
+/*-----------------------------------
+    QuantumChip editor
+-------------------------------------*/
+
+QC.Editor = { };
+QC.Editor.Materials = { };
+
+/*-----------------------------------
+    Including
+-------------------------------------*/ 
+
+if(SERVER) {
+    AddCSLuaFile("panels/qcframe.lua");
+    AddCSLuaFile("panels/qciconbar.lua");
+    AddCSLuaFile("panels/qctabview.lua");
+    AddCSLuaFile("panels/qcbottombar.lua");
+    AddCSLuaFile("panels/qceditor.lua");
+    AddCSLuaFile("themes.lua");
+}
+else {
+    include("themes.lua");
+    include("panels/qcframe.lua");
+    include("panels/qciconbar.lua");
+    include("panels/qctabview.lua");
+    include("panels/qcbottombar.lua");
+    include("panels/qceditor.lua");
+}
+
+// Material Design icons
+QC.Editor.Materials.Close = Material("materials/quantumchip/editor/close.png", "unlitgeneric");
+QC.Editor.Materials.Resize = Material("materials/quantumchip/editor/resize-bottom-right.png", "unlitgeneric");
+QC.Editor.Materials.NewFile = Material("materials/quantumchip/editor/file.png", "unlitgeneric");
+QC.Editor.Materials.OpenFile = Material("materials/quantumchip/editor/folder.png", "unlitgeneric");
+QC.Editor.Materials.SaveFile = Material("materials/quantumchip/editor/content-save.png", "unlitgeneric");
+QC.Editor.Materials.SaveAs = Material("materials/quantumchip/editor/content-save-all.png", "unlitgeneric");
+QC.Editor.Materials.Settings = Material("materials/quantumchip/editor/settings.png", "unlitgeneric");
+QC.Editor.Materials.SoundBrowser = Material("materials/quantumchip/editor/volume-high.png", "unlitgeneric");
+
+/*-----------------------------------
+    Opening
+-------------------------------------*/
+ 
+if(CLIENT) {
+    QC.Editor.CurrentTheme = QC.Editor.Themes["Dark"];    
+ 
+    function QC.OpenEditor() { 
+        QC.Editor.CurrentTheme = QC.Editor.Themes["Dark"]; 
+        QC.Editor.CurrentTheme:Init();   
+        
+        if(IsValid(QC_TESTFRAME))
+            QC_TESTFRAME:Remove();
+        
+        QC_TESTFRAME = vgui.Create("QCEditor"); 
+        QC_TESTFRAME:SetSize(1000, 800); 
+        QC_TESTFRAME:Center(); 
+        QC_TESTFRAME:MakePopup();
+    } 
+}
+
+/*-----------------------------------
+    Tests
+-------------------------------------*/
+
+#if DEBUG
+
+if(CLIENT)
+QC.OpenEditor();
+
+#endif 

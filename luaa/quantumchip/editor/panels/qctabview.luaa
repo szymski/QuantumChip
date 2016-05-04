@@ -1,0 +1,132 @@
+/*-----------------------------------
+    QCTabButton
+-------------------------------------*/
+
+local class QC_GUI_TabButton {
+
+    function Init() {  
+        this:__new();
+        
+        this.Active = false;
+        
+        this:SetWidth(100);
+        this:SetFont("qc_editor_font_tab");
+        this:SetColor(QC.Editor.CurrentTheme.TabText);
+    }  
+    
+    function Paint(w, h) {
+        draw.RoundedBox(0, 0, 0, w - 2, h, this:IsHovered() ? (this:IsDown() ? QC.Editor.CurrentTheme.TabDown : QC.Editor.CurrentTheme.TabHover) : (this.Active ? QC.Editor.CurrentTheme.TabActive : QC.Editor.CurrentTheme.Tab)); 
+    }
+    
+    function DoClick() {
+        this:GetTabView():OnTabButtonClick(this);
+    }
+    
+    function GetTabView() {
+        return this:GetParent():GetParent();
+    }
+    
+} 
+
+CQC_GUI_TabButton.__index = null; 
+derma.DefineControl("QCTabButton", "QuantumChip TabButton", CQC_GUI_TabButton, "DButton"); 
+
+/*-----------------------------------
+    QCTabBar
+-------------------------------------*/
+
+local class QC_GUI_TabBar {
+
+    function Init() {  
+        this:__new();
+    }  
+     
+    function Paint(w, h) {
+        draw.RoundedBox(0, 0, 0, w, h, QC.Editor.CurrentTheme.TabBar); 
+    }
+    
+    function AddTab(name, index) {
+        var tabBtn = this:Add("QCTabButton");
+        tabBtn:SetText(name);
+        tabBtn:Dock(LEFT);
+        tabBtn.Index = index;
+        
+        return tabBtn;
+    }
+} 
+  
+CQC_GUI_TabBar.__index = null; 
+derma.DefineControl("QCTabBar", "QuantumChip TabBar", CQC_GUI_TabBar, "EditablePanel"); 
+
+
+/*-----------------------------------
+    QCTabView
+-------------------------------------*/
+
+class QC_GUI_TabView {
+
+    // Tab structure { Name, Button, Content }
+    var AllTabs = { };
+    var ActiveTabIndex = 0;
+
+    function Init() {  
+        this:__new();
+        
+        this.TabBar = this:Add("QCTabBar");
+        this.TabBar:Dock(TOP);
+        this.TabBar:SetHeight(24);
+        
+        this.View = this:Add("EditablePanel");
+        this.View:Dock(FILL);
+        function this.View:Paint(w, h) {
+            draw.RoundedBox(0, 0, 0, w, h, QC.Editor.CurrentTheme.TabActive); 
+            draw.RoundedBox(0, 2, 2, w - 4, h, QC.Editor.CurrentTheme.Background); 
+        }
+        
+        // Test
+        this:AddTab("Welcome1", content);
+        this:AddTab("Welcome2", content);
+        this:AddTab("Welcome3", content);
+    }
+     
+    function Paint(w, h) {
+        draw.RoundedBox(0, 0, 0, w, h, QC.Editor.CurrentTheme.TabBar); 
+    }
+    
+    function GetEditor() {
+        return this:GetParent();
+    }
+    
+    function AddTab(name, panel) {
+        var btn = this.TabBar:AddTab(name, #this.AllTabs + 1);
+        this.AllTabs[#this.AllTabs + 1] = { Name = name, Button = btn, Content = panel };
+        btn.Data = this.AllTabs[#this.AllTabs];
+    }
+    
+    function OnTabButtonClick(button) {
+        this:SetActiveTab(button.Index);
+    }
+    
+    function SetActiveTab(index) {
+        foreach(var index, tab in this.AllTabs) {
+            tab.Button.Active = false; 
+        } 
+            
+        this.AllTabs[index].Button.Active = true;
+    }
+
+} 
+  
+CQC_GUI_TabView.__index = null; 
+derma.DefineControl("QCTabView", "QuantumChip TabView", CQC_GUI_TabView, "EditablePanel"); 
+
+/*-----------------------------------
+    Tests
+-------------------------------------*/
+
+#if DEBUG
+
+if(CLIENT)
+QC.OpenEditor(); 
+ 
+#endif   

@@ -75,7 +75,62 @@ if(SERVER) {
 	
 	foreach(var v in QC.InstructionFiles)
 		AddCSLuaFile("compiler/instructions/" .. v .. ".lua");
-}  
+		
+	AddCSLuaFile("editor/editor.lua"); 
+}   
+
+/*-----------------------------------
+    Console command
+-------------------------------------*/
+
+/*
+	Keys are command names.
+	Console command:
+		Name - name of the command
+		HandleCommand(ply, args) - function handling the command
+		HandleAutoComplete(args) - function handling the auto complete
+*/
+QC.ConsoleCommands = { };
+
+function QC.AddConsoleCommand(name, handle, autoComplete) {
+	assert(name, "Command name is nil.");
+	assert(handle, "Handle function is nil.");
+	assert(!QC.ConsoleCommands[name], "Command " .. name .. " is already registered.");
+	
+	QC.ConsoleCommands[name] = {
+		Name = name,
+		HandleCommand = handle,
+		HandleAutoComplete = autoComplete
+	};
+}
+
+local function HandleCommand(ply, command, args) {
+	if(#args == 0)
+		return;
+	
+	var cmd = QC.ConsoleCommands[args[1]];
+	
+	if(cmd) {
+		table.remove(args, 1);
+		cmd.HandleCommand(ply, args);
+	}
+	else
+		ply:PrintMessage(HUD_PRINTCONSOLE, "No such command " .. args[1]);
+}
+
+local function HandleAutoComplete(command, args) {	
+	var tbl = { };
+	
+	args = args:sub(2);
+	
+	foreach(var name, cmd in QC.ConsoleCommands)
+		if(name:find(args) || #args == 0 )
+			tbl[#tbl + 1] = "quantumchip " .. name;
+	
+	return tbl;
+}
+
+concommand.Add("quantumchip", HandleCommand, HandleAutoComplete);
 
 /*-----------------------------------
     Initialization
@@ -84,6 +139,7 @@ if(SERVER) {
 include("functions.lua");
 include("components.lua");
 include("compiler/compiler.lua");
+include("editor/editor.lua");
         
 QC.LoadComponents();		
 
@@ -93,6 +149,10 @@ QC.LoadComponents();
         
 #if DEBUG    
     
+QC.AddConsoleCommand("test", function(ply, args) {
+	PrintTable(args);
+});
+	
 function QC.DoTest() {
 	var compiler = QC_Compiler();
 	compiler:Compile(@"    
@@ -100,12 +160,12 @@ function QC.DoTest() {
 server {          
 	                             
 	bool gowno = #\"co mam robic?\"  
- 
-                                        
+   
+                                         
 }           
 	");           
 }      
    
 QC.DoTest(); 
-  
+
 #endif    

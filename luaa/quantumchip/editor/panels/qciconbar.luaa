@@ -1,0 +1,55 @@
+/*-----------------------------------
+    QCIconBar
+-------------------------------------*/
+
+class QC_GUI_IconBar {
+
+    function Init() {  
+        this:__new();
+        
+        this:SetHeight(32);
+        
+        this:AddIcon("New file", QC.Editor.Materials.NewFile, LEFT, function() { });
+        this:AddIcon("Open file", QC.Editor.Materials.OpenFile, LEFT, function() { });
+        this:AddIcon("Save file", QC.Editor.Materials.SaveFile, LEFT, function() { });
+        this:AddIcon("Save as", QC.Editor.Materials.SaveAs, LEFT, function() { });
+        
+        this:AddIcon("Settings", QC.Editor.Materials.Settings, RIGHT, function() { });
+        this:AddIcon("Sound browser", QC.Editor.Materials.SoundBrowser, RIGHT, function() { RunConsoleCommand("wire_sound_browser_open"); });
+    }  
+     
+    function Paint(w, h) {
+        draw.RoundedBox(0, 0, 0, w, h, QC.Editor.CurrentTheme.IconBar); 
+    }
+    
+    function GetEditor() {
+        return this:GetParent();
+    }
+     
+    function AddIcon(description, material, dock, click) {
+        var icon = this:Add("DButton");
+        icon:Dock(dock);
+        icon:SetWidth(32); 
+        icon:SetText("");
+        icon.DoClick = click;
+        function icon:Paint(w, h) {
+            surface.SetDrawColor(this:IsHovered() ? (this:IsDown() ? QC.Editor.CurrentTheme.IconDown : QC.Editor.CurrentTheme.IconHover) : QC.Editor.CurrentTheme.Icon);
+            surface.SetMaterial(material); 
+            surface.DrawTexturedRect(0, 0, w, h);
+        }
+    }
+} 
+  
+CQC_GUI_IconBar.__index = null;
+derma.DefineControl("QCIconBar", "QuantumChip IconBar", CQC_GUI_IconBar, "EditablePanel"); 
+
+/*-----------------------------------
+    Tests
+-------------------------------------*/
+
+#if DEBUG
+
+if(CLIENT)
+QC.OpenEditor(); 
+ 
+#endif   

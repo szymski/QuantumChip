@@ -1,0 +1,39 @@
+/*-----------------------------------
+    QCEditor
+-------------------------------------*/
+
+class QC_GUI_Editor : QC_GUI_Frame {
+
+    function Init() {  
+        this:__new();
+        
+        this:SetTitle("QuantumChip Editor");
+        this:SetSizable(true); 
+        this:SetMinimumSize(400, 400); 
+        this:DockPadding(0, 32, 0, 0);
+        
+        this.IconBar = this:Add("QCIconBar");
+        this.IconBar:Dock(TOP);
+        
+        this.TabView = this:Add("QCTabView");
+        this.TabView:Dock(FILL);
+        
+        this.BottomBar = this:Add("QCBottomBar");
+        this.BottomBar:Dock(BOTTOM);
+    }
+
+}
+  
+CQC_GUI_Editor.__index = null;
+derma.DefineControl("QCEditor", "QuantumChip Editor", CQC_GUI_Editor, "QCFrame"); 
+
+/*-----------------------------------
+    Tests
+-------------------------------------*/
+ 
+#if DEBUG
+   
+if(CLIENT)  
+QC.OpenEditor(); 
+ 
+#endif   
