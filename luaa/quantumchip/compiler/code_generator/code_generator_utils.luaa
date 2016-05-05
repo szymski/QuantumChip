@@ -12,7 +12,9 @@ partial class QC_CodeGenerator {
     /*
         Constructor
     */ 
-    function QC_CodeGenerator(sequence) {
+    function QC_CodeGenerator(compiler, sequence) {
+        this.Compiler = compiler;
+        
         var startTime = SysTime();
         
         assert(sequence != null, "Input is nil. Sequence tree expected.");

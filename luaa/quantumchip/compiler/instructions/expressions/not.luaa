@@ -13,22 +13,21 @@ class QC_Expression_Not : QC_Expression {
     } 
     
     function GetToken() {
-        return this.Expression1:GetToken();
+        return this.Value:GetToken();
     }
     
     function Analyse(analyser) {
-        this.Expression1:Analyse(analyser);
-        this.Expression2:Analyse(analyser);
+        this.Value:Analyse(analyser);
         
-        this.Operator = analyser:LookUpOperator(this.Expression1:GetValueType(), this.Expression1:GetToken(), "!", { this.Expression1, this.Expression2 });
+        this.Operator = analyser:LookUpOperator(this.Value:GetValueType(), this.Value:GetToken(), "!", { this.Value });
     }
     
     function GetChildren() {
-        return { this.Expression1, this.Expression2 };
+        return { this.Value };
     }
     
     function GenerateCode(generator, tbl) {
-        this.Operator.Compile(generator, tbl, generator:CompileToString(this.Expression1, this.Expression2));    
+        this.Operator.Compile(generator, tbl, generator:CompileToString(this.Value));    
     }
     
 } 

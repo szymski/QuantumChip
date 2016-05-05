@@ -9,6 +9,8 @@ COMPONENT.Author = "Szymekk";
 COMPONENT:AddClass("b", "boolean");
 COMPONENT:AddClassAlias("b", "bool");
 COMPONENT:SetClassDefaultValue("b", "false");
+COMPONENT:AddClassOperatorInline("b", "is", "b:", "b", "@1");
+COMPONENT:AddClassOperatorInline("b", "!", "b:", "b", "!@1");
   
 COMPONENT:AddClass("n", "number");  
 COMPONENT:AddClassAlias("n", "int");
@@ -29,7 +31,8 @@ COMPONENT:SetClassDefaultValue("s", "\"\"");
 COMPONENT:AddClassOperatorInline("s", "=", "s:s", "", "@1 = @2");
 COMPONENT:AddClassOperatorInline("s", "is", "s:", "b", "#@1 > 0");
 COMPONENT:AddClassOperatorInline("s", "==", "s:s", "b", "@1 == @2");
-COMPONENT:AddClassOperatorInline("s", "#", "s:", "b", "#@1");
+COMPONENT:AddClassOperatorInline("s", "#", "s:", "n", "#@1");
+COMPONENT:AddClassOperatorInline("s", "+", "s:s", "s", "@1 .. @2"); 
  
 /*-----------------------------------
     Print functions

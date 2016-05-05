@@ -27,7 +27,9 @@ partial class QC_Lexer {
     /*
         Constructor
     */
-    function QC_Lexer(input) {
+    function QC_Lexer(compiler, input) {
+        this.Compiler = compiler;
+        
         this.InputLines = string.Explode("\n", input); 
         this:Process();
     } 

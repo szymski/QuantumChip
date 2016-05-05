@@ -66,10 +66,10 @@ QC.Editor.Themes["Light"] = {
         });
     }, 
     
-    Background = Color(255, 255, 255),
+    Background = Color(255, 255, 255), 
     TitleBar = Color(255, 255, 255),
     TitleText = Color(50, 50, 50),  
-    CloseButton = Color(0, 0, 0), 
+    CloseButton = Color(0, 0, 0),   
     ResizeIcon = Color(0, 0, 0, 150),  
     
     IconBar = Color(240, 240, 240),
@@ -85,16 +85,29 @@ QC.Editor.Themes["Light"] = {
     TabText = Color(255, 255, 255),
     
     BottomBar = Color(0, 122, 204),
+    Status = Color(255, 255, 255),
     
 };    
 
 QC.Editor.EditorThemes["Monokai"] = {
      
     Background = Color(39, 40, 34),
-    Caret = Color(248, 248, 240),  
+    Foreground = Color(255, 255, 255),    
+    Caret = Color(248, 248, 240),   
     Lines = Color(49, 50, 44),  
     Underlay = Color(73, 72, 62),  
     Selection = Color(73, 72, 62), 
+     
+};   
+  
+QC.Editor.EditorThemes["Tomorrow"] = { 
+      
+    Background = Color(255, 255, 255),
+    Foreground = Color(77, 77, 76),
+    Caret = Color(174, 175, 173),  
+    Lines = Color(235, 235, 235),  
+    Underlay = Color(239, 239, 239),  
+    Selection = Color(214, 214, 214), 
      
 };  
 

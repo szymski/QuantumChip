@@ -1,0 +1,39 @@
+/*-----------------------------------
+    Variable operator assignment expression
+-------------------------------------*/
+
+class QC_Expression_VariableOperatorAssignment : QC_Instruction {
+
+    function QC_Expression_VariableOperatorAssignment(variable, value) {
+        this.Variable = variable;
+        this.Value = value; 
+    }  
+    
+    function GetValueType() {
+        return this.Variable:GetValueType();
+    } 
+    
+    function GetToken() {
+        return this.Variable:GetToken();
+    }
+    
+    function Analyse(analyser) {
+        this.Variable:Analyse(analyser);
+        this.Value:Analyse(analyser);
+        
+        if(!(this.Variable is QC_Expression_Variable))
+            analyser:ErrorToken(this.Variable:GetToken(), "Left side must be a variable.");
+        
+        this.Operator = analyser:LookUpOperator(this.Variable:GetValueType(), this.Variable:GetToken(), "=", { this.Variable, this.Value });
+    }
+    
+    function GetChildren() {
+        return { this.Variable, this.Value };  
+    }
+    
+    function GenerateCode(generator, tbl) {        
+        this.Operator.Compile(generator, generator.Preparation, generator:CompileToString(this.Variable, this.Value));
+        this.Variable:GenerateCode(generator, tbl);
+    }
+    
+} 

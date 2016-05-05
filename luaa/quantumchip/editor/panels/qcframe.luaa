@@ -34,7 +34,7 @@ class QC_GUI_Frame {
             surface.SetDrawColor(QC.Editor.CurrentTheme.ResizeIcon);
             surface.SetMaterial(QC.Editor.Materials.Resize);
             surface.DrawTexturedRect(w - 29, h - 29, 32, 32);
-        }
+        }    
     }
     
     function PerformLayout() {
@@ -44,10 +44,10 @@ class QC_GUI_Frame {
             this.imgIcon:SetPos(5, 5);
             this.imgIcon:SetSize(16, 16);
             titlePush = 32;
-        }
-
-        this.btnClose:SetPos(this:GetWide() - 31 - 4, 0);
-        this.btnClose:SetSize(31, 31);
+        } 
+ 
+        this.btnClose:SetPos(this:GetWide() - 32, 0);
+        this.btnClose:SetSize(32, 32);
 
         this.btnMaxim:SetPos(this:GetWide() - 31 * 2 - 4, 0);
         this.btnMaxim:SetSize(31, 31);

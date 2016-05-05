@@ -1,0 +1,51 @@
+/*-----------------------------------
+    QCDebugWindow
+-------------------------------------*/
+
+class QC_GUI_DebugWindow : QC_GUI_Frame {
+    
+    function Init() {  
+        this:__new();
+        
+        this:SetTitle("Debug Window");
+        this:SetSizable(true); 
+        this:SetMinimumSize(400, 800); 
+        this:DockPadding(0, 32, 0, 0);
+        
+        this.Text = this:Add("DLabel");
+        this.Text:Dock(FILL);
+        this.Text:DockMargin(5, 5, 5, 5);
+        this.Text:SetWrap(true);
+        this.Text:SetContentAlignment(7);
+        this.Text:SetFont("qc_editor_font_status");   
+        this.Text:SetColor(QC.Editor.CurrentTheme.Status);  
+        this.Text:SetText("Compiled code goes here");  
+    }  
+    
+    function GetScriptEditor() {
+        return this.ScriptEditor;
+    }  
+    
+    function GetBottomBar() {
+        return this.BottomBar;
+    }
+    
+    function SetText(text) {
+        this.Text:SetText(text);
+    }
+
+}
+  
+CQC_GUI_DebugWindow.__index = null;
+derma.DefineControl("QCDebugWindow", "QuantumChip DebugWindow", CQC_GUI_DebugWindow, "QCFrame"); 
+
+/*-----------------------------------
+    Tests
+-------------------------------------*/
+ 
+#if DEBUG
+   
+if(CLIENT)  
+QC.OpenEditor(); 
+ 
+#endif   

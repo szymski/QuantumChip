@@ -40,7 +40,7 @@ partial class QC_SyntaxAnalyser {
     }
     
     function Expression3_LogicalAnd() {
-        var expression = this:Expression4_BitwiseXor();
+        var expression = this:Expression35_VariableOperatorAssignment();
         
         if(this:AcceptSymbol("&&")) {
             var expression2 = this:Expression3_LogicalAnd();
@@ -49,6 +49,24 @@ partial class QC_SyntaxAnalyser {
         }
         
         return expression;
+    }
+    
+    function Expression35_VariableOperatorAssignment() {
+       var expression = this:Expression4_BitwiseXor();
+          
+        if(this:AcceptSymbol("+="))
+            return QC_Expression_VariableOperatorAssignment(expression, QC_Expression_Addition(expression, this:Expression4_BitwiseXor()));
+        else if(this:AcceptSymbol("-="))
+            return QC_Expression_VariableOperatorAssignment(expression, QC_Expression_Subtraction(expression, this:Expression4_BitwiseXor()));
+        else if(this:AcceptSymbol("*="))
+            return QC_Expression_VariableOperatorAssignment(expression, QC_Expression_Multiplication(expression, this:Expression4_BitwiseXor()));
+        else if(this:AcceptSymbol("/="))
+            return QC_Expression_VariableOperatorAssignment(expression, QC_Expression_Division(expression, this:Expression4_BitwiseXor()));
+        else if(this:AcceptSymbol("%="))
+            return QC_Expression_VariableOperatorAssignment(expression, QC_Expression_Modulo(expression, this:Expression4_BitwiseXor()));
+ 
+       
+       return expression;
     }
     
     function Expression4_BitwiseXor() {

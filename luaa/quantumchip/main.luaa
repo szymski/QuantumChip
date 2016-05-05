@@ -18,6 +18,7 @@ QC.InstructionFiles = {
 	"side",
 	"variable_declaration",
 	"variableassignment",
+	"variableoperatorassignment",
 	"functioncall",
 	"methodcall",
 	
@@ -31,12 +32,12 @@ QC.InstructionFiles = {
 	"expressions/logicalor",
 	"expressions/logicaland",
 	"expressions/bitwisexor",
-	"expressions/bitwiseor",
+	"expressions/bitwiseor", 
 	"expressions/bitwiseand",
-	"expressions/equals",
+	"expressions/equals", 
 	"expressions/notequals",
 	"expressions/greater",
-	"expressions/less",
+	"expressions/less", 
 	"expressions/greaterorequal",
 	"expressions/lessorequal",
 	"expressions/addition",
@@ -46,12 +47,13 @@ QC.InstructionFiles = {
 	"expressions/modulo",
 	"expressions/groupedequation",
 	"expressions/negation",
-	"expressions/length",
+	"expressions/length", 
 	"expressions/cast",
-	"expressions/not",
+	"expressions/not", 
 	"expressions/functioncall",
 	"expressions/methodcall",
-	"expressions/variable",
+	"expressions/variable", 
+	"expressions/variableoperatorassignment",
 };
  
 if(SERVER) {
@@ -116,7 +118,7 @@ local function HandleCommand(ply, command, args) {
 	}
 	else
 		ply:PrintMessage(HUD_PRINTCONSOLE, "No such command " .. args[1]);
-}
+} 
 
 local function HandleAutoComplete(command, args) {	
 	var tbl = { };
@@ -146,19 +148,19 @@ QC.LoadComponents();
 /*-----------------------------------
     Testing
 -------------------------------------*/
-        
+         
 #if DEBUG    
-    
+     
 QC.AddConsoleCommand("test", function(ply, args) {
 	PrintTable(args);
-});
-	
+}); 
+	 
 function QC.DoTest() {
 	var compiler = QC_Compiler();
 	compiler:Compile(@"    
-	  
-server {          
-	                             
+	   
+server {           
+	                                   
 	bool gowno = #\"co mam robic?\"  
    
                                          

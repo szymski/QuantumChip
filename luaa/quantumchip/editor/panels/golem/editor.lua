@@ -45,8 +45,8 @@ local draw_WordBox 					= draw.WordBox
 
 local BookmarkMaterial 				= Material( "diagona-icons/152.png" )
 
-local C_white = Color( 255, 255, 255 ) 
-local C_gray = Color( 160, 160, 160 ) 
+local C_white = Color( 255, 255, 255 )
+local C_gray = Color( 160, 160, 160 )  
 
 local Golem = Golem
 local PANEL = { }
@@ -1686,7 +1686,7 @@ end
 function PANEL:DrawRow( Row, LinePos, bForceRepaint )
 	if Row > #self.Rows then return end
 	
-	draw_SimpleText( tostring( Row ), self.Font, self.BookmarkWidth + self.LineNumberWidth, self.FontHeight * ( LinePos ), C_white, TEXT_ALIGN_RIGHT ) 
+	draw_SimpleText( tostring( Row ), self.Font, self.BookmarkWidth + self.LineNumberWidth, self.FontHeight * ( LinePos ), QC.Editor.CurrentEditorTheme.Foreground, TEXT_ALIGN_RIGHT ) 
 	self.PaintRows[Row] = (bForceRepaint and self:SyntaxColorLine( Row )) or self.PaintRows[Row] or self:SyntaxColorLine( Row ) 
 	
 	if editor_debug_folding then 	
@@ -1872,7 +1872,7 @@ function PANEL:PaintStatus( )
 end
 
 function PANEL:SyntaxColorLine( Row ) 
-	return { { self.Rows[Row], C_white, false } }
+	return { { self.Rows[Row], QC.Editor.CurrentEditorTheme.Foreground, false } }
 end
 
 function PANEL:UpdateSyntaxColors( )

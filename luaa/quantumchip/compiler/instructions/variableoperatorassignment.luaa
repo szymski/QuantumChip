@@ -1,0 +1,27 @@
+/*-----------------------------------
+    Variable operator assignment operator
+-------------------------------------*/
+
+class QC_Instruction_VariableOperatorAssignmentOperator : QC_Instruction {
+
+    function QC_Instruction_VariableOperatorAssignmentOperator(variable, value) {
+        this.Variable = variable;
+        this.Value = value;
+    } 
+    
+    function Analyse(analyser) {
+        this.Variable:Analyse(analyser);
+        this.Value:Analyse(analyser);
+        
+        this.Operator = analyser:LookUpOperator(this.Variable:GetValueType(), this.Variable:GetToken(), "=", { this.Variable, this.Value });
+    }
+    
+    function GetChildren() {
+        return { this.Value };  
+    }
+    
+    function GenerateCode(generator, tbl) {        
+        this.Operator.Compile(generator, tbl, generator:CompileToString(this.Variable, this.Value));
+    }
+    
+} 

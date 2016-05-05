@@ -124,14 +124,27 @@ partial class QC_SyntaxAnalyser {
             
             return QC_Instruction_VariableDeclaration(typeToken, type, nameToken, name);
         }
-        
+         
         return this:Statement_Invalid();
     }
     
     function Statement_VariableOperator(nameToken, name) {
-        
+        var variableExpression = QC_Expression_Variable(nameToken, name);
+         
         if(this:AcceptSymbol("="))
-            return QC_Instruction_VariableAssignmentOperator(QC_Expression_Variable(nameToken, name), this:Expression());
+            return QC_Instruction_VariableAssignmentOperator(variableExpression, this:Expression());
+        else if(this:AcceptSymbol("+="))
+            return QC_Instruction_VariableOperatorAssignmentOperator(variableExpression, QC_Expression_Addition(variableExpression, this:Expression()));
+        else if(this:AcceptSymbol("-="))
+            return QC_Instruction_VariableOperatorAssignmentOperator(variableExpression, QC_Expression_Subtraction(variableExpression, this:Expression()));
+        else if(this:AcceptSymbol("*="))
+            return QC_Instruction_VariableOperatorAssignmentOperator(variableExpression, QC_Expression_Multiplication(variableExpression, this:Expression()));
+        else if(this:AcceptSymbol("/="))
+            return QC_Instruction_VariableOperatorAssignmentOperator(variableExpression, QC_Expression_Division(variableExpression, this:Expression()));
+        else if(this:AcceptSymbol("%="))
+            return QC_Instruction_VariableOperatorAssignmentOperator(variableExpression, QC_Expression_Modulo(variableExpression, this:Expression()));
+        
+        // TODO: Add more
         
         return this:Statement_Invalid();
     }

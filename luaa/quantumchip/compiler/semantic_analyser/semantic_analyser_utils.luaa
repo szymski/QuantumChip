@@ -11,7 +11,9 @@ partial class QC_SemanticAnalyser {
     /*
         Constructor
     */
-    function QC_SemanticAnalyser(sequence) {
+    function QC_SemanticAnalyser(compiler, sequence) {
+        this.Compiler = compiler;
+        
         var startTime = SysTime();
         
         assert(sequence != null, "Input is nil. Sequence tree expected.");
@@ -88,12 +90,16 @@ partial class QC_SemanticAnalyser {
     
     function Error(message) {
         assert(message is string, "Error message isn't a string (probably a token). Use ErrorToken instead.");
+        this.Compiler.ErrorMessage = message;
         error(message);
     }
     
     function ErrorToken(token, message) {
         this.Errored, this.ErrorLine, this.ErrorCharacter = true, token[3], token[4] - #token[2];
         
+        this.Compiler.ErrorLine = this.ErrorLine;
+        this.Compiler.ErrorCharacter = this.ErrorCharacter;
+        this.Compiler.ErrorMessage = message;
         error("Line " .. this.ErrorLine .. ", char " .. this.ErrorCharacter .. ": " .. message);
     }
     

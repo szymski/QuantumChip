@@ -99,7 +99,7 @@ class QC_GUI_TabView {
         btn.Data = this.AllTabs[#this.AllTabs];
         panel:SetVisible(false);
          
-        if(panel) {   
+        if(panel) {    
             panel:SetParent(this.View);
             panel:Dock(FILL);
         }

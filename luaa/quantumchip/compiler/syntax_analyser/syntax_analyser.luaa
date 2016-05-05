@@ -31,7 +31,7 @@ partial class QC_SyntaxAnalyser {
         }
         
         if(endToken && !broke)
-            this:Error("'}' required to close the block.");
+            this:ErrorToken(this.CurrentToken, "'}' required to close the block.");
         
         return QC_Instruction_Sequence(instructions);
     }
@@ -39,7 +39,7 @@ partial class QC_SyntaxAnalyser {
     /*
         Returns a sequence opened with '{', or single statement.
         If singleStatement is true, block doesn't require '{' '}'.
-    */
+    */ 
     function Block(singleStatement) {
         if(this:AcceptSymbol("{")) {
             return this:Sequence("}");
@@ -48,7 +48,7 @@ partial class QC_SyntaxAnalyser {
         if(singleStatement)
             return QC_Instruction_Sequence({ this:Statement() });
             
-        error("Code block expected.");
+        this:ErrorToken(this.CurrentToken, "Code block expected.");
     }
     
     /*

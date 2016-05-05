@@ -7,15 +7,48 @@ local class QC_GUI_ScriptEditor {
     function Init() {  
         this:__new();
         
-        Golem.Font:SetFont("Courier New", 20);
+        Golem.Font:SetFont("Lucida Console", 20);
         
         this.TextEditor = this:Add("GOLEM_Editor");
         this.TextEditor:Dock(FILL); 
         
     }     
     
+    function GetEditor() {
+        return this:GetParent():GetParent():GetParent();
+    }
+    
     function GetTextEditor() {
         return this.TextEditor;
+    }
+    
+    function GetBottomBar() {
+        return this:GetEditor():GetBottomBar();
+    }
+    
+    function Validate() {
+        var code = this.TextEditor:GetCode();
+        var compiler = QC_Compiler();
+        compiler:Compile(code);
+        
+        if(compiler.Ok) { 
+            surface.PlaySound("buttons/button15.wav");
+            this:GetBottomBar():SetValidatorText("Validation successful!");
+            
+            this:GetEditor():GetDebugWindow():SetText(compiler.Output);
+        }
+        else {
+            surface.PlaySound("buttons/button16.wav");
+            
+            this:GetTextEditor().Caret.y = compiler.ErrorCharacter + 1;
+            this:GetTextEditor().Caret.x = compiler.ErrorLine;
+            this:GetTextEditor().Start.y = compiler.ErrorCharacter + 1;
+            this:GetTextEditor().Start.x = compiler.ErrorLine;
+            this:GetTextEditor():ScrollCaret();
+            
+            this:GetBottomBar():SetValidatorText("Ln " .. compiler.ErrorLine ..
+                ", Col " .. compiler.ErrorCharacter + 1 .. ": " .. compiler.ErrorMessage);
+        }
     }
         
 } 

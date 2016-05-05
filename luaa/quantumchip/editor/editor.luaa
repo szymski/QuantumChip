@@ -22,6 +22,7 @@ if(SERVER) {
     AddCSLuaFile("panels/qcbottombar.lua");
     AddCSLuaFile("panels/qcwelcome.lua");
     AddCSLuaFile("panels/qcscripteditor.lua");    
+    AddCSLuaFile("panels/qcdebugwindow.lua"); 
     AddCSLuaFile("panels/qceditor.lua"); 
     AddCSLuaFile("themes.lua");  
 }
@@ -35,6 +36,7 @@ else {
     QC.Editor.Materials.SaveAs = Material("materials/quantumchip/editor/content-save-all.png", "unlitgeneric");
     QC.Editor.Materials.Settings = Material("materials/quantumchip/editor/settings.png", "unlitgeneric");
     QC.Editor.Materials.SoundBrowser = Material("materials/quantumchip/editor/volume-high.png", "unlitgeneric");
+    QC.Editor.Materials.Validate = Material("materials/quantumchip/editor/play.png", "unlitgeneric");
     
     include("themes.lua");
     include("panels/golem/main.lua");
@@ -50,6 +52,7 @@ else {
     include("panels/qcwelcome.lua");   
     include("panels/qctexteditor.lua");
     include("panels/qcscripteditor.lua");
+    include("panels/qcdebugwindow.lua"); 
     include("panels/qceditor.lua");
 }   
    
@@ -63,15 +66,15 @@ if(CLIENT) {
     function QC.OpenEditor() { 
         QC.Editor.CurrentTheme = QC.Editor.Themes["Dark"]; 
         QC.Editor.CurrentEditorTheme = QC.Editor.EditorThemes["Monokai"]; 
-        QC.Editor.CurrentTheme:Init();   
-          
-        if(IsValid(QC_TESTFRAME)) 
-            QC_TESTFRAME:Remove();
+        QC.Editor.CurrentTheme:Init();    
+           
+        if(IsValid(QC_EDITOR))   
+            QC_EDITOR:Remove();
         
-        QC_TESTFRAME = vgui.Create("QCEditor"); 
-        QC_TESTFRAME:SetSize(1000, 800); 
-        QC_TESTFRAME:Center(); 
-        QC_TESTFRAME:MakePopup();
+        QC_EDITOR = vgui.Create("QCEditor"); 
+        QC_EDITOR:SetSize(1000, 800); 
+        QC_EDITOR:Center(); 
+        QC_EDITOR:MakePopup();
     } 
 }
 

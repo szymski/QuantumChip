@@ -27,17 +27,25 @@ class QC_Compiler {
     var Files = { };
     
     var Success = false;
-    var Error = "No error.";
+    var ErrorLine = -1;
+    var ErrorCharacter = -1;
+    var ErrorMessage = "An error occured.";
     
     /*
         Compiles everything and returns the final code.
     */
     function Compile(input) {
+        this.Ok = xpcall(this.CompileFunc, function(error) {
+            print("ERROR: ", error);
+        }, this, input);
+    }
+    
+    function CompileFunc(input) {
         // Preprocessor
         
         print();
         print("Creating preprocessor object");
-        var preprocessor = QC_Preprocessor(input);           
+        var preprocessor = QC_Preprocessor(this, input);           
         print("Preprocessing time: ", preprocessor.Time);
         print("Preprocessor output: ");
         print(preprocessor.Output);
@@ -46,7 +54,7 @@ class QC_Compiler {
         // Lexer
          
         print("Creating lexer object");
-        var lexer = QC_Lexer(preprocessor.Output);           
+        var lexer = QC_Lexer(this, preprocessor.Output);           
         print("Analysis time: ", lexer.Time);
             
         foreach(var v in lexer.Tokens) {
@@ -57,7 +65,7 @@ class QC_Compiler {
         
         print();
         print("Creating syntax analyser object");
-        var syntax_analyser = QC_SyntaxAnalyser(lexer.Tokens);          
+        var syntax_analyser = QC_SyntaxAnalyser(this, lexer.Tokens);          
         print("Analysis time: ", syntax_analyser.Time);
         print("Analysis output: ");
         print(syntax_analyser.Output);
@@ -67,7 +75,7 @@ class QC_Compiler {
         
         print();
         print("Creating semantic analyser object");
-        var semantic_analyser = QC_SemanticAnalyser(syntax_analyser.Output);          
+        var semantic_analyser = QC_SemanticAnalyser(this, syntax_analyser.Output);          
         print("Analysis time: ", semantic_analyser.Time);
         print();
         
@@ -75,11 +83,11 @@ class QC_Compiler {
         
         print();
         print("Creating code generator object");
-        var code_generator = QC_CodeGenerator(syntax_analyser.Output);          
+        var code_generator = QC_CodeGenerator(this, syntax_analyser.Output);          
         print("Generating time: ", code_generator.Time);
         print("Output code: " .. code_generator.OutputCode);
         print();
-          
-        print();
+        
+        this.Output = code_generator.OutputCode;
     }
 }  

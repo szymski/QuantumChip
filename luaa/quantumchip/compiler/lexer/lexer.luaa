@@ -70,7 +70,7 @@ partial class QC_Lexer {
             }  
           
             // Symbols
-            else if(this:AcceptPattern("[^%w^%s]+") || this:AcceptPattern("[%^]")) {
+            else if(this:AcceptPattern("[^%w^%s]+") || this:AcceptPattern("[%^]")) { // TODO: Some symbols don't work - %, /
                 for(var i = this.PatternMatch:len(); i > 0; i--) {
                     if(QC.Spec.Symbols[this.PatternMatch:sub(1, i)]) {
                         this:PushToken("s", this.PatternMatch:sub(1, i));
@@ -81,7 +81,7 @@ partial class QC_Lexer {
                     else
                         this.Position = this.Position - 1;
                 }
-            }    
+            } 
             
             // Whitespace - ignore
             else if(this:AcceptPattern("%s+")) {

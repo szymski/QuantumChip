@@ -16,7 +16,9 @@ partial class QC_SyntaxAnalyser {
     /*
         Constructor
     */
-    function QC_SyntaxAnalyser(input) {
+    function QC_SyntaxAnalyser(compiler, input) {
+        this.Compiler = compiler;
+        
         var startTime = SysTime();
         
         assert(input != null, "Input is nil. List of tokens expected.");
@@ -137,7 +139,7 @@ partial class QC_SyntaxAnalyser {
         this.CurrentTokenIndex = this.CurrentTokenIndex + 1;
         
         if(this.CurrentTokenIndex > #this.InputTokens)
-            error("Unexpected end of file.");
+            this:ErrorToken(this.CurrentToken, "Unexpected end of file.");
             
         this.CurrentToken = this.InputTokens[this.CurrentTokenIndex];
                    
@@ -178,12 +180,16 @@ partial class QC_SyntaxAnalyser {
     var ErrorLine, ErrorCharacter;
     
     function Error(message) {
+        this.Compiler.ErrorMessage = message;
         error(message);
     }
     
     function ErrorToken(token, message) {
         this.Errored, this.ErrorLine, this.ErrorCharacter = true, token[3], token[4] - #token[2];
         
+        this.Compiler.ErrorLine = this.ErrorLine;
+        this.Compiler.ErrorCharacter = this.ErrorCharacter;
+        this.Compiler.ErrorMessage = message;
         error("Line " .. this.ErrorLine .. ", char " .. this.ErrorCharacter .. ": " .. message);
     }
 } 

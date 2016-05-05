@@ -17,6 +17,15 @@ class QC_GUI_BottomBar {
         this.StatusText:SetFont("qc_editor_font_status");   
         this.StatusText:SetColor(QC.Editor.CurrentTheme.Status);  
         this.StatusText:SetText("Length: 0, Row: 0, Column: 0");
+        
+        this.ValidatorText = this:Add("DLabel");
+        this.ValidatorText:Dock(RIGHT);   
+        this.ValidatorText:DockMargin(0, 0, 24, 0);   
+        this.ValidatorText:SetWidth(600);   
+        this.ValidatorText:SetContentAlignment(6);   
+        this.ValidatorText:SetFont("qc_editor_font_status");   
+        this.ValidatorText:SetColor(QC.Editor.CurrentTheme.Status);  
+        this.ValidatorText:SetText("");
 	}  
      
     function Paint(w, h) {
@@ -33,7 +42,10 @@ class QC_GUI_BottomBar {
 			this.StatusText:SetText("Length: " .. #textEditor:GetCode() .. ", Row: " .. textEditor.Caret.x .. ", Column: " .. textEditor.Caret.y);
 		}
 	}
-      
+     
+    function SetValidatorText(text) {
+        this.ValidatorText:SetText(text);
+    }
 } 
   
 CQC_GUI_BottomBar.__index = null;
