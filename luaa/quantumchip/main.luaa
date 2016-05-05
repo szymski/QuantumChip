@@ -34,7 +34,7 @@ QC.InstructionFiles = {
 	"expressions/bitwisexor",
 	"expressions/bitwiseor", 
 	"expressions/bitwiseand",
-	"expressions/equals", 
+	"expressions/equals",  
 	"expressions/notequals",
 	"expressions/greater",
 	"expressions/less", 
@@ -159,7 +159,7 @@ function QC.DoTest() {
 	var compiler = QC_Compiler(); 
 	compiler:Compile(@"    
 	     
-string str = \"Co mam robic?\"
+string str = \"Co mam robic?\" 
 str.printstr()
            
 	");           

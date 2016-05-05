@@ -104,15 +104,7 @@ partial class QC_SyntaxAnalyser {
             
             // Check if method call
             if(this:AcceptSymbol(".")) {
-                this:RequireIdentifier("Method name expected.");
-                
-                var methodName = this.CurrentToken[2];  
-                var methodToken = this.CurrentToken;
-                
-                this:RequireSymbol("(", "'(' required to call a method.");
-                
-                // Variable or grouped
-                return QC_Instruction_MethodCall(QC_Expression_Variable(typeToken, type), methodToken, methodName, this:CallArgumentList());
+                return this:Statement_MethodCall(typeToken, type);
             }
             
             // Check if variable operator
@@ -131,6 +123,39 @@ partial class QC_SyntaxAnalyser {
         }
          
         return this:Statement_Invalid();
+    }
+    
+    function Statement_MethodCall(typeToken, type) {
+        var callList = { };
+        
+        while(true) {
+            this:RequireIdentifier("Method name expected.");
+
+            var methodName = this.CurrentToken[2];  
+            var methodToken = this.CurrentToken;
+
+            this:RequireSymbol("(", "'(' required to call a method.");
+            
+            var arguments = this:CallArgumentList();
+          
+            callList[#callList + 1] = { methodToken, methodName, arguments };
+
+            if(!this:AcceptSymbol("."))
+                break;
+        }
+        
+        var statement = QC_Expression_Variable(typeToken, type);
+        
+        foreach(var tbl in callList) {
+            statement = QC_Instruction_MethodCall(statement, unpack(tbl));
+        }
+        
+        //for(var i = #callList; i > 0; i--) {
+        //    var tbl = callList[i];
+        //    print(tbl[2]);
+        //}
+        
+        return statement; 
     }
     
     function Statement_VariableOperator(nameToken, name) {
