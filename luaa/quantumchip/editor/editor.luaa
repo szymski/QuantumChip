@@ -68,7 +68,7 @@ if(CLIENT) {
         QC.Editor.CurrentEditorTheme = QC.Editor.EditorThemes["Monokai"]; 
         QC.Editor.CurrentTheme:Init();    
            
-        if(IsValid(QC_EDITOR))   
+        if(IsValid(QC_EDITOR))     
             QC_EDITOR:Remove();
         
         QC_EDITOR = vgui.Create("QCEditor"); 

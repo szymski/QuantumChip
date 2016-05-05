@@ -141,30 +141,27 @@ concommand.Add("quantumchip", HandleCommand, HandleAutoComplete);
 include("functions.lua");
 include("components.lua");
 include("compiler/compiler.lua");
-include("editor/editor.lua");
+include("editor/editor.lua");  
         
 QC.LoadComponents();		
-
+ 
 /*-----------------------------------
     Testing
 -------------------------------------*/
          
-#if DEBUG    
-     
+#if DEBUG     
+      
 QC.AddConsoleCommand("test", function(ply, args) {
 	PrintTable(args);
-}); 
+});  
 	 
-function QC.DoTest() {
-	var compiler = QC_Compiler();
+function QC.DoTest() { 
+	var compiler = QC_Compiler(); 
 	compiler:Compile(@"    
-	   
-server {           
-	                                   
-	bool gowno = #\"co mam robic?\"  
-   
-                                         
-}           
+	     
+string str = \"Co mam robic?\"
+str.printstr()
+           
 	");           
 }      
    

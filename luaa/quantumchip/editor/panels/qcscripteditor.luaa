@@ -36,15 +36,27 @@ local class QC_GUI_ScriptEditor {
             this:GetBottomBar():SetValidatorText("Validation successful!");
             
             this:GetEditor():GetDebugWindow():SetText(compiler.Output);
+            
+             this:GetEditor():GetDebugWindow():SetTimesText(string.format(@"Total time: %s
+
+Preprocessor: %s
+Lexer: %s
+Syntax analyser: %s
+Semantic analyser: %s
+Code generator: %s
+",
+compiler.TotalTime, compiler.PreprocessorTime, compiler.LexerTime, compiler.SyntaxAnalyerTime, compiler.SemanticAnalyserTime, compiler.CodeGeneratorTime));
         }
         else {
             surface.PlaySound("buttons/button16.wav");
             
-            this:GetTextEditor().Caret.y = compiler.ErrorCharacter + 1;
-            this:GetTextEditor().Caret.x = compiler.ErrorLine;
-            this:GetTextEditor().Start.y = compiler.ErrorCharacter + 1;
-            this:GetTextEditor().Start.x = compiler.ErrorLine;
-            this:GetTextEditor():ScrollCaret();
+            if(compiler.ErrorLine != -1) {
+                this:GetTextEditor().Caret.y = compiler.ErrorCharacter + 1;
+                this:GetTextEditor().Caret.x = compiler.ErrorLine;
+                this:GetTextEditor().Start.y = compiler.ErrorCharacter + 1;
+                this:GetTextEditor().Start.x = compiler.ErrorLine;
+                this:GetTextEditor():ScrollCaret();
+            }
             
             this:GetBottomBar():SetValidatorText("Ln " .. compiler.ErrorLine ..
                 ", Col " .. compiler.ErrorCharacter + 1 .. ": " .. compiler.ErrorMessage);

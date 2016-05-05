@@ -104,10 +104,15 @@ partial class QC_SyntaxAnalyser {
             
             // Check if method call
             if(this:AcceptSymbol(".")) {
-                // TODO: Method calls
-                this:Error("Not implemented");
+                this:RequireIdentifier("Method name expected.");
                 
-                return QC_Instruction_FunctionCall();
+                var methodName = this.CurrentToken[2];  
+                var methodToken = this.CurrentToken;
+                
+                this:RequireSymbol("(", "'(' required to call a method.");
+                
+                // Variable or grouped
+                return QC_Instruction_MethodCall(QC_Expression_Variable(typeToken, type), methodToken, methodName, this:CallArgumentList());
             }
             
             // Check if variable operator

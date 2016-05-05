@@ -2,6 +2,8 @@
     QCIconBar
 -------------------------------------*/
 
+var gradient_up = Material( "vgui/gradient-d" );
+
 class QC_GUI_IconBar {
 
     function Init() {  
@@ -24,6 +26,9 @@ class QC_GUI_IconBar {
      
     function Paint(w, h) {
         draw.RoundedBox(0, 0, 0, w, h, QC.Editor.CurrentTheme.IconBar);  
+        surface.SetMaterial(gradient_up); 
+        surface.SetDrawColor(QC.Editor.CurrentTheme.IconBarDown);  
+        surface.DrawTexturedRect(0, 0, w, h);
     }
     
     function GetEditor() {

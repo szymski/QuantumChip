@@ -144,10 +144,10 @@ partial class QC_SyntaxAnalyser {
         this.CurrentToken = this.InputTokens[this.CurrentTokenIndex];
                    
         if(this.CurrentToken[1] != type)
-            error("Line " .. this.CurrentToken[3] .. ", char " .. this.CurrentToken[4] .. ": " .. (message ?? "Token expected."));
+            this:ErrorToken(this.CurrentToken, (message ?? "Token expected."));
             
         if(value && this.CurrentToken[2] != value)
-            error("Line " .. this.CurrentToken[3] .. ", char " .. this.CurrentToken[4] .. ": " .. (message ?? "Token expected."));  
+            this:ErrorToken(this.CurrentToken, (message ?? "Token expected."));  
         
         return this.CurrentToken;
     }

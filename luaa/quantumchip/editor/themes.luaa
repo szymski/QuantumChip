@@ -9,9 +9,9 @@ QC.Editor.Themes["Dark"] = {
     
     Init = function() {
         surface.CreateFont("qc_editor_font_title", {
-            font = "Calibri",
-            size = 23, 
-            weight = 0,  
+            font = "FixedSys",
+            size = 25, 
+            weight = 10000,  
         });
         
         surface.CreateFont("qc_editor_font_tab", {
@@ -33,10 +33,11 @@ QC.Editor.Themes["Dark"] = {
     CloseButton = Color(255, 255, 255),  
     ResizeIcon = Color(0, 0, 0, 150),  
     
-    IconBar = Color(180, 180, 180),
-    Icon = Color(80, 80, 80),
-    IconHover = Color(120, 120, 120),
-    IconDown = Color(60, 60, 60),
+    IconBar = Color(0, 122, 204),
+    IconBarDown = Color(0, 0, 0, 0), 
+    Icon = Color(255, 255, 255),
+    IconHover = Color(0, 0, 0, 150),
+    IconDown = Color(0, 0, 0, 200),
     
     TabBar = Color(50, 50, 50),
     Tab = Color(80, 80, 80),
@@ -71,11 +72,12 @@ QC.Editor.Themes["Light"] = {
     TitleText = Color(50, 50, 50),  
     CloseButton = Color(0, 0, 0),   
     ResizeIcon = Color(0, 0, 0, 150),  
-    
-    IconBar = Color(240, 240, 240),
-    Icon = Color(80, 80, 80),
-    IconHover = Color(120, 120, 120),
-    IconDown = Color(60, 60, 60),
+     
+    IconBar = Color(245, 245, 245),
+    IconBarDown = Color(0, 0, 0, 0), 
+    Icon = Color(150, 150, 150),
+    IconHover = Color(0, 0, 0, 150),
+    IconDown = Color(0, 0, 0, 200),
     
     TabBar = Color(220, 220, 220),
     Tab = Color(180, 180, 180),

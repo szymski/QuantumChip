@@ -49,7 +49,7 @@ partial class QC_SemanticAnalyser {
             if(this.Scopes[i][name])
                 return this.Scopes[i][name];
                  
-        this:ErrorToken(token, "No such variable '" .. name .. "' in current scope.");
+        this:ErrorToken(token, "Variable '" .. name .. "' doesn't exist in current scope.");
     }
      
     function AddVariable(token, type, name, memoryReference) {

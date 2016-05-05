@@ -9,17 +9,14 @@ class QC_GUI_DebugWindow : QC_GUI_Frame {
         
         this:SetTitle("Debug Window");
         this:SetSizable(true); 
-        this:SetMinimumSize(400, 800); 
-        this:DockPadding(0, 32, 0, 0);
+        this:SetSize(400, 800); 
+        this:DockPadding(0, 32, 0, 24);
         
-        this.Text = this:Add("DLabel");
-        this.Text:Dock(FILL);
-        this.Text:DockMargin(5, 5, 5, 5);
-        this.Text:SetWrap(true);
-        this.Text:SetContentAlignment(7);
-        this.Text:SetFont("qc_editor_font_status");   
-        this.Text:SetColor(QC.Editor.CurrentTheme.Status);  
-        this.Text:SetText("Compiled code goes here");  
+        this.TabView = this:Add("QCTabView");
+        this.TabView:Dock(FILL);
+        
+        this.TabView:AddTab("Output", this:CreateCodeContent());  
+        this.TabView:AddTab("Times", this:CreateTimesContent());  
     }  
     
     function GetScriptEditor() {
@@ -30,8 +27,42 @@ class QC_GUI_DebugWindow : QC_GUI_Frame {
         return this.BottomBar;
     }
     
+    function CreateCodeContent() {
+        var content = this:Add("EditablePanel");
+        
+        this.Text = content:Add("DLabel");
+        this.Text:Dock(FILL);
+        this.Text:DockMargin(5, 5, 5, 5);
+        this.Text:SetWrap(true);
+        this.Text:SetContentAlignment(7);
+        this.Text:SetFont("qc_editor_font_status");   
+        this.Text:SetColor(QC.Editor.CurrentTheme.Status);  
+        this.Text:SetText("Compiled code goes here");  
+        
+        return content;
+    }
+    
+    function CreateTimesContent() {
+        var content = this:Add("EditablePanel");
+        
+        this.TimesText = content:Add("DLabel");
+        this.TimesText:Dock(FILL);
+        this.TimesText:DockMargin(5, 5, 5, 5);
+        this.TimesText:SetWrap(true);
+        this.TimesText:SetContentAlignment(7);
+        this.TimesText:SetFont("qc_editor_font_status");   
+        this.TimesText:SetColor(QC.Editor.CurrentTheme.Status);  
+        this.TimesText:SetText("Compilation times go here");  
+        
+        return content;
+    }
+    
     function SetText(text) {
         this.Text:SetText(text);
+    }
+    
+    function SetTimesText(text) {
+        this.TimesText:SetText(text);
     }
 
 }
