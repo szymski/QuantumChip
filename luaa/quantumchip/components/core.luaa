@@ -60,3 +60,10 @@ COMPONENT:AddFunctionPrepared("printstr2", "s:", "s", "", "printstr2(@1)");
 -------------------------------------*/
 
 COMPONENT:AddEvent("tick", "");
+
+
+COMPONENT:AddEvent("chatMessage", "s");
+hook.Add("PlayerSay", "QC_PlayerSay", function(ply, text) {
+    foreach(var context in QC.Contexts)
+        context:CallEvent("chatMessage", text);
+});

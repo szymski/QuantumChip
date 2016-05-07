@@ -29,11 +29,11 @@ class QC_Instruction_Event : QC_Instruction {
             this.ShortArgumentList[#this.ShortArgumentList + 1] = { shortClass, argumentName };
         }
         
-        analyser:PopScope();
-        
         analyser:CheckEvent(this.NameToken, this.Name, this.ShortArgumentList);
         
         this.Sequence:Analyse(analyser);
+        
+        analyser:PopScope();
     }
     
     function GetChildren() {

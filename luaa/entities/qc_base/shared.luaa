@@ -17,8 +17,8 @@ function ENT:SetupDataTables() {
 function ENT:InitQC() {
     var compiler = QC_Compiler();
     compiler:Compile(@"
-event tick() {
-    print(\"This shit works!\")
+event chatMessage(string msg) {
+    print(\"Received chat message: \" + msg)
 }
 ");
 
@@ -35,7 +35,7 @@ event tick() {
     var func = CompileString(compiler.Output, "QC")();
     
     this.Context = QC_Context(this:GetOwner(), this);
-    this.Context:ExecuteFunction(func);
+    this.Context:ExecuteFunction(func, this.Context);
 } 
 
 function ENT:OnRemove() { 

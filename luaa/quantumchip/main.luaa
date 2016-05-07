@@ -32,7 +32,7 @@ QC.InstructionFiles = {
 	"expressions/ternary",
 	"expressions/logicalor",
 	"expressions/logicaland",
-	"expressions/bitwisexor", 
+	"expressions/bitwisexor",  
 	"expressions/bitwiseor", 
 	"expressions/bitwiseand",
 	"expressions/equals",  
@@ -134,14 +134,14 @@ local function HandleAutoComplete(command, args) {
 	
 	return tbl;
 }
-
+ 
 concommand.Add("quantumchip", HandleCommand, HandleAutoComplete);
 
 /*-----------------------------------
     Initialization
 -------------------------------------*/ 
    
-include("functions.lua");
+include("functions.lua"); 
 include("components.lua"); 
 include("bootstrapper.lua");
 include("context.lua");
@@ -161,14 +161,14 @@ QC.AddConsoleCommand("test", function(ply, args) {
 });  
 	 
 function QC.DoTest() { 
-	var compiler = QC_Compiler(); 
+	var compiler = QC_Compiler();  
 	compiler:Compile(@"    
 	      
 string str = \"Co mam robic?\"   
 str.printstr()    
-               
+                
 	");           
-}      
+}       
    
 QC.DoTest(); 
 
