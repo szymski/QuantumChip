@@ -16,7 +16,7 @@ partial class QC_SemanticAnalyser {
     var Side;
     
     var Scopes = { };
-    var CurrentScope; // Table: { type, name, memoryReference }
+    var CurrentScope; // Table of tables: { type, name, memoryReference }
     
     var VariableCount = 0;
     
@@ -51,7 +51,7 @@ partial class QC_SemanticAnalyser {
                  
         this:ErrorToken(token, "Variable '" .. name .. "' doesn't exist in current scope.");
     }
-     
+    
     function AddVariable(token, type, name, memoryReference) {
         for(var i = #this.Scopes; i > 0; i--)
             if(this.Scopes[i][name])
@@ -60,11 +60,16 @@ partial class QC_SemanticAnalyser {
         this.CurrentScope[name] = { type, name, memoryReference };
         
         return this.CurrentScope[name];
-    }
+    } 
     
     function GenerateVariableReference() {
         this.VariableCount = this.VariableCount + 1;
         return "Context.Memory[" .. this.VariableCount .. "]";
+    }
+    
+    function GenerateArgumentName() {
+        this.VariableCount = this.VariableCount + 1;
+        return "arg_" .. this.VariableCount;
     }
     
 } 

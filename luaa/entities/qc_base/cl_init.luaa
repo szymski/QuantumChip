@@ -1,0 +1,13 @@
+/*----------------------------
+    QC Base - clientside
+------------------------------*/
+
+include("shared.lua");
+
+function ENT:Initialize() {
+	
+}
+
+function ENT:Draw() {
+	this:DrawModel();
+}

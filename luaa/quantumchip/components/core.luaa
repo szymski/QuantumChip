@@ -1,5 +1,5 @@
 COMPONENT.Name = "Core";
-COMPONENT.Description = "Core component of QuantumChip";
+COMPONENT.Description = "Core component of QuantumChip.";
 COMPONENT.Author = "Szymekk";
 
 /*-----------------------------------
@@ -48,8 +48,15 @@ COMPONENT:AddClassOperatorInline("s", "+", "s:s", "s", "@1 .. @2");
 
 COMPONENT:AddFunctionPrepared("print", "n", "", "", "print(@1)");
 COMPONENT:AddFunctionPrepared("print", "s", "", "", "print(@1)");
+COMPONENT:AddFunctionInline("printr", "s", "s", "printr(@1)");
 COMPONENT:AddFunctionPrepared("printadd", "n,n", "", "local $value = @1 * @2", "print($value)");
 COMPONENT:AddFunctionInline("add", "n,n", "n", "@1 + @2");  
 
 COMPONENT:AddFunctionPrepared("printstr", "s:", "s", "", "print(@1)");
 COMPONENT:AddFunctionPrepared("printstr2", "s:", "s", "", "printstr2(@1)");
+
+/*-----------------------------------
+    Events
+-------------------------------------*/
+
+COMPONENT:AddEvent("tick", "");

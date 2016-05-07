@@ -13,6 +13,9 @@ class QC_Instruction_VariableDeclaration : QC_Instruction {
     }
     
     function Analyse(analyser) {
+        if(this.Value)
+            this.Value:Analyse(analyser);
+        
         this.ShortClass = QC.ClassNiceNameToShortName[this.Type];
         
         if(!this.ShortClass)
@@ -21,7 +24,6 @@ class QC_Instruction_VariableDeclaration : QC_Instruction {
         this.VariableTbl = analyser:AddVariable(this.NameToken, this.ShortClass, this.Name, analyser:GenerateVariableReference());
         
         if(this.Value) {
-            this.Value:Analyse(analyser);
             if(this.Value:GetValueType() != this.ShortClass)
                 analyser:ErrorToken(this.Value:GetToken(), "Type mismatch. Cannot assign " .. QC.ShortClassToNiceName(this.Value:GetValueType()) .. " to " .. QC.ShortClassToNiceName(this.ShortClass) .. " variable.");
         }

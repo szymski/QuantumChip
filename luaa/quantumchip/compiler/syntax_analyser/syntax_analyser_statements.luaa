@@ -90,7 +90,23 @@ partial class QC_SyntaxAnalyser {
             return QC_Instruction_Function();
         }
         
-        return this:Statement8_VariableDeclarationFunctionCall();
+        return this:Statement75_Event();
+    }
+     
+    function Statement75_Event() {
+        if(this:AcceptKeyword("event")) {
+            this:RequireIdentifier("Event name expected.");
+            var nameToken = this.CurrentToken;
+            var name = this.CurrentToken[2];
+            
+            this:RequireSymbol("(", "'(' required for event arguments.");
+            
+            var userFuncArguments = this:UserFunctionArguments();
+            
+            return QC_Instruction_Event(nameToken, name, userFuncArguments, this:Block());
+        }
+        
+        return this:Statement8_VariableDeclarationFunctionCall(); 
     }
     
     function Statement8_VariableDeclarationFunctionCall() {
@@ -100,11 +116,12 @@ partial class QC_SyntaxAnalyser {
             
             // Check if function call
             if(this:AcceptSymbol("("))
-                return QC_Instruction_FunctionCall(typeToken, type, this:CallArgumentList());
+                return this:Statement_FunctionCall(typeToken, type);
+                //return QC_Instruction_FunctionCall(typeToken, type, this:CallArgumentList());
             
             // Check if method call
             if(this:AcceptSymbol(".")) {
-                return this:Statement_MethodCall(typeToken, type);
+                return this:Statement_MethodCall(QC_Expression_Variable(typeToken, type));
             }
             
             // Check if variable operator
@@ -121,11 +138,22 @@ partial class QC_SyntaxAnalyser {
             
             return QC_Instruction_VariableDeclaration(typeToken, type, nameToken, name);
         }
-         
-        return this:Statement_Invalid();
+          
+        return this:Statement_Expression();
     }
     
-    function Statement_MethodCall(typeToken, type) {
+    function Statement_FunctionCall(nameToken, name) {
+        var argumentList = this:CallArgumentList();
+        
+        if(this:AcceptSymbol(".")) {
+            var call = QC_Expression_FunctionCall(nameToken, name, argumentList);
+            return this:Statement_MethodCall(call); 
+        }
+        
+        return QC_Instruction_FunctionCall(nameToken, name, argumentList);
+    }
+    
+    function Statement_MethodCall(expression) {
         var callList = { };
         
         while(true) {
@@ -144,7 +172,7 @@ partial class QC_SyntaxAnalyser {
                 break;
         }
         
-        var statement = QC_Expression_Variable(typeToken, type);
+        var statement = expression;
         
         foreach(var tbl in callList) {
             statement = QC_Instruction_MethodCall(statement, unpack(tbl));
@@ -174,9 +202,17 @@ partial class QC_SyntaxAnalyser {
         else if(this:AcceptSymbol("%="))
             return QC_Instruction_VariableOperatorAssignmentOperator(variableExpression, QC_Expression_Modulo(variableExpression, this:Expression()));
         
-        // TODO: Add more
-        
         return this:Statement_Invalid();
+    }
+
+    function Statement_Expression() {
+        var expression = this:Expression13_GroupedEquation();
+        
+        if(this:AcceptSymbol(".")) {
+            return this:Statement_MethodCall(expression);
+        }
+        
+        return this:ErrorToken(expression:GetToken(), "Unexpected expression.");
     }
 
     function Statement_Invalid() { 
@@ -198,6 +234,37 @@ partial class QC_SyntaxAnalyser {
                 break;
                 
             arguments[#arguments + 1] = this:Expression("Function argument expected.");
+            afterComma = false;
+            
+            if(this:AcceptSymbol(")"))
+                break;
+                
+            this:RequireSymbol(",", "',' expected between function arguments.");
+            afterComma = true;
+        }
+        
+        return arguments;
+    }
+    
+    function UserFunctionArguments() {
+        // List of lists: { typeToken, type, nameToken, name }
+        var arguments = { };
+        
+        var afterComma = false;
+        
+        while(true) {
+            if(!afterComma && this:AcceptSymbol(")"))
+                break;
+                
+            this:RequireIdentifier("Argument type expected.");
+            var typeToken = this.CurrentToken;
+            var type = this.CurrentToken[2];
+            this:RequireIdentifier("Argument name expected.");
+            var nameToken = this.CurrentToken;
+            var name = this.CurrentToken[2];
+            
+            arguments[#arguments + 1] = { typeToken, type, nameToken, name };
+            
             afterComma = false;
             
             if(this:AcceptSymbol(")"))

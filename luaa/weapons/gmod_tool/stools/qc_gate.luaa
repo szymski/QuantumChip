@@ -1,0 +1,78 @@
+TOOL.Category = "QuantumChip";
+TOOL.Name = "QuantumChip - Gate";
+
+/*
+    Init
+*/
+function TOOL:Deploy() {
+    
+}
+
+/* 
+    Left click
+*/
+function TOOL:LeftClick(trace) {
+    if(CLIENT)
+        return true;
+    
+    var entity = ents.Create("qc_base");
+    entity:SetPos(trace.HitPos);
+    entity:SetAngles(trace.HitNormal:Angle() + Angle(90, 0, 0));
+    entity:SetCreator(this:GetOwner());
+    entity:SetOwner(this:GetOwner());
+    entity:Spawn();
+    
+    undo.Create("quantumchip");
+    undo.AddEntity(entity);
+    undo.SetPlayer(this:GetOwner());
+    undo.Finish();
+    
+    entity:InitQC();
+    
+    return true;
+}
+
+/*
+    Right click
+*/
+function TOOL:RightClick(trace) {
+    if(CLIENT)
+        QC.OpenEditor();
+    
+    return false;
+}
+
+/*
+    R key
+*/
+function TOOL:Reload(trace) { 
+    
+}
+
+/*
+    Holster
+*/
+function TOOL:Holster() {
+    
+}
+
+/*
+    Draw tool screen
+*/
+if(CLIENT)
+function TOOL:DrawToolScreen(w, h) {
+    draw.RoundedBox(0, 0, 0, w, h, Color(40, 40, 40));
+    
+    draw.SimpleText("QuantumChip", "DermaLarge", w / 2, h / 2, Color(200, 200, 200), 1, 1);
+    
+      
+}
+
+/*
+    Build GUI
+*/
+function TOOL.BuildCPanel(CPanel) {
+
+	
+
+}

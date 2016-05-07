@@ -78,6 +78,10 @@ if(CLIENT) {
     } 
 }
 
+QC.AddConsoleCommand("editor", function(ply, args) {
+	ply:SendLua("QC.OpenEditor()");
+});  
+
 /*-----------------------------------
     Tests
 -------------------------------------*/

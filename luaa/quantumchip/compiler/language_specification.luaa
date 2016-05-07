@@ -45,6 +45,7 @@ QC.Spec.Keywords = {
 	["default"] = true,
 	
 	["function"] = true,
+	["event"] = true,
 	["void"] = true,
 	["return"] = true,
 	

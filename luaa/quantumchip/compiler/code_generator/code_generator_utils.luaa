@@ -30,7 +30,7 @@ partial class QC_CodeGenerator {
     -------------------------------------*/
     
     /*
-        Compiles instructions into strings, so that they can be put
+        Compiles instructions into strings, so that they can be used in function compiling
     */
     function CompileToString(...) {
         var instructions = { ... };

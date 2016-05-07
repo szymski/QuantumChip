@@ -1,0 +1,49 @@
+/*-----------------------------------
+    Method call
+-------------------------------------*/
+
+class QC_Expression_MethodCall : QC_Instruction {
+
+    function QC_Expression_MethodCall(expression, nameToken, name, argumentList) {
+        this.Expression = expression;
+        this.Name = name; 
+        this.NameToken = nameToken;
+        this.ArgumentList = { expression, unpack(argumentList) }; // List of expressions
+    }
+    
+    function GetValueType() {
+        return this.FunctionTbl.ReturnType;
+    }
+    
+    function GetToken() {
+        return this.NameToken;
+    }
+    
+    function Analyse(analyser) {
+        foreach(var arg in this.ArgumentList) 
+            arg:Analyse(analyser);
+        
+        this.FunctionTbl = analyser:LookUpFunction(this.Expression:GetValueType(), this.NameToken, this.Name, this.ArgumentList);
+    
+        if(this:GetValueType() == "") 
+            analyser:ErrorToken(this.NameToken, "Method doesn't return any value.");
+    } 
+
+    
+    function GetChildren() {
+        return this.ArgumentList;  
+    }
+    
+    function GenerateCode(generator, tbl) {
+        var args = { };
+        
+        foreach(var arg in this.ArgumentList) {
+            var tbl2 = { };
+            arg:GenerateCode(generator, tbl2);
+            args[#args + 1] = table.concat(tbl2, "");
+        } 
+
+        this.FunctionTbl.Compile(generator, tbl, unpack(args));
+    }
+    
+}

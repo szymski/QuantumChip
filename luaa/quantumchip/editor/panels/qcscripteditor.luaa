@@ -31,7 +31,7 @@ local class QC_GUI_ScriptEditor {
         var compiler = QC_Compiler();
         compiler:Compile(code);
         
-        if(compiler.Ok) { 
+        if(compiler.Success) { 
             surface.PlaySound("buttons/button15.wav");
             this:GetBottomBar():SetValidatorText("Validation successful!");
             

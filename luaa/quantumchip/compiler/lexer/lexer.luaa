@@ -40,9 +40,11 @@ partial class QC_Lexer {
                 this:PushToken("n", this.PatternMatch);
             }  
             
-            // Strings 
+            // Strings // TODO: Multiline strings
             else if(this:AcceptPattern("\"")) {
                 var value, ok = "", false;
+                
+                var startLine, startPos = this.Line, this.Position - 1;
                 
                 while(this:NextChar()) {
                     // String end
@@ -62,8 +64,8 @@ partial class QC_Lexer {
                     }
                 }
                 
-                if(!ok) {
-                    print("Unfinished string"); // TODO: Change to error
+                if(!ok) { 
+                     this:Error(startLine, startPos, "Unfinished string."); // TODO: Change to error
                 }
                                 
                 this:PushToken("S", value);
@@ -77,7 +79,7 @@ partial class QC_Lexer {
                         break; 
                     } 
                     else if(i == 1)
-                        print("No such symbol - ", this.PatternMatch:sub(1, i)); // TODO: Change this to error
+                        this:Error(this.Line, this.Position, "No such symbol - " .. this.PatternMatch:sub(1, i)); // TODO: Change this to error
                     else
                         this.Position = this.Position - 1;
                 }
@@ -85,11 +87,12 @@ partial class QC_Lexer {
             
             // Whitespace - ignore
             else if(this:AcceptPattern("%s+")) {
+                
             }
             
             // Unknown characters
             else {
-                 print("Unknown character: ", this.CurrentChar); // TODO: Change to error  
+                 this:Error(this.Line, this.Position, "Unknown character - " .. this.CurrentChar);  
             }
         } 
         

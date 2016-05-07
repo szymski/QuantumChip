@@ -1,0 +1,12 @@
+COMPONENT.Name = "Vector";
+COMPONENT.Description = "Vector class and vector mathematics.";
+COMPONENT.Author = "Szymekk";
+
+COMPONENT:AddClass("v", "vector");
+COMPONENT:SetClassDefaultValue("v", "Vector(0, 0, 0)");
+COMPONENT:AddClassOperatorInline("v", "=", "v:v", "", "@1 = @2");
+
+
+COMPONENT:AddFunctionInline("vec", "", "v", "Vector(0, 0, 0)");
+COMPONENT:AddFunctionInline("vec", "n,n,n", "v", "Vector(@1, @2, @3)");
+  

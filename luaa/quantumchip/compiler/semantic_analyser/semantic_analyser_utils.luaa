@@ -70,6 +70,20 @@ partial class QC_SemanticAnalyser {
         this:ErrorToken(nameToken, "No overload (" .. table.concat(typeArgList, ", ") .. ") for operator " .. name .. " of " .. classNiceName .. " class.");
     }
     
+    function CheckEvent(nameToken, name, argumentList) {
+        var event = QC.EventsByName[name];
+        
+        if(!event)
+            this:ErrorToken(nameToken, "No such event '" .. name .. "'.");
+        
+        var args = { };
+        foreach(var a in argumentList)
+            args[#args + 1] = a[1];
+        
+        if(!this:CheckArguments(args, event.Arguments))
+            this:ErrorToken(nameToken, "No overload (" .. table.concat(args, ", ") .. ") for event " .. name .. " .");
+    } 
+    
     function CheckArguments(args1, args2) {
         if(#args1 != #args2)
             return false;

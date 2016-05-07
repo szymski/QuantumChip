@@ -1,0 +1,61 @@
+/*-----------------------------------
+    Event
+-------------------------------------*/
+
+class QC_Instruction_Event : QC_Instruction {
+
+    function QC_Instruction_Event(nameToken, name, argumentList, sequence) {
+        this.NameToken = nameToken;
+        this.Name = name;
+        this.ArgumentList = argumentList;
+        this.Sequence = sequence; 
+    } 
+    
+    function Analyse(analyser) { 
+        this.ShortArgumentList = { }; // Table of tables: { shortClass, argumentName }
+        
+        analyser:PushScope();
+        
+        foreach(var arg in this.ArgumentList) {
+            var shortClass = QC.ClassNiceNameToShortName[arg[2]];
+        
+            if(!shortClass)
+                analyser:ErrorToken(arg[1], "No such class '" .. arg[2] .. "'.");
+                
+            var argumentName = analyser:GenerateArgumentName();
+            
+            analyser:AddVariable(arg[3], shortClass, arg[4], argumentName);
+            
+            this.ShortArgumentList[#this.ShortArgumentList + 1] = { shortClass, argumentName };
+        }
+        
+        analyser:PopScope();
+        
+        analyser:CheckEvent(this.NameToken, this.Name, this.ShortArgumentList);
+        
+        this.Sequence:Analyse(analyser);
+    }
+    
+    function GetChildren() {
+        return { this.Sequence };  
+    }
+    
+    function GenerateCode(generator, tbl) {
+        tbl[#tbl + 1] = "Context.Events[\"";
+        tbl[#tbl + 1] = this.Name;
+        tbl[#tbl + 1] = "\"] = function(";
+        
+        foreach(var k, arg in this.ShortArgumentList) {
+            tbl[#tbl + 1] = arg[2];
+            if(k != #this.ShortArgumentList)
+                tbl[#tbl + 1] = ", ";
+        }
+        
+        tbl[#tbl + 1] = ")\n";
+        
+        this.Sequence:GenerateCode(generator, tbl);
+        
+        tbl[#tbl + 1] = "\nend\n";
+    }
+    
+}

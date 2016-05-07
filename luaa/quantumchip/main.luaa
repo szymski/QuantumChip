@@ -21,6 +21,7 @@ QC.InstructionFiles = {
 	"variableoperatorassignment",
 	"functioncall",
 	"methodcall",
+	"event",
 	
 	"expressions/expression",
 	"expressions/rawvalue",
@@ -31,11 +32,11 @@ QC.InstructionFiles = {
 	"expressions/ternary",
 	"expressions/logicalor",
 	"expressions/logicaland",
-	"expressions/bitwisexor",
+	"expressions/bitwisexor", 
 	"expressions/bitwiseor", 
 	"expressions/bitwiseand",
 	"expressions/equals",  
-	"expressions/notequals",
+	"expressions/notequals", 
 	"expressions/greater",
 	"expressions/less", 
 	"expressions/greaterorequal",
@@ -60,6 +61,8 @@ if(SERVER) {
 	AddCSLuaFile();
 	AddCSLuaFile("components.lua");
 	AddCSLuaFile("functions.lua");
+	AddCSLuaFile("bootstrapper.lua");
+	AddCSLuaFile("context.lua");
 	AddCSLuaFile("compiler/language_specification.lua");
     AddCSLuaFile("compiler/preprocessor/preprocessor.lua");
 	AddCSLuaFile("compiler/preprocessor/preprocessor_utils.lua");
@@ -103,8 +106,8 @@ function QC.AddConsoleCommand(name, handle, autoComplete) {
 		Name = name,
 		HandleCommand = handle,
 		HandleAutoComplete = autoComplete
-	};
-}
+	}; 
+} 
 
 local function HandleCommand(ply, command, args) {
 	if(#args == 0)
@@ -122,7 +125,7 @@ local function HandleCommand(ply, command, args) {
 
 local function HandleAutoComplete(command, args) {	
 	var tbl = { };
-	
+	 
 	args = args:sub(2);
 	
 	foreach(var name, cmd in QC.ConsoleCommands)
@@ -136,11 +139,13 @@ concommand.Add("quantumchip", HandleCommand, HandleAutoComplete);
 
 /*-----------------------------------
     Initialization
--------------------------------------*/
+-------------------------------------*/ 
    
 include("functions.lua");
-include("components.lua");
-include("compiler/compiler.lua");
+include("components.lua"); 
+include("bootstrapper.lua");
+include("context.lua");
+include("compiler/compiler.lua");  
 include("editor/editor.lua");  
         
 QC.LoadComponents();		
@@ -158,10 +163,10 @@ QC.AddConsoleCommand("test", function(ply, args) {
 function QC.DoTest() { 
 	var compiler = QC_Compiler(); 
 	compiler:Compile(@"    
-	     
-string str = \"Co mam robic?\" 
-str.printstr()
-           
+	      
+string str = \"Co mam robic?\"   
+str.printstr()    
+               
 	");           
 }      
    

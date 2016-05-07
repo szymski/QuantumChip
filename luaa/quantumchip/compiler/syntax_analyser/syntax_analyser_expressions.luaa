@@ -171,7 +171,7 @@ partial class QC_SyntaxAnalyser {
     } 
     
     function Expression11_MultiplicationDivisionModulo() {
-        var expression = this:Expression12_UnaryOperations();
+        var expression = this:Expression11_5_MethodCall();
         
         if(this:AcceptSymbol("*")) {
             var expression2 = this:Expression2_LogicalOr();
@@ -188,6 +188,16 @@ partial class QC_SyntaxAnalyser {
             
             return QC_Expression_Modulo(expression, expression2);
         } 
+        
+        return expression;
+    }
+    
+    function Expression11_5_MethodCall() {
+        var expression = this:Expression12_UnaryOperations();
+        
+        if(this:AcceptSymbol(".")) {
+            return this:Expression_MethodCall(expression);
+        }
         
         return expression;
     }
@@ -241,18 +251,38 @@ partial class QC_SyntaxAnalyser {
             if(this:AcceptSymbol("("))
                 return QC_Expression_FunctionCall(nameToken, name, this:CallArgumentList());
             
-            // Check if method call
-            if(this:AcceptSymbol(".")) {
-                // TODO: Method calls
-                this:Error("Not implemented");
-                
-                return QC_Instruction_FunctionCall();
-            }
-            
             return QC_Expression_Variable(nameToken, name); 
         }
         
         return this:Expression_Invalid();
+    }
+    
+    function Expression_MethodCall(expression) {
+        var callList = { };
+        
+        while(true) {
+            this:RequireIdentifier("Method name expected.");
+
+            var methodName = this.CurrentToken[2];  
+            var methodToken = this.CurrentToken;
+
+            this:RequireSymbol("(", "'(' required to call a method.");
+            
+            var arguments = this:CallArgumentList();
+          
+            callList[#callList + 1] = { methodToken, methodName, arguments };
+
+            if(!this:AcceptSymbol("."))
+                break;
+        }
+        
+        var exp = expression;
+        
+        foreach(var tbl in callList) {
+            exp = QC_Expression_MethodCall(exp, unpack(tbl));
+        }
+        
+        return exp; 
     }
     
     function Expression_Invalid() {

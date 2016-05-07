@@ -1,0 +1,48 @@
+/*----------------------------
+     QC Base - shared
+------------------------------*/
+
+ENT.Type 			= "anim";
+ENT.Base 			= "base_entity";
+ENT.PrintName       = "QuantumChip Gate";
+ENT.Author          = "Szymekk";
+ENT.Category 		= "Other";
+ENT.Spawnable 		= DEBUG;
+
+function ENT:SetupDataTables() {
+    //self:NetworkVar("Bool", 0, "Active"); 
+} 
+
+// TODO: Make script run on clientside
+function ENT:InitQC() {
+    var compiler = QC_Compiler();
+    compiler:Compile(@"
+event tick() {
+    print(\"This shit works!\")
+}
+");
+
+    if(!compiler.Success) {
+        if(SERVER) {
+            this:EmitSound("ambient/fire/ignite.wav");
+            this:Ignite(10, 0);
+            this:SetColor(Color(55, 55, 55));
+        }
+        
+        error("Compiling error!");
+    }
+
+    var func = CompileString(compiler.Output, "QC")();
+    
+    this.Context = QC_Context(this:GetOwner(), this);
+    this.Context:ExecuteFunction(func);
+} 
+
+function ENT:OnRemove() { 
+    if(this.Context)
+	    this.Context:Remove();
+}
+
+function ENT:Think() {
+    
+}

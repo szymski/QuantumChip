@@ -17,6 +17,10 @@ class QC_Instruction_FunctionCall : QC_Instruction {
         this.FunctionTbl = analyser:LookUpFunction(null, this.NameToken, this.Name, this.ArgumentList);
     }
     
+    function GetValueType() {
+        return this.FunctionTbl.ReturnType;
+    }
+    
     function GetChildren() {
         return this.ArgumentList;  
     }

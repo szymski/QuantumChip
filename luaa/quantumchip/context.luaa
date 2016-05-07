@@ -1,0 +1,80 @@
+/*-----------------------------------
+    Context
+-------------------------------------*/
+
+QC.Contexts = { };
+
+class QC_Context {
+    
+    var Owner;
+    var Entity;
+        
+    var Memory = { };
+    var Events = { };
+            
+    function QC_Context(player, entity) {
+        assert(player && player:IsPlayer(), "Player argument (1) missing (or not player).");
+        assert(entity, "Entity argument (2) missing.");
+        
+        this.Owner = player;
+        this.Entity = entity;
+        
+        QC.Contexts[this] = this; 
+        
+        hook.Call("QC_OnContextCreated", null, this);
+    }
+    
+    function Remove() {
+        QC.Contexts[this] = null;
+        
+        hook.Call("QC_OnContextRemoved", null, this);
+    }
+    
+    function ExecuteFunction(func, ...) {
+        this:BeginExecution();
+       
+        xpcall(func, function(message) {
+            error("QC_Context:ExecuteFunction: QC EXECUTION FAILED!");
+        }, this);
+       
+        this:EndExecution();
+    }
+    
+    function BeginExecution() {
+        function hookFunc() {
+            
+        }
+        
+        debug.sethook(op_counter, "", expadv_luahook);
+    }
+    
+    function EndExecution() {
+        debug.sethook();
+    }
+    
+    /*-----------------------------------
+        Calling
+    -------------------------------------*/
+    
+    function CallEvent(name, ...) {
+        var eventFunc = this.Events[name];
+        
+        if(eventFunc)
+            this:ExecuteFunction(eventFunc, ...);
+    }
+}
+
+/*-----------------------------------
+    Tick event
+-------------------------------------*/
+
+hook.Add("Tick", "QC_Tick", function() {
+    foreach(var context in QC.Contexts) {
+        if(!IsValid(context.Entity)) {
+            QC.Contexts[context] = null;
+            return;
+        }
+        
+        context:CallEvent("tick");
+    }
+});

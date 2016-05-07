@@ -1,0 +1,14 @@
+/*----------------------------
+     QC Base - server
+------------------------------*/
+
+AddCSLuaFile("shared.lua");
+AddCSLuaFile("cl_init.lua");
+include("shared.lua");
+
+function ENT:Initialize() {
+	this:SetModel("models/bull/gates/processor.mdl");
+	this:SetMoveType(MOVETYPE_VPHYSICS);
+	this:SetSolid(SOLID_VPHYSICS);
+	this:PhysicsInit(SOLID_VPHYSICS);
+}

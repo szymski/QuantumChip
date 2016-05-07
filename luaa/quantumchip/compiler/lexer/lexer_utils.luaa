@@ -146,4 +146,20 @@ partial class QC_Lexer {
         this.Tokens[#this.Tokens + 1] = { type, value, this.Line, this.Position };
     }
     
+    /*-----------------------------------
+        Errors
+    -------------------------------------*/
+    
+    var Errored = false;
+    var ErrorLine, ErrorCharacter;
+    
+    function Error(line, char, message) {
+        this.Errored, this.ErrorLine, this.ErrorCharacter = true, line, char;
+        
+        this.Compiler.ErrorLine = this.ErrorLine;
+        this.Compiler.ErrorCharacter = this.ErrorCharacter;
+        this.Compiler.ErrorMessage = message;
+        error("Line " .. this.ErrorLine .. ", char " .. this.ErrorCharacter .. ": " .. message);
+    }
+    
 }

@@ -42,7 +42,7 @@ class QC_Compiler {
         Compiles everything and returns the final code.
     */
     function Compile(input) {
-        this.Ok = xpcall(this.CompileFunc, function(error) {
+        this.Success = xpcall(this.CompileFunc, function(error) {
             print("QuantumChip compiler error: ", error);
             debug.Trace();
             if(!this.ErrorMessage) {

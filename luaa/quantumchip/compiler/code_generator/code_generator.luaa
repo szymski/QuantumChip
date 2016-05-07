@@ -19,7 +19,9 @@ partial class QC_CodeGenerator {
     function Generate() {
         var outputTable = { };
         
+        this:WrapCodeStart(outputTable);
         this.InputSequence:GenerateCode(this, outputTable);
+        this:WrapCodeEnd(outputTable);
         
         this.OutputCode = table.concat(outputTable, ""); 
     }
@@ -34,6 +36,18 @@ partial class QC_CodeGenerator {
     function NextFunctionCompiling() {
         this.CompilingFuncId = this.CompilingFuncId + 1;
         this.CurrentUniquePrefix = "genvar" .. this.CompilingFuncId .. "_";
+    }
+    
+    /*-----------------------------------
+        Static code
+    -------------------------------------*/
+    
+    function WrapCodeStart(tbl) {
+        tbl[#tbl + 1] = "return function(Context)\n";
+    }
+
+    function WrapCodeEnd(tbl) {
+        tbl[#tbl + 1] = "\nend";
     }
 } 
  

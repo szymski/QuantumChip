@@ -11,8 +11,9 @@ QC.ComponentsByName = { };
 -------------------------------------*/
 
 var componentList = { 
-    "core"
-};
+    "core",
+    "vector",
+}; 
 
 function QC.LoadComponents() {
     foreach(var filename in componentList) {
@@ -42,6 +43,10 @@ class QC_Component {
         assert(this.Author && this.Author != "", this.FileName .. ": Component author is nil.");
         assert(!QC.ComponentsByName[this.Name], this.FileName .. ": Component with name '" .. this.Name .. "' is already registered.");
     }  
+     
+    function AddEvent(...) {
+        QC.AddEvent(this, ...);
+    }
      
     function AddClass(...) {
         QC.AddClass(this, ...);

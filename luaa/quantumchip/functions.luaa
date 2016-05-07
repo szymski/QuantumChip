@@ -152,7 +152,11 @@ function QC.ParseFunction(code, outputTbl, prepared) {
 function QC.CompileInlineFunctionGenerator(methodOf, arguments, inlineCode, name) {
     var codeTbl = { };
     
-    codeTbl[#codeTbl + 1] = "return function(COMPILER, COMPILER_TABLE, ";
+    codeTbl[#codeTbl + 1] = "return function(COMPILER, COMPILER_TABLE";
+    
+    if(#arguments > 0)
+        codeTbl[#codeTbl + 1] = ",";
+    
     if(methodOf)
         codeTbl[#codeTbl + 1] = "arg1, ";
     foreach(var k, arg in arguments)
@@ -250,16 +254,34 @@ function QC.ShortClassToNiceName(shortClass) {
 }
 
 /*-----------------------------------
-    Testing
+    Events
 -------------------------------------*/
 
-#if DEBUG
+/*
+    Events table keys:
+        Component - component the class was registered by
+        Name - event name
+        Arguments - table of arguments
+*/
+QC.Events = { };
+QC.EventsByName = { };
 
-//var codeTbl = { };
-//var generator = QC.CompilePreparedFunctionGenerator(null, { "n" }, "local $gay = @1 * 2", "gay");
+function QC.AddEvent(component, name, argumentsStr) {
+    assert(component, "Component argument (1) missing.");
+    assert(name, "Name argument (2) missing.");
+    assert(argumentsStr, "Arguments argument (3) missing.");
+    assert(!QC.EventsByName[name], "Event name '" .. name .. "' is already registered.");
+    
+    var tbl = {
+        Component = component,
+        Name = name,
+        Arguments = #argumentsStr > 0 ? string.Explode(",", argumentsStr) : { }
+    };
+    
+    QC.Events[#QC.Events + 1] = tbl;
+    QC.EventsByName[name] = tbl;
+}
 
-//generator(null, codeTbl, "object", "Memory[1]", "Memory[2]"); 
- 
-//print(table.concat(codeTbl, ""));
-
-#endif  
+function QC.EventExists(name) {
+    return QC.EventsByName(name) != null;
+}
