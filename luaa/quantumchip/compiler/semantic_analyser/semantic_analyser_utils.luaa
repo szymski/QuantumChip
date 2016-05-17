@@ -61,10 +61,11 @@ partial class QC_SemanticAnalyser {
             typeArgList[#typeArgList + 1] = v:GetValueType();
         
         foreach(var functionTbl in functionList) {
-            if(functionTbl.MethodOf == methodOf && 
-               this:CheckArguments(functionTbl.Arguments, typeArgList)) {
-                   return functionTbl;
-               }
+            if(functionTbl.MethodOf == methodOf) {
+                var argumentsOk, unknownTypeParameters = this:CheckArguments(functionTbl.Arguments, typeArgList);
+                if(argumentsOk)    
+                    return functionTbl;
+            }
         }
         
         this:ErrorToken(nameToken, "No overload (" .. table.concat(typeArgList, ", ") .. ") for operator " .. name .. " of " .. classNiceName .. " class.");
@@ -85,14 +86,18 @@ partial class QC_SemanticAnalyser {
     } 
     
     function CheckArguments(args1, args2) {
-        if(#args1 != #args2)
+        var unknownTypeParameters = { };
+        
+        if(#args1 != #args2) 
             return false;
         
         foreach(var k, v in args1)
-            if(args2[k] != v)
+            if(v == "?")
+                unknownTypeParameters[k] = true;
+            else if(args2[k] != v)
                 return false;
         
-        return true;
+        return true, unknownTypeParameters;
     }
     
     /*-----------------------------------

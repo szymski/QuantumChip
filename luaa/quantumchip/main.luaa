@@ -63,6 +63,7 @@ if(SERVER) {
 	AddCSLuaFile("functions.lua");
 	AddCSLuaFile("bootstrapper.lua");
 	AddCSLuaFile("context.lua");
+    AddCSLuaFile("networking.lua"); 
 	AddCSLuaFile("compiler/language_specification.lua");
     AddCSLuaFile("compiler/preprocessor/preprocessor.lua");
 	AddCSLuaFile("compiler/preprocessor/preprocessor_utils.lua");
@@ -127,14 +128,14 @@ local function HandleAutoComplete(command, args) {
 	var tbl = { };
 	 
 	args = args:sub(2);
-	
+	 
 	foreach(var name, cmd in QC.ConsoleCommands)
 		if(name:find(args) || #args == 0 )
 			tbl[#tbl + 1] = "quantumchip " .. name;
 	
 	return tbl;
 }
- 
+  
 concommand.Add("quantumchip", HandleCommand, HandleAutoComplete);
 
 /*-----------------------------------
@@ -145,6 +146,7 @@ include("functions.lua");
 include("components.lua"); 
 include("bootstrapper.lua");
 include("context.lua");
+include("networking.lua"); 
 include("compiler/compiler.lua");  
 include("editor/editor.lua");  
         

@@ -13,6 +13,7 @@ class QC_GUI_Editor : QC_GUI_Frame {
         this:SetSizable(true); 
         this:SetMinimumSize(400, 400); 
         this:DockPadding(0, 32, 0, 0);
+        this:SetDeleteOnClose(false);
         
         this.IconBar = this:Add("QCIconBar");
         this.IconBar:Dock(TOP);
@@ -26,14 +27,31 @@ class QC_GUI_Editor : QC_GUI_Frame {
         
         this.BottomBar = this:Add("QCBottomBar");
         this.BottomBar:Dock(BOTTOM);  
-          
-        if(IsValid(QC_EDITOR_DEBUG))
-            QC_EDITOR_DEBUG:Remove();
-         
-        QC_EDITOR_DEBUG = vgui.Create("QCDebugWindow");
-        QC_EDITOR_DEBUG:SetPos(10, 10);
-        QC_EDITOR_DEBUG:SetSize(400, 600);
-        QC_EDITOR_DEBUG:MakePopup(); 
+           
+        if(IsValid(QC_EDITOR_DEBUG)) {
+            QC_EDITOR_DEBUG:SetVisible(true);
+            QC_EDITOR_DEBUG:MakePopup();
+        } 
+        else {
+            QC_EDITOR_DEBUG = vgui.Create("QCDebugWindow");
+            QC_EDITOR_DEBUG:SetPos(10, 10);
+            QC_EDITOR_DEBUG:SetSize(400, 600);
+            QC_EDITOR_DEBUG:MakePopup(); 
+        }
+        
+        if(DEBUG) {
+            this.RestartBtn = this:Add("DButton"); 
+            this.RestartBtn:SetPos(200, 5);
+            this.RestartBtn:SetText("Restart"); 
+            function this.RestartBtn:DoClick() {
+                QC_EDITOR:Remove();
+                
+                if(IsValid(QC_EDITOR_DEBUG))
+                    QC_EDITOR_DEBUG:Remove();
+                
+                QC.OpenEditor();
+            } 
+        }
     }
     
     function GetScriptEditor() {
@@ -43,15 +61,15 @@ class QC_GUI_Editor : QC_GUI_Frame {
     function GetBottomBar() {
         return this.BottomBar;
     }
-    
+     
     function GetDebugWindow() {
         return QC_EDITOR_DEBUG; 
     }
      
     function OnClose() {
         if(IsValid(QC_EDITOR_DEBUG))
-            QC_EDITOR_DEBUG:Remove();
-    }
+            QC_EDITOR_DEBUG:SetVisible(false);
+    } 
 
 }
   
@@ -63,7 +81,10 @@ derma.DefineControl("QCEditor", "QuantumChip Editor", CQC_GUI_Editor, "QCFrame")
 -------------------------------------*/
  
 #if DEBUG
-   
+
+if(IsValid(QC_EDITOR))
+    QC_EDITOR:Remove();
+
 if(CLIENT)  
 QC.OpenEditor(); 
  

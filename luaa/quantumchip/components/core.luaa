@@ -32,6 +32,7 @@ COMPONENT:AddClassOperatorInline("n", ">", "n:n", "b", "@1 > @2");
 COMPONENT:AddClassOperatorInline("n", "<", "n:n", "b", "@1 < @2");
 COMPONENT:AddClassOperatorInline("n", ">=", "n:n", "b", "@1 >= @2");
 COMPONENT:AddClassOperatorInline("n", "<=", "n:n", "b", "@1 <= @2");
+COMPONENT:AddClassOperatorInline("n", "null", "n:", "", "0");
 
 COMPONENT:AddClass("s", "string");    
 COMPONENT:SetClassDefaultValue("s", "\"\""); 
@@ -46,11 +47,7 @@ COMPONENT:AddClassOperatorInline("s", "+", "s:s", "s", "@1 .. @2");
     Print functions
 -------------------------------------*/
 
-COMPONENT:AddFunctionPrepared("print", "n", "", "", "print(@1)");
-COMPONENT:AddFunctionPrepared("print", "s", "", "", "print(@1)");
-COMPONENT:AddFunctionInline("printr", "s", "s", "printr(@1)");
-COMPONENT:AddFunctionPrepared("printadd", "n,n", "", "local $value = @1 * @2", "print($value)");
-COMPONENT:AddFunctionInline("add", "n,n", "n", "@1 + @2");  
+COMPONENT:AddFunctionPrepared("print", "?", "", "", "print(@1[1])"); 
 
 COMPONENT:AddFunctionPrepared("printstr", "s:", "s", "", "print(@1)");
 COMPONENT:AddFunctionPrepared("printstr2", "s:", "s", "", "printstr2(@1)");

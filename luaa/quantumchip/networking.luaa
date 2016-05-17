@@ -1,0 +1,54 @@
+/*-----------------------------------
+    QC Networking
+    Remember, never trust the client!
+-------------------------------------*/
+
+QC.Networking = { };
+
+if(SERVER) {
+    
+    util.AddNetworkString("qc_request_code");
+    util.AddNetworkString("qc_submit_code");
+    util.AddNetworkString("qc_compiled_code");
+    
+    net.Receive("qc_submit_code", function(len, ply) {
+        var ent = net.ReadEntity();
+        var code = net.ReadString();
+        // TODO: Multiple files
+        
+        if(IsValid(ent) && ent:CPPIGetOwner() == ply)
+            ent:SubmitCode(code);
+    });
+    
+    function QC.Networking.RequestCode(ply, entity) {
+        net.Start("qc_request_code");
+        net.WriteEntity(entity);
+        net.Send(ply);
+    }
+    
+    function QC.Networking.SendCompiledCode(entity, code) {
+        net.Start("qc_compiled_code");
+        net.WriteEntity(entity);
+        net.WriteString(code);
+        net.Broadcast();
+    }
+    
+}
+
+if(CLIENT) {
+    
+    net.Receive("qc_request_code", function() {
+        var ent = net.ReadEntity();
+       
+        net.Start("qc_submit_code");
+        net.WriteEntity(ent);
+        net.WriteString(IsValid(QC_EDITOR) ? (QC_EDITOR:GetScriptEditor():GetCode()) : "");
+        net.SendToServer();
+    });
+    
+    net.Receive("qc_compiled_code", function() {
+       var ent = net.ReadEntity();
+       ent:SetCompiledCode(net.ReadString());
+    });
+    
+}

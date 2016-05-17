@@ -23,8 +23,15 @@ class QC_Instruction_VariableDeclaration : QC_Instruction {
         
         this.VariableTbl = analyser:AddVariable(this.NameToken, this.ShortClass, this.Name, analyser:GenerateVariableReference());
         
+        // TODO: Rewrite to '=' operator
+        
         if(this.Value) {
-            if(this.Value:GetValueType() != this.ShortClass)
+            if(this.Value:GetValueType() == "null") {
+                var variableExpression = QC_Expression_Variable(this.NameToken, this.Name);
+                variableExpression.VariableTbl = this.VariableTbl;
+                this.NullOperator = analyser:LookUpOperator(this.ShortClass, this.NameToken, "null", { variableExpression });
+            } 
+            else if(this.Value:GetValueType() != this.ShortClass)
                 analyser:ErrorToken(this.Value:GetToken(), "Type mismatch. Cannot assign " .. QC.ShortClassToNiceName(this.Value:GetValueType()) .. " to " .. QC.ShortClassToNiceName(this.ShortClass) .. " variable.");
         }
         else {
@@ -40,7 +47,11 @@ class QC_Instruction_VariableDeclaration : QC_Instruction {
     
     function GenerateCode(generator, tbl) {        
         tbl[#tbl + 1] = this.VariableTbl[3];
-        if(this.Value) {
+        if(this.NullOperator) {
+            tbl[#tbl + 1] = " = ";
+            this.NullOperator.Compile(generator, tbl, this.VariableTbl[3]);   
+        }
+        else if(this.Value) {
             tbl[#tbl + 1] = " = ";
             this.Value:GenerateCode(generator, tbl);
         }

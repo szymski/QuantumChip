@@ -20,10 +20,14 @@ local class QC_GUI_ScriptEditor {
     
     function GetTextEditor() {
         return this.TextEditor;
-    }
+    } 
     
     function GetBottomBar() {
         return this:GetEditor():GetBottomBar();
+    }
+    
+    function GetCode() {
+        return this.TextEditor:GetCode();
     }
     
     function Validate() {

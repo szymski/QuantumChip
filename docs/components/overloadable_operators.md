@@ -30,3 +30,4 @@ The operator above is called when you're using + operator on string variable. Fo
 | * | leftValue, rightValue | Multiplication operator |
 | / | leftValue, rightValue | Division operator |
 | % | leftValue, rightValue | Modulo operator |
+| null | variable | Compiled when null is assigned to a variable |

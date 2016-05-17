@@ -66,15 +66,23 @@ if(CLIENT) {
     function QC.OpenEditor() { 
         QC.Editor.CurrentTheme = QC.Editor.Themes["Dark"]; 
         QC.Editor.CurrentEditorTheme = QC.Editor.EditorThemes["Monokai"]; 
-        QC.Editor.CurrentTheme:Init();    
-           
-        if(IsValid(QC_EDITOR))     
-            QC_EDITOR:Remove();
+        QC.Editor.CurrentTheme:Init();     
         
-        QC_EDITOR = vgui.Create("QCEditor"); 
-        QC_EDITOR:SetSize(1000, 800); 
-        QC_EDITOR:Center(); 
-        QC_EDITOR:MakePopup();
+        if(!IsValid(QC_EDITOR)) {
+            QC_EDITOR = vgui.Create("QCEditor"); 
+            QC_EDITOR:SetSize(1000, 800); 
+            QC_EDITOR:Center(); 
+            QC_EDITOR:MakePopup();
+        }
+        else {
+            QC_EDITOR:SetVisible(true);
+            QC_EDITOR:MakePopup();
+            
+            if(IsValid(QC_EDITOR_DEBUG)) {
+                QC_EDITOR_DEBUG:SetVisible(true);
+                QC_EDITOR_DEBUG:MakePopup();
+            }
+        }
     } 
 }
 

@@ -19,7 +19,7 @@ function TOOL:LeftClick(trace) {
     entity:SetPos(trace.HitPos);
     entity:SetAngles(trace.HitNormal:Angle() + Angle(90, 0, 0));
     entity:SetCreator(this:GetOwner());
-    entity:SetOwner(this:GetOwner());
+    entity:CPPISetOwner(this:GetOwner());
     entity:Spawn();
     
     undo.Create("quantumchip");

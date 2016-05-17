@@ -2,15 +2,22 @@
     Context
 -------------------------------------*/
 
+QC_STATE_WAITING = 0; // Waiting for code
+QC_STATE_COMPILING = 1;
+QC_STATE_RUNNING = 2;
+QC_STATE_ERRORED = 3;
+
 QC.Contexts = { };
 
 class QC_Context {
      
     var Owner;
-    var Entity;
+    var Entity; 
         
     var Memory = { };
     var Events = { };
+    
+    var State = QC_STATE_WAITING;
             
     function QC_Context(player, entity) {
         assert(player && player:IsPlayer(), "Player argument (1) missing (or not player).");
@@ -24,6 +31,14 @@ class QC_Context {
         hook.Call("QC_OnContextCreated", null, this);
     }
     
+    function GetState() {
+        return this.State;
+    }
+    
+    function SetState(value) {
+        this.State = value;
+    }
+    
     function Remove() {
         QC.Contexts[this] = null;
         
@@ -34,6 +49,7 @@ class QC_Context {
         this:BeginExecution();
        
         xpcall(func, function(message) {
+            this:SetState(QC_STATE_ERRORED);
             error("QC_Context:ExecuteFunction: QC EXECUTION FAILED!");
         }, ...);
        
@@ -45,7 +61,7 @@ class QC_Context {
             
         }
         
-        debug.sethook(op_counter, "", expadv_luahook);
+        debug.sethook(op_counter, "", hookFunc);
     }
     
     function EndExecution() {
@@ -62,6 +78,7 @@ class QC_Context {
         if(eventFunc)
             this:ExecuteFunction(eventFunc, ...);
     }
+    
 }
 
 /*-----------------------------------

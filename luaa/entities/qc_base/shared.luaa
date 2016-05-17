@@ -13,14 +13,18 @@ function ENT:SetupDataTables() {
     //self:NetworkVar("Bool", 0, "Active"); 
 } 
 
-// TODO: Make script run on clientside
 function ENT:InitQC() {
+    this.Context = QC_Context(this:CPPIGetOwner(), this);
+    
+    if(SERVER)
+        QC.Networking.RequestCode(this:CPPIGetOwner(), this);
+} 
+
+function ENT:SubmitCode(code) {
+    this.Context:SetState(QC_STATE_COMPILING);
+    
     var compiler = QC_Compiler();
-    compiler:Compile(@"
-event chatMessage(string msg) {
-    print(\"Received chat message: \" + msg)
-}
-");
+    compiler:Compile(code);
 
     if(!compiler.Success) {
         if(SERVER) {
@@ -32,11 +36,22 @@ event chatMessage(string msg) {
         error("Compiling error!");
     }
 
-    var func = CompileString(compiler.Output, "QC")();
+    QC.Networking.SendCompiledCode(this, compiler.Output); 
+
+    this:SetCompiledCode(compiler.Output);
+}
+
+function ENT:SetCompiledCode(compiledCode) {
+    if(!this.Context)
+        this:InitQC();
     
-    this.Context = QC_Context(this:GetOwner(), this);
+    this.CompiledCode = compiledCode;
+    
+    var func = CompileString(compiledCode, "QC");
     this.Context:ExecuteFunction(func, this.Context);
-} 
+    
+    this.Context:SetState(QC_STATE_RUNNING);
+}
 
 function ENT:OnRemove() { 
     if(this.Context)
