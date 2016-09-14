@@ -11,7 +11,7 @@ Comments are removed and preprocessor directives are handled.
 Lexer translates source code into a stream of tokens.
 
 ## Syntax analyser - luaa/quantumchip/compiler/syntax_analyser/
-Stream of tokens is translated into a AST (aAbstract Syntax Tree).
+Stream of tokens is translated into a AST (Abstract Syntax Tree).
 
 ## Semantic analyser - luaa/quantumchip/compiler/semantic_analyser/
 Instructions are checked for errors (type checking etc.).
